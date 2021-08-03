@@ -1,0 +1,16 @@
+FROM rocker/geospatial:4.1.0
+RUN Rscript -e 'install.packages(c("data.table","labelled","terra","batchtools", "here", "intervalaverage", "renv"))'
+RUN Rscript -e "devtools::install_github('kaufman-lab/survivaltools',ref='a9c75521fa58961e59d3c884681862f44c7683d6')"
+
+
+#this affects all R sessions, not just rstudio server sessions. 
+RUN echo "R_LIBS_USER=/pseudohome/R/packages" >> usr/local/lib/R/etc/Renviron.site 
+ #note that /pseudohome doesn't exist. you need to bind it when running the image.
+
+
+#####rstudio server defaults#########
+RUN echo "session-save-action-default=no" >> /etc/rstudio/rsession.conf 
+  #don't save workspace by default.
+RUN echo "session-quit-child-processes-on-exit=1" >> /etc/rstudio/rsession.conf 
+  #quit child processes on exit
+

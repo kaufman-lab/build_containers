@@ -1,0 +1,33 @@
+name: Build Images
+on:
+  workflow_dispatch:
+  push:
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    env:
+      username: myoung3
+      tag: 4.1.0
+      repository: geospatial_plus
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Log in to Docker
+        uses: docker/login-action@v1
+        with:
+          username: ${{ env.username }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD}}
+
+      - name: Build
+        env: 
+          dockerfile: ${{ env.repository }}${{ env.tag}}
+        run: |
+          echo ${{ env.dockerfile }}
+          docker build -f ${{ env.dockerfile}} -t ${{ env.username }}/${{ env.repository }}:${{ env.tag }} .
+          docker images
+
+      - name: Deploy
+        run: docker push ${{ env.username }}/${{ env.repository }}:${{ env.tag}} 
+
+
