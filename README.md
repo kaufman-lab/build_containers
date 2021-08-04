@@ -8,16 +8,6 @@ The set of image types that are available are displayed on the right under "pack
 
 Currently there is only one image type (package) called `geospatial_plus` which builds on the [rocker](https://github.com/rocker-org/rocker-versioned2) geospatial docker image. Our geospatial_plus image includes a few additional packages and also has configured the R user library location to avoid clashing with the user library on the host machine. Note that in order to use this package properly, you'll need to bind the directory `/pseudohome` to a directory on the host machine.
 
-## Setting Github Credentials in Singularity
-
-You'll need to provide a github token to singularity before you can download images/packages. This even applies to public images such as in this repository.
-
-Generate a token [here](here), then run:
-
-```
-echo <token> | singularity remote login -u <github userame> --password-stdin  oras://ghcr.io
-```
-
 ## Using Images
 
 If you'd like to test out an image interactively, try
