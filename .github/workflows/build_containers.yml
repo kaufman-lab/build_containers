@@ -1,7 +1,11 @@
-name: Singularity Build (native)
-on:
+name: Singularity Build
+on: 
   workflow_dispatch:
   push:
+    branches:
+      - main
+  # Do the builds on all pull requests (to test them), but don't deploy on PR (see below)
+  pull_request: []
 jobs:
 
   build:
@@ -48,12 +52,7 @@ jobs:
     - name: git checkout
       uses: actions/checkout@v1
 
-    - name: Log in to github container repository (using singularity)
-      run: |
-        echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ env.username }} --password-stdin oras://ghcr.io
-        singularity remote list
-        
-    - name: Build container and deploy
+    - name: Build container
       env:
         SINGULARITY_RECIPE: ${{ env.repository }}${{ env.tag}}.def
         OUTPUT_CONTAINER: ${{ env.repository }}${{ env.tag}}.sif
@@ -66,5 +65,14 @@ jobs:
            echo "Present working directory: $PWD"
            ls
        fi
+       
+    - name: log in to github container registry and deploy
+      if: (github.event_name != 'pull_request')
+      env:
+        SINGULARITY_RECIPE: ${{ env.repository }}${{ env.tag}}.def
+        OUTPUT_CONTAINER: ${{ env.repository }}${{ env.tag}}.sif
+      run: |
+       echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ env.username }} --password-stdin oras://ghcr.io
+       singularity remote list
        singularity push ${{ env.OUTPUT_CONTAINER }} oras://ghcr.io/${{ env.organization }}/${{ env.repository }}:${{ env.tag}} 
 
