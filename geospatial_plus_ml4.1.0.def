@@ -45,12 +45,15 @@ Markdown==3.3.4
 numpy==1.19.5
 oauthlib==3.1.1
 opt-einsum==3.3.0
+Pillow==8.3.1
 protobuf==3.17.3
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
+PyYAML==5.4.1
 requests==2.26.0
 requests-oauthlib==1.3.0
 rsa==4.7.2
+scipy==1.7.1
 six==1.15.0
 tensorboard==2.5.0
 tensorboard-data-server==0.6.1
@@ -64,8 +67,6 @@ wrapt==1.12.1
 EOF
 
 pip install -r tensorflowavx512_req.txt
-
-pip install h5py pyyaml requests Pillow scipy
 
 python3 -m pip freeze
 
