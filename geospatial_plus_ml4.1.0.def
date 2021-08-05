@@ -24,7 +24,7 @@ apt-get update
 apt-get install -y python3-pip
 
 pip install intel-tensorflow-avx512==2.5.0
-python -m pip freeze
+python3 -m pip freeze
 
 ### tensorflow for R (via reticulate) ###
 Rscript -e 'install.packages(c("reticulate", "tensorflow"))' 
