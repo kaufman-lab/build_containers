@@ -65,6 +65,10 @@ EOF
 
 pip install -r tensorflowavx512_req.txt
 
+pip install h5py pyyaml requests Pillow scipy
+
+python -m pip freeze
+
 ### tensorflow for R (via reticulate) ###
 Rscript -e 'install.packages(c("reticulate", "tensorflow"))' 
 
