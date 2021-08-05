@@ -23,8 +23,10 @@ echo "session-quit-child-processes-on-exit=1" >> /etc/rstudio/rsession.conf #qui
 apt-get update
 apt-get install -y python3-pip
 pip install intel-tensorflow-avx512==2.5.0
-Rscript -e 'install.packages("reticulate")' 
 
-### torch for R ###
+### tensorflow for R (via reticulate) ###
+Rscript -e 'install.packages("reticulate", "tensorflow")' 
+
+### torch for R (native) ###
 Rscript -e 'install.packages(c("torch","luz","torchvision","torchdatasets"))'
 Rscript -e 'torch::install_torch()' 
