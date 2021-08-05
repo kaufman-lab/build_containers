@@ -11,11 +11,11 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-18.04
-  strategy:
-    fail-fast: false
-    matrix:
-      basename: [geospatial_plus, geospatial_plus_ml]
-      tag: [4.1.0]
+    strategy:
+      fail-fast: false
+      matrix:
+        basename: [geospatial_plus, geospatial_plus_ml]
+        tag: [4.1.0]
     steps:
     - name: Set up Go 1.16
       uses: actions/setup-go@v1
