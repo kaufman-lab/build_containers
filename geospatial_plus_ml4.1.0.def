@@ -25,7 +25,7 @@ apt-get install -y python3-pip
 pip install intel-tensorflow-avx512==2.5.0
 
 ### tensorflow for R (via reticulate) ###
-Rscript -e 'install.packages("reticulate", "tensorflow")' 
+Rscript -e 'install.packages(c("reticulate", "tensorflow"))' 
 
 ### torch for R (native) ###
 Rscript -e 'install.packages(c("torch","luz","torchvision","torchdatasets"))'

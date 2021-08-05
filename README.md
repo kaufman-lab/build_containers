@@ -16,7 +16,7 @@ There are two images types:
 
 -   `geospatial_plus_ml`
 
-    -   additionally includes torch for R, and tensorflow for python, and the reticulate package.
+    -   additionally includes torch for R, and tensorflow for python, and the reticulate package. The version of tensorflow is specifically intel's version for avx512 since this is primarily intended to be run on an intel high performance compute (HPC) cluster.
 
 ## Using Images
 
