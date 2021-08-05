@@ -6,7 +6,17 @@ This repo builds and stores singularity images to be used in lab workflows.
 
 The set of image types that are available are displayed on the right under "packages".
 
-Currently there is only one image type (package) called `geospatial_plus` which builds on the [rocker](https://github.com/rocker-org/rocker-versioned2) geospatial docker image. Our geospatial_plus image includes a few additional packages and also has configured the R user library location to avoid clashing with the user library on the host machine. Note that in order to use this package properly, you'll need to bind the directory `/pseudohome` to a directory on the host machine.
+There are two images types:
+
+-   `geospatial_plus`: Builds on the [rocker](https://github.com/rocker-org/rocker-versioned2) geospatial docker image.
+
+    -   includes a few additional packages (including data.table, intervalaverage and terra)
+
+    -   also has configured the R user library location to avoid clashing with the user library on the host machine.
+
+-   `geospatial_plus_ml`
+
+    -   additionally includes torch for R, and tensorflow for python, and the reticulate package. The version of tensorflow is specifically intel's version for avx512 since this is primarily intended to be run on an intel high performance compute (HPC) cluster.
 
 ## Using Images
 

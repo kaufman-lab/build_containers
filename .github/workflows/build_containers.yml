@@ -11,11 +11,11 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-18.04
-    env:
-      username: myoung3
-      organization: kaufman-lab
-      repository: geospatial_plus  
-      tag: 4.1.0
+    strategy:
+      fail-fast: false
+      matrix:
+        repository: [geospatial_plus, geospatial_plus_ml]
+        tag: [4.1.0]
     steps:
     - name: Set up Go 1.16
       uses: actions/setup-go@v1
@@ -54,8 +54,8 @@ jobs:
 
     - name: Build container
       env:
-        SINGULARITY_RECIPE: ${{ env.repository }}${{ env.tag}}.def
-        OUTPUT_CONTAINER: ${{ env.repository }}${{ env.tag}}.sif
+        SINGULARITY_RECIPE: ${{ matrix.repository }}${{ matrix.tag}}.def
+        OUTPUT_CONTAINER: ${{ matrix.repository }}${{ matrix.tag}}.sif
       run: |
        ls 
        if [ -f "${SINGULARITY_RECIPE}" ]; then
@@ -69,10 +69,10 @@ jobs:
     - name: log in to github container registry and deploy
       if: (github.event_name != 'pull_request')
       env:
-        SINGULARITY_RECIPE: ${{ env.repository }}${{ env.tag}}.def
-        OUTPUT_CONTAINER: ${{ env.repository }}${{ env.tag}}.sif
+        SINGULARITY_RECIPE: ${{ matrix.repository }}${{ matrix.tag}}.def
+        OUTPUT_CONTAINER: ${{ matrix.repository }}${{ matrix.tag}}.sif
       run: |
        echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ env.username }} --password-stdin oras://ghcr.io
        singularity remote list
-       singularity push ${{ env.OUTPUT_CONTAINER }} oras://ghcr.io/${{ env.organization }}/${{ env.repository }}:${{ env.tag}} 
+       singularity push ${{ env.OUTPUT_CONTAINER }} oras://ghcr.io/${{ env.organization }}/${{ matrix.repository }}:${{ matrix.tag}} 
 
