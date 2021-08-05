@@ -11,6 +11,9 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-18.04
+    env: 
+      username: myoung3
+      organization: kaufman-lab
     strategy:
       fail-fast: false
       matrix:
