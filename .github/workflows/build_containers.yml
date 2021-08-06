@@ -23,9 +23,9 @@ jobs:
     - name: Get changed definition files
       id: changed-files-def
       uses: tj-actions/changed-files@v9.1
-        with:
-          files: |
-            .(def)$
+      with:
+        files: |
+          .(def)$
             
     - name: Set up Go
       if: ( steps.changed-files-def.outputs.any_changed == 'true' | github.event_name == 'workflow_dispatch')
