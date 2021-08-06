@@ -23,6 +23,9 @@ echo "session-quit-child-processes-on-exit=1" >> /etc/rstudio/rsession.conf #qui
 apt-get update
 apt-get install -y python3-pip
 
+
+#pip install h5py pyyaml requests Pillow scipy intel-tensorflow-avx512==2.5.0 horovod-0.22.1
+
 cat > tensorflowavx512_req.txt << EOF
 absl-py==0.13.0
 astunparse==1.6.3
@@ -76,3 +79,11 @@ Rscript -e 'install.packages(c("reticulate", "tensorflow","keras"))'
 ### torch for R (native) ###
 Rscript -e 'install.packages(c("torch","luz","torchvision","torchdatasets"))'
 Rscript -e 'torch::install_torch()' 
+
+
+
+#### horovod for distributed learning ######
+
+pip install --no-cache-dir horovod-0.22.1
+
+python3 -m pip freeze
