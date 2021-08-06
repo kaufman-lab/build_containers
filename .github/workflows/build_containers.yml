@@ -17,16 +17,32 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        repository: [geospatial_plus, geospatial_plus_ml]
-        tag: [4.1.0]
+        arrays: [ 
+          {repository: "geospatial_plus", tag: "4.1.0", definitionfile: "geospatial_plus4.1.0.def"}, 
+          {repository: "geospatial_plus_ml", tag: "4.1.0", definitionfile: "geospatial_plus_ml4.1.0.def"}
+        ]
     steps:
-    - name: Set up Go 1.16
+    - name: git checkout
+      uses: actions/checkout@v1
+      
+    - name: Get changed definition files
+      id: changed-files-def
+      uses: tj-actions/changed-files@v9.1
+      with:
+        files: |
+          .(def)$
+    - name: Print changed definition files
+      run: echo ${{ steps.changed-files-def.outputs.all_modified_files }}
+            
+    - name: Set up Go
+      if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
       uses: actions/setup-go@v1
       with:
         go-version: 1.16
       id: go
 
     - name: Install Dependencies
+      if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
       run: |
         sudo apt-get update && sudo apt-get install -y \
           build-essential \
@@ -36,7 +52,9 @@ jobs:
           squashfs-tools \
           libseccomp-dev \
           pkg-config
+          
     - name: Install Singularity
+      if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
       env:
         SINGULARITY_VERSION: 3.8.1
         GOPATH: /tmp/go
@@ -52,30 +70,24 @@ jobs:
         make -C builddir && \
         sudo make -C builddir install          
           
-    - name: git checkout
-      uses: actions/checkout@v1
 
     - name: Build container
-      env:
-        SINGULARITY_RECIPE: ${{ matrix.repository }}${{ matrix.tag}}.def
-        OUTPUT_CONTAINER: ${{ matrix.repository }}${{ matrix.tag}}.sif
+      if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
       run: |
        ls 
-       if [ -f "${SINGULARITY_RECIPE}" ]; then
-            sudo -E singularity build ${OUTPUT_CONTAINER} ${SINGULARITY_RECIPE}
-       else
-           echo "${SINGULARITY_RECIPE} is not found."
-           echo "Present working directory: $PWD"
-           ls
-       fi
        
+       if [ -f "${{ matrix.arrays.definitionfile }}" ]; then
+         sudo -E singularity build output.sif ${{ matrix.arrays.definitionfile }}
+       else
+         echo "${SINGULARITY_RECIPE} is not found."
+         echo "Present working directory: $PWD"
+       fi
+
     - name: log in to github container registry and deploy
-      if: (github.event_name != 'pull_request')
-      env:
-        SINGULARITY_RECIPE: ${{ matrix.repository }}${{ matrix.tag}}.def
-        OUTPUT_CONTAINER: ${{ matrix.repository }}${{ matrix.tag}}.sif
+      if: (github.event_name != 'pull_request') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch')
       run: |
-       echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ env.username }} --password-stdin oras://ghcr.io
-       singularity remote list
-       singularity push ${{ env.OUTPUT_CONTAINER }} oras://ghcr.io/${{ env.organization }}/${{ matrix.repository }}:${{ matrix.tag}} 
+        echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ env.username }} --password-stdin oras://ghcr.io
+        singularity remote list
+        singularity push output.sif oras://ghcr.io/${{ env.organization }}/${{ matrix.arrays.repository }}:${{ matrix.arrays.tag}} 
+       
 
