@@ -1,0 +1,160 @@
+Bootstrap: docker
+From: rocker/geospatial:4.1.0
+Stage: build
+
+############################################
+%post
+############################################
+
+##### install packages #########
+Rscript -e 'install.packages(c("data.table","labelled","terra","batchtools", "here", "intervalaverage", "renv"))'
+Rscript -e "devtools::install_github('kaufman-lab/survivaltools',ref='a9c75521fa58961e59d3c884681862f44c7683d6')"
+
+
+######set user library to somewhere other than home, to avoid library conflicts with the local machine######
+#this affects all R sessions, not just rstudio server sessions. 
+echo "R_LIBS_USER=/pseudohome/R/packages" >> usr/local/lib/R/etc/Renviron.site  #note that /pseudohome doesn't exist. you need to bind it when running the image.
+#####rstudio server defaults#########
+echo "session-save-action-default=no" >> /etc/rstudio/rsession.conf #don't save workspace by default.
+echo "session-quit-child-processes-on-exit=1" >> /etc/rstudio/rsession.conf #quit child processes on exit
+
+
+## tensorflow, specifically the intel version with avx512 instructions #####
+apt-get update
+apt-get install -y python3-pip
+
+
+
+pip install wheel==0.36.2
+
+
+cat > tensorflowavx512_req.txt << EOF
+absl-py==0.13.0
+astunparse==1.6.3
+cachetools==4.2.2
+certifi==2021.5.30
+cffi==1.14.6
+charset-normalizer==2.0.4
+cloudpickle==1.6.0
+flatbuffers==1.12
+future==0.18.2
+gast==0.4.0
+GDAL==3.0.4
+google-auth==1.34.0
+google-auth-oauthlib==0.4.5
+google-pasta==0.2.0
+grpcio==1.34.1
+h5py==3.1.0
+idna==3.2
+intel-tensorflow-avx512==2.5.0
+keras-nightly==2.5.0.dev2021032900
+Keras-Preprocessing==1.1.2
+Markdown==3.3.4
+numpy==1.19.5
+oauthlib==3.1.1
+opt-einsum==3.3.0
+packaging==21.0
+Pillow==8.3.1
+protobuf==3.17.3
+psutil==5.8.0
+pyasn1==0.4.8
+pyasn1-modules==0.2.8
+pycparser==2.20
+pyparsing==2.4.7
+PyYAML==5.4.1
+requests==2.26.0
+requests-oauthlib==1.3.0
+rsa==4.7.2
+scipy==1.7.1
+six==1.15.0
+tensorboard==2.5.0
+tensorboard-data-server==0.6.1
+tensorboard-plugin-wit==1.8.0
+tensorflow==2.5.0
+tensorflow-estimator==2.5.0
+termcolor==1.1.0
+typing==3.7.4.3
+typing-extensions==3.7.4.3
+urllib3==1.26.6
+Werkzeug==2.0.1
+wrapt==1.12.1
+EOF
+
+pip install -r tensorflowavx512_req.txt --no-dependencies --force-reinstall
+
+python3 -m pip freeze
+
+### tensorflow for R (via reticulate) ###
+Rscript -e 'install.packages(c("reticulate", "tensorflow","keras"))' 
+
+### torch for R (native) ###
+Rscript -e 'install.packages(c("torch","luz","torchvision","torchdatasets"))'
+Rscript -e 'torch::install_torch()' 
+
+
+
+#### horovod for distributed learning.######
+#tensorflow only, cpu, intel
+#openmpi 2.1.1
+
+apt-get update && apt-get install -y  --no-install-recommends \
+        libjpeg-dev \
+        openjdk-8-jdk-headless \
+        openssh-server \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install Open MPI
+mkdir -p /tmp/openmpi && \
+    cd /tmp/openmpi && \
+    wget --progress=dot:mega -O /tmp/openmpi-2.1.1.tar.gz https://download.open-mpi.org/release/open-mpi/v2.1/openmpi-2.1.1.tar.gz  && \
+    tar -zxf /tmp/openmpi-2.1.1.tar.gz  && \
+    cd openmpi-2.1.1 && \
+    ./configure --enable-orterun-prefix-by-default && \
+    make -j $(nproc) all  && \
+    make install   && \
+    ldconfig && \
+    rm -rf /tmp/openmpi
+    
+    mpirun --version
+    
+    cd /root
+    
+
+# Allow OpenSSH to talk to containers without asking for confirmation
+mkdir -p /var/run/sshd
+cat /etc/ssh/ssh_config | grep -v StrictHostKeyChecking > /etc/ssh/ssh_config.new && \
+    echo "    StrictHostKeyChecking no" >> /etc/ssh/ssh_config.new && \
+    mv /etc/ssh/ssh_config.new /etc/ssh/ssh_config
+
+ln -s /usr/bin/python3 /usr/bin/python
+
+
+
+
+# Install the IB verbs
+    apt install -y --no-install-recommends libibverbs*
+    apt install -y --no-install-recommends librdmacm* libmlx4* libmlx5* libnuma*
+
+
+# Install Horovod
+HOROVOD_WITH_TENSORFLOW=1 pip install --no-cache-dir horovod[tensorflow]==0.22.1 --no-dependencies  --force-reinstall
+ldconfig
+horovodrun --check-build
+
+python3 -m pip freeze
+
+
+# Configure OpenMPI to run good defaults:
+#   --bind-to none --map-by slot --mca btl_tcp_if_exclude lo,docker0
+    echo "hwloc_base_binding_policy = none" >> /usr/local/etc/openmpi-mca-params.conf && \
+    echo "rmaps_base_mapping_policy = slot" >> /usr/local/etc/openmpi-mca-params.conf 
+    #echo "btl_tcp_if_exclude = lo,docker0" >> /usr/local/etc/openmpi-mca-params.conf
+
+mkdir /horovod_repo
+    cd /horovod_repo
+    git clone https://github.com/horovod/horovod.git
+    mv  /horovod_repo/horovod/examples /examples
+    rm -r /horovod_repo
+
+
+python3 -c "import horovod.tensorflow as hvd; hvd.init()"
