@@ -20,7 +20,7 @@ jobs:
         arrays: [ 
           {repository: "geospatial_plus", tag: "4.1.0", definitionfile: "geospatial_plus4.1.0.def"}, 
           {repository: "geospatial_plus_ml", tag: "4.1.0", definitionfile: "geospatial_plus_ml4.1.0.def"},
-          {repository: "geospatial_plus_ml", tag: "4.1.0", definitionfile: "geospatial_plus_ml_horovod4.1.0.def"}
+          {repository: "geospatial_plus_ml_horovod", tag: "4.1.0", definitionfile: "geospatial_plus_ml_horovod4.1.0.def"}
         ]
     steps:
     - name: git checkout
