@@ -96,7 +96,7 @@ apt-get update && apt-get install -y  --no-install-recommends \
 mkdir -p /tmp/openmpi && \
     cd /tmp/openmpi && \
     wget --progress=dot:mega -O /tmp/openmpi-2.1.1.tar.gz https://download.open-mpi.org/release/open-mpi/v2.1/openmpi-2.1.1.tar.gz  && \
-    tar -zxf /tmp/openmpi-2.1.1-bin.tar.gz  && \
+    tar -zxf /tmp/openmpi-2.1.1.tar.gz  && \
     cd openmpi-2.1.1 && \
     ./configure --enable-orterun-prefix-by-default && \
     make -j $(nproc) all  && \
