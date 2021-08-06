@@ -133,7 +133,7 @@ python3 -m pip freeze
 
 # Install the IB verbs
     apt install -y --no-install-recommends libibverbs*
-    apt install -y --no-install-recommends ibverbs-utils librdmacm* infiniband-diags libmlx4* libmlx5* libnuma*
+    apt install -y --no-install-recommends librdmacm* libmlx4* libmlx5* libnuma*
 
 
 # Install Horovod
