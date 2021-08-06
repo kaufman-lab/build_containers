@@ -137,9 +137,10 @@ python3 -m pip freeze
 
 
 # Install Horovod
-HOROVOD_WITH_TENSORFLOW=1 pip install --no-cache-dir horovod-0.22.1
+HOROVOD_WITH_TENSORFLOW=1 pip install --no-cache-dir horovod[tensorflow]==0.22.1
 ldconfig
 horovodrun --check-build
+
 python3 -m pip freeze
 
 
