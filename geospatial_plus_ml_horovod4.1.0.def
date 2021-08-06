@@ -97,7 +97,6 @@ Rscript -e 'torch::install_torch()'
 
 #### horovod for distributed learning.######
 #tensorflow only, cpu, intel
-#openmpi 2.1.1
 
 apt-get update && apt-get install -y  --no-install-recommends \
         libjpeg-dev \
@@ -106,20 +105,7 @@ apt-get update && apt-get install -y  --no-install-recommends \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install Open MPI
-mkdir -p /tmp/openmpi && \
-    cd /tmp/openmpi && \
-    wget --progress=dot:mega -O /tmp/openmpi-2.1.1.tar.gz https://download.open-mpi.org/release/open-mpi/v2.1/openmpi-2.1.1.tar.gz  && \
-    tar -zxf /tmp/openmpi-2.1.1.tar.gz  && \
-    cd openmpi-2.1.1 && \
-    ./configure --enable-orterun-prefix-by-default && \
-    make -j $(nproc) all  && \
-    make install   && \
-    ldconfig && \
-    rm -rf /tmp/openmpi
-    
-    mpirun --version
-    
-    cd /root
+apt-get install -y mpich
     
 
 # Allow OpenSSH to talk to containers without asking for confirmation
@@ -129,6 +115,7 @@ cat /etc/ssh/ssh_config | grep -v StrictHostKeyChecking > /etc/ssh/ssh_config.ne
     mv /etc/ssh/ssh_config.new /etc/ssh/ssh_config
 
 ln -s /usr/bin/python3 /usr/bin/python
+
 
 
 
@@ -144,13 +131,6 @@ ldconfig
 horovodrun --check-build
 
 python3 -m pip freeze
-
-
-# Configure OpenMPI to run good defaults:
-#   --bind-to none --map-by slot --mca btl_tcp_if_exclude lo,docker0
-    echo "hwloc_base_binding_policy = none" >> /usr/local/etc/openmpi-mca-params.conf && \
-    echo "rmaps_base_mapping_policy = slot" >> /usr/local/etc/openmpi-mca-params.conf 
-    #echo "btl_tcp_if_exclude = lo,docker0" >> /usr/local/etc/openmpi-mca-params.conf
 
 mkdir /horovod_repo
     cd /horovod_repo
