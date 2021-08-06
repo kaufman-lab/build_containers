@@ -18,6 +18,10 @@ There are two images types:
 
     -   additionally includes torch for R, and tensorflow for python, and the reticulate package. The version of tensorflow is specifically intel's version for avx512 since this is primarily intended to be run on an intel high performance compute (HPC) cluster.
 
+-   `geospatial_plus_ml_horovod`
+
+    -   additionally includes horovod (tensorflow only, set up for CPU) and openmpi.
+
 ## Using Images
 
 If you'd like to test out an image interactively, try
@@ -25,10 +29,6 @@ If you'd like to test out an image interactively, try
     singularity shell oras://ghcr.io/kaufman-lab/geospatial_plus:4.1.0
 
 Note that singularity will cache remote images, so there's no need to explicitly save an images to disk using `singularity pull`, even if you're using it repeatedly.
-
-If you want to guarantee code will always use the exact same image, you can use a digest instead of a tag. e.g.:
-
-    oras://ghcr.io/kaufman-lab/geospatial_plus@sha256:199a842f806cde1c0df27a9be5cb1e594c9ed05bb3866db851bc0815e6630497
 
 Note that in order to use these images with singularity you need to preface the package fingerprints with `oras://` (as in the examples).
 
@@ -43,8 +43,6 @@ Depending on the complexity, we may start a new image type (package) or add to a
 ## Image Stability
 
 starting sometime after 8/10/21 \`geospatial_plus:4.1.0\` will be package-stable (this is the date the next version of R is released and rocker will freeze 4.1.0). Even as rocker/geospatial:4.1.0 and kaufman-lab/geospatial_plus:4.1.0 are periodically rebuilt, R packages in the 4.1.0 image will remain constant [because of how versioned rocker images install packages](https://github.com/rocker-org/rocker-versioned2/issues/201).
-
-I'll try not to make breaking changes within a version tag, but if stability is paramount use a digest (which points to an exact image uploaded on a specific date) rather than a tag.
 
 ## Building Images
 
