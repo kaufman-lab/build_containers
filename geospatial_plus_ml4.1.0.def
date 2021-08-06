@@ -157,5 +157,4 @@ mkdir /horovod_repo
     rm -r /horovod_repo
 
 
-cd /horovod/examples
 python3 -c "import horovod.tensorflow as hvd; hvd.init()"
