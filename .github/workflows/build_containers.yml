@@ -20,13 +20,22 @@ jobs:
         repository: [geospatial_plus, geospatial_plus_ml]
         tag: [4.1.0]
     steps:
+    - name: Get changed definition files
+      id: changed-files-def
+      uses: tj-actions/changed-files@v9.1
+       with:
+          files: |
+            .(def)$
+            
     - name: Set up Go 1.16
+      if: steps.changed-files-def.outputs.any_changed == 'true'
       uses: actions/setup-go@v1
       with:
         go-version: 1.16
       id: go
 
     - name: Install Dependencies
+      if: steps.changed-files-def.outputs.any_changed == 'true'
       run: |
         sudo apt-get update && sudo apt-get install -y \
           build-essential \
@@ -36,7 +45,9 @@ jobs:
           squashfs-tools \
           libseccomp-dev \
           pkg-config
+          
     - name: Install Singularity
+      if: steps.changed-files-def.outputs.any_changed == 'true'
       env:
         SINGULARITY_VERSION: 3.8.1
         GOPATH: /tmp/go
@@ -53,29 +64,43 @@ jobs:
         sudo make -C builddir install          
           
     - name: git checkout
+      if: steps.changed-files-def.outputs.any_changed == 'true'
       uses: actions/checkout@v1
 
     - name: Build container
+      if: steps.changed-files-def.outputs.any_changed == 'true'
       env:
         SINGULARITY_RECIPE: ${{ matrix.repository }}${{ matrix.tag}}.def
         OUTPUT_CONTAINER: ${{ matrix.repository }}${{ matrix.tag}}.sif
+        MODIFIED_FILES: ${{ steps.changed-files.outputs.all_modified_files }}
       run: |
        ls 
-       if [ -f "${SINGULARITY_RECIPE}" ]; then
-            sudo -E singularity build ${OUTPUT_CONTAINER} ${SINGULARITY_RECIPE}
-       else
+       echo "current file: ${SINGULARITY_RECIPE}"
+       echo "modified files: ${MODIFIED_FILES}"
+       
+       if echo "${MODIFIED_FILES}" |  grep -q ${SINGULARITY_RECIPE}; then 
+         if [ -f "${SINGULARITY_RECIPE}" ]; then
+           sudo -E singularity build ${OUTPUT_CONTAINER} ${SINGULARITY_RECIPE}
+         else
            echo "${SINGULARITY_RECIPE} is not found."
            echo "Present working directory: $PWD"
-           ls
+         fi
+       else
+         echo "skipping unchanged file"
        fi
        
     - name: log in to github container registry and deploy
-      if: (github.event_name != 'pull_request')
+      if: (github.event_name != 'pull_request') && steps.changed-files-def.outputs.any_changed == 'true'
       env:
         SINGULARITY_RECIPE: ${{ matrix.repository }}${{ matrix.tag}}.def
         OUTPUT_CONTAINER: ${{ matrix.repository }}${{ matrix.tag}}.sif
       run: |
-       echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ env.username }} --password-stdin oras://ghcr.io
-       singularity remote list
-       singularity push ${{ env.OUTPUT_CONTAINER }} oras://ghcr.io/${{ env.organization }}/${{ matrix.repository }}:${{ matrix.tag}} 
+       if echo "${MODIFIED_FILES}" |  grep -q ${SINGULARITY_RECIPE}; then 
+         echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ env.username }} --password-stdin oras://ghcr.io
+         singularity remote list
+         singularity push ${{ env.OUTPUT_CONTAINER }} oras://ghcr.io/${{ env.organization }}/${{ matrix.repository }}:${{ matrix.tag}} 
+       else
+         echo "skipping unchanged file"
+       fi
+       
 
