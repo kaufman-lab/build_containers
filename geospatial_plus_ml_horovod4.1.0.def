@@ -53,7 +53,6 @@ apt update && apt install bazel
 
 apt-get --purge remove -y gcc-9
 
-add-apt-repository ppa:ubuntu-toolchain-r/test
 apt-get update
 apt-get install -y gcc-10
 
