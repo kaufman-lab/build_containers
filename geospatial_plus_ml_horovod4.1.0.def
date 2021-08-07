@@ -51,7 +51,7 @@ apt update && apt install bazel
 #upgrade to gcc 10 so the avx-512 instructions are better
 #https://stackoverflow.com/questions/63484266/enabling-avx512-support-on-compilation-significantly-decreases-performance
 
-apt-get --purge remove gcc-9
+apt-get --purge remove -y gcc-9
 
 add-apt-repository ppa:ubuntu-toolchain-r/test
 apt-get update
