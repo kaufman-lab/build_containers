@@ -106,8 +106,7 @@ apt-get update && apt-get install -y  --no-install-recommends \
 
 # verify openmpi is installed
 mpirun --version
-
-    
+   
 
 # Allow OpenSSH to talk to containers without asking for confirmation
 mkdir -p /var/run/sshd
@@ -117,13 +116,11 @@ cat /etc/ssh/ssh_config | grep -v StrictHostKeyChecking > /etc/ssh/ssh_config.ne
 
 ln -s /usr/bin/python3 /usr/bin/python
 
+# Install the IB verbs as recommended here: https://github.com/sylabs/examples/blob/master/machinelearning/horovod/horovod.def
+apt-get update
+apt install -y --no-install-recommends libibverbs*
+apt install -y --no-install-recommends ibverbs-utils librdmacm* infiniband-diags libmlx4* libmlx5* libnuma*
 
-
-
-
-# Install the IB verbs
-    apt install -y --no-install-recommends libibverbs*
-    apt install -y --no-install-recommends librdmacm* libmlx4* libmlx5* libnuma*
 
 
 # Install Horovod
