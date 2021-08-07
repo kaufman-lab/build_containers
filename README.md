@@ -28,7 +28,7 @@ If you'd like to test out an image interactively, try
 
     singularity shell oras://ghcr.io/kaufman-lab/geospatial_plus:4.1.0
 
-Note that singularity will cache remote images, so there's no need to explicitly save an images to disk using `singularity pull`, even if you're using it repeatedly.
+Note that singularity will cache remote images, so but this command needs to download hashes so shouldn't be called repeatedly as it adds overhead to start the instance. I also think these might be stored somewhere with slower storage? Instead, use `singularity pull` to download the image to your home drive (or better yet, to each node's scratch drive).
 
 Note that in order to use these images with singularity you need to preface the package fingerprints with `oras://` (as in the examples).
 
