@@ -39,11 +39,14 @@ pip install wheel==0.36.2
 #upgrade to gcc 10 so the avx-512 instructions are better
 #https://stackoverflow.com/questions/63484266/enabling-avx512-support-on-compilation-significantly-decreases-performance
 
- #apt-get --purge remove -y gcc-9
- apt-get update
- apt-get install -y gcc-10
- 
- update-alternatives --query gcc
+apt-get update
+apt-get install -y gcc-10
+
+update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100
+
+update-alternatives --query gcc-10
+update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10. 50
+update-alternatives --set gcc /usr/bin/gcc-10
 
 
 cd /tmp
@@ -61,11 +64,6 @@ apt update && apt install bazel
 
 
 
-
-
-
-
-
 bazel build --config=mkl --cxxopt=-D_GLIBCXX_USE_CXX11_ABI=0 --copt=-march=skylake-avx512 --copt=-mtune=cascadelake --copt=-O3 //tensorflow/tools/pip_package:build_pip_package
 
 mkdir /tmp/tensorflow_wheel
@@ -74,10 +72,7 @@ pip install --upgrade --user /tmp/tensorflow_wheel
 
 
 
- apt-get install -y gcc-10
-
-
-cat > tensorflowavx512_req.txt << EOF
+cat > tensorflow.txt << EOF
 absl-py==0.13.0
 astunparse==1.6.3
 cachetools==4.2.2
@@ -98,7 +93,6 @@ idna==3.2
 keras-nightly==2.5.0.dev2021032900
 Keras-Preprocessing==1.1.2
 keras-applications==1.0.8
-tensorflow==2.5.0
 Markdown==3.3.4
 numpy==1.19.5
 oauthlib==3.1.1
@@ -129,7 +123,7 @@ Werkzeug==2.0.1
 wrapt==1.12.1
 EOF
 
-pip install -r tensorflowavx512_req.txt --no-dependencies --force-reinstall
+pip install -r tensorflow.txt --no-dependencies --force-reinstall
 
 python3 -m pip freeze
 
