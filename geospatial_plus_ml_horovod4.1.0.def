@@ -43,10 +43,8 @@ apt-get update
 apt-get install -y gcc-10
 
 update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100
-
-update-alternatives --query gcc-10
-update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10. 50
 update-alternatives --set gcc /usr/bin/gcc-10
+gcc --version
 
 
 cd /tmp
