@@ -49,9 +49,9 @@ google-pasta==0.2.0
 grpcio==1.34.1
 h5py==3.1.0
 idna==3.2
-intel-tensorflow-avx512==2.5.0
 keras-nightly==2.5.0.dev2021032900
 Keras-Preprocessing==1.1.2
+tensorflow==2.5.0
 Markdown==3.3.4
 numpy==1.19.5
 oauthlib==3.1.1
@@ -138,9 +138,6 @@ cd /tmp
 
 python3 -c "import horovod.tensorflow as hvd; hvd.init()"
 
-
-# uninstall openmpi
- apt-get --purge remove -y openmpi-bin
 
 ####this allows you to bind mpi from outside the container and have it be part of the 
 %environment
