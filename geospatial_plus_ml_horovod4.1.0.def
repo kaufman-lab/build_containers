@@ -104,8 +104,7 @@ apt-get update && apt-get install -y  --no-install-recommends \
         openssh-server \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# verify openmpi is installed
-mpirun --version
+
    
 
 # Allow OpenSSH to talk to containers without asking for confirmation
@@ -138,3 +137,12 @@ mkdir /horovod_repo
 cd /tmp
 
 python3 -c "import horovod.tensorflow as hvd; hvd.init()"
+
+
+# uninstall openmpi
+ apt-get --purge remove -y openmpi-bin
+
+####this allows you to bind mpi from outside the container and have it be part of the 
+%environment
+      export PATH="$MPI_DIR/bin:$PATH"
+      export LD_LIBRARY_PATH="$MPI_DIR/lib:$LD_LIBRARY_PATH"
