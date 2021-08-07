@@ -34,6 +34,18 @@ pip install wheel==0.36.2
 
 ### install tensorflow from source
 #https://software.intel.com/content/www/us/en/develop/articles/intel-optimization-for-tensorflow-installation-guide.html
+
+
+#upgrade to gcc 10 so the avx-512 instructions are better
+#https://stackoverflow.com/questions/63484266/enabling-avx512-support-on-compilation-significantly-decreases-performance
+
+ #apt-get --purge remove -y gcc-9
+ apt-get update
+ apt-get install -y gcc-10
+ 
+ update-alternatives --query gcc
+
+
 cd /tmp
 git clone https://github.com/tensorflow/tensorflow
 cd tensorflow
@@ -48,15 +60,10 @@ echo "deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.8" |
 apt update && apt install bazel
 
 
-#upgrade to gcc 10 so the avx-512 instructions are better
-#https://stackoverflow.com/questions/63484266/enabling-avx512-support-on-compilation-significantly-decreases-performance
 
-apt-get --purge remove -y gcc-9
 
-apt-get update
-apt-get install -y gcc-10
 
-gcc --version
+
 
 
 bazel build --config=mkl --cxxopt=-D_GLIBCXX_USE_CXX11_ABI=0 --copt=-march=skylake-avx512 --copt=-mtune=cascadelake --copt=-O3 //tensorflow/tools/pip_package:build_pip_package
@@ -67,6 +74,7 @@ pip install --upgrade --user /tmp/tensorflow_wheel
 
 
 
+ apt-get install -y gcc-10
 
 
 cat > tensorflowavx512_req.txt << EOF
