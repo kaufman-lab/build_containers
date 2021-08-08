@@ -139,9 +139,21 @@ cd /tmp
 python3 -c "import horovod.tensorflow as hvd; hvd.init()"
 
 
-####this allows you to bind mpi from outside the container and have it be part of the 
-####this allows you to bind mpi directory from outside the container. if you pass $MPI_DIR  
- #to inside the container when starting it, this will 
+####some mpi installations on the rocks cluster that could be bound:
 %environment
-      export PATH='$MPI_DIR_BIN'$PATH
-      export LD_LIBRARY_PATH='$MPI_DIR_LIB'$LD_LIBRARY_PATH
+      MPI_DIR=/share/apps/OpenMPI/openmpi-4.0.1
+      export PATH="$MPI_DIR/bin:$PATH"
+      export LD_LIBRARY_PATH="$MPI_DIR/lib:$LD_LIBRARY_PATH"
+      
+      MPI_DIR=/opt/openmpi
+      export PATH="$MPI_DIR/bin:$PATH"
+      export LD_LIBRARY_PATH="$MPI_DIR/lib:$LD_LIBRARY_PATH"
+      
+      MPI_DIR=/share/apps/OpenMPI/openmpi-3.1.4
+      export PATH="$MPI_DIR/bin:$PATH"
+      export LD_LIBRARY_PATH="$MPI_DIR/lib:$LD_LIBRARY_PATH"
+      
+      MPI_DIR=/share/apps/MPICH/mpich-3.3
+      export PATH="$MPI_DIR/bin:$PATH"
+      export LD_LIBRARY_PATH="$MPI_DIR/lib:$LD_LIBRARY_PATH"
+      
