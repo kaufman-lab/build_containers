@@ -143,5 +143,5 @@ python3 -c "import horovod.tensorflow as hvd; hvd.init()"
 ####this allows you to bind mpi directory from outside the container. if you pass $MPI_DIR  
  #to inside the container when starting it, this will 
 %environment
-      export PATH='$MPI_DIR_BIN$PATH'
-      export LD_LIBRARY_PATH='$MPI_DIR_LIB$LD_LIBRARY_PATH'
+      export PATH='$MPI_DIR_BIN'$PATH
+      export LD_LIBRARY_PATH='$MPI_DIR_LIB'$LD_LIBRARY_PATH
