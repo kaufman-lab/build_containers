@@ -44,24 +44,6 @@ jobs:
         go-version: 1.16
       id: go
       
-    - name: test1
-      if: |
-        ( (github.event_name != 'pull_request') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch') ) || 
-        ( ( (matrix.arrays.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
-      run: echo "hello world"
-      
-    
-    - name: test2
-      if: ( ( (matrix.arrays.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
-      run: echo "hello world"
-        
-    - name: test3
-      if: matrix.arrays.tag == 'dev'
-      run: echo "hello world"
-      
-    - name: test4
-      if: (matrix.arrays.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))
-      run: echo "hello world"
 
     - name: Install Dependencies
       if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
