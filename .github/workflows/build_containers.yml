@@ -77,7 +77,7 @@ jobs:
     - name: Build container
       if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
       run: |
-       export test=test2
+       export GH_TOKEN=$(echo ${{ secrets.GITHUB_TOKEN }} )
        
        if [ -f "${{ matrix.arrays.definitionfile }}" ]; then
          sudo -E singularity build output.sif ${{ matrix.arrays.definitionfile }}
