@@ -91,7 +91,7 @@ pip install -r tensorflow.txt --no-dependencies --force-reinstall
 
 python3 -m pip freeze
 
-echo test
+echo $test
 #gh_token | gh auth login --with-token
 #cd /tmp/tensorflow_builds_v2.5.0
 #gh release download v2.5.0  --repo kaufman-lab/build_tensorflow
