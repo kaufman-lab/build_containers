@@ -47,20 +47,20 @@ jobs:
     - name: test1
       if: |
         ( (github.event_name != 'pull_request') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch') ) || 
-        ( ( (matrix.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
+        ( ( (matrix.arrays.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
       run: echo "hello world"
       
     
     - name: test2
-      if: ( ( (matrix.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
+      if: ( ( (matrix.arrays.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
       run: echo "hello world"
         
     - name: test3
-      if: matrix.tag == 'dev'
+      if: matrix.arrays.tag == 'dev'
       run: echo "hello world"
       
     - name: test4
-      if: (matrix.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))
+      if: (matrix.arrays.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))
       run: echo "hello world"
 
     - name: Install Dependencies
@@ -109,7 +109,7 @@ jobs:
     - name: log in to github container registry and deploy
       if: |
         ( (github.event_name != 'pull_request') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch') ) || 
-        ( ( (matrix.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
+        ( ( (matrix.arrays.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
       run: |
         echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ env.username }} --password-stdin oras://ghcr.io
         singularity remote list
