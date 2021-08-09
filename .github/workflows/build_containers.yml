@@ -60,7 +60,7 @@ jobs:
       run: echo "hello world"
       
     - name: test4
-      if: (matrix.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))) 
+      if: (matrix.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))
       run: echo "hello world"
 
     - name: Install Dependencies
