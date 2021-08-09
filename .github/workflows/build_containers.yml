@@ -26,17 +26,8 @@ jobs:
     steps:
     - name: git checkout
       uses: actions/checkout@v1
-    
-    - name: test1
-      if: ( ( (matrix.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
-      run: echo "hello world"
-        
-    - name: test2
-      if: |
-        ( (github.event_name != 'pull_request') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch') ) || 
-        ( ( (matrix.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
-      run: echo "hello world"
-      
+
+
     - name: Get changed definition files
       id: changed-files-def
       uses: tj-actions/changed-files@v9.1
@@ -52,6 +43,25 @@ jobs:
       with:
         go-version: 1.16
       id: go
+      
+    - name: test1
+      if: |
+        ( (github.event_name != 'pull_request') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch') ) || 
+        ( ( (matrix.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
+      run: echo "hello world"
+      
+    
+    - name: test2
+      if: ( ( (matrix.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
+      run: echo "hello world"
+        
+    - name: test3
+      if: matrix.tag == 'dev'
+      run: echo "hello world"
+      
+    - name: test4
+      if: (matrix.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))) 
+      run: echo "hello world"
 
     - name: Install Dependencies
       if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
