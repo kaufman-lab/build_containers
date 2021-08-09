@@ -5,13 +5,15 @@ Stage: build
 ###########################################
 %setup
 ###########################################
-export test_container=$test
-echo $test_container
-echo $test
+echo $test > /tmp/hostvar.txt
+
 
 ############################################
 %post
 ############################################
+
+hostvar=$(cat /tmp/hostvar.txt)
+echo $hostvar
 
 
 ##### install packages #########
