@@ -26,6 +26,16 @@ jobs:
     steps:
     - name: git checkout
       uses: actions/checkout@v1
+    
+    - name: test1
+        if: ( ( (matrix.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
+      run: echo "hello world"
+        
+    - name: test2
+      if: |
+        ( (github.event_name != 'pull_request') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch') ) || 
+        ( ( (matrix.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
+      run: echo "hello world"
       
     - name: Get changed definition files
       id: changed-files-def
