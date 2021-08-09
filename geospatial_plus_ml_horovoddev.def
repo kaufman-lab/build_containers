@@ -98,9 +98,9 @@ echo test
 
 
 
-wheel_path=/tmp/tensorflow_builds_v2.5.0
+#wheel_path=/tmp/tensorflow_builds_v2.5.0
 #one of these needs to be installed normally so horovod can install.
-pip install $wheel_path
+#pip install $wheel_path
 
 
 
