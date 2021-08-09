@@ -6,6 +6,8 @@ Stage: build
 %setup
 ###########################################
 export test_container=$test
+echo $test_container
+echo $test
 
 ############################################
 %post
