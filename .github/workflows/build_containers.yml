@@ -28,7 +28,7 @@ jobs:
       uses: actions/checkout@v1
     
     - name: test1
-        if: ( ( (matrix.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
+      if: ( ( (matrix.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
       run: echo "hello world"
         
     - name: test2
