@@ -115,15 +115,13 @@ mkdir /tensorflow_builds_v2.5.0
 cd /tensorflow_builds_v2.5.0
 gh release download v2.5.0  --repo kaufman-lab/build_tensorflow
 
+#install vanilla tensorflow--horovod needs one version of tensorflow it can use to install
+pip install tensorflow==2.5.0  --no-dependencies
 
-#wheel_path=/tmp/tensorflow_builds_v2.5.0
-#one of these needs to be installed normally so horovod can install.
-#pip install $wheel_path
-
-
+#pip install /tensorflow_builds_v2.5.0/tensorflow-2.5.0-6nothing-cp38-cp38-linux_x86_64.whl  --no-dependencies
 
 ### tensorflow for R (via reticulate) ###
-#Rscript -e 'install.packages(c("reticulate", "tensorflow","keras"))' 
+Rscript -e 'install.packages(c("reticulate", "tensorflow","keras"))' 
 
 ### torch for R (native) ###
 Rscript -e 'install.packages(c("torch","luz","torchvision","torchdatasets"))'
@@ -158,22 +156,21 @@ apt install -y --no-install-recommends ibverbs-utils librdmacm* infiniband-diags
 
 
 # Install Horovod
-#HOROVOD_WITH_TENSORFLOW=1 HOROVOD_WITH_MPI=1 HOROVOD_WITHOUT_GLOO=1 HOROVOD_WITHOUT_MXNET=1 HOROVOD_CPU_OPERATIONS=MPI #HOROVOD_WITHOUT_PYTORCH=1 pip install --no-cache-dir horovod[tensorflow]==0.22.1 --no-dependencies  --force-reinstall
-#ldconfig
-#horovodrun --check-build
-#
-#python3 -m pip freeze
-#
-#mkdir /horovod_repo
-#    cd /horovod_repo
-#    git clone https://github.com/horovod/horovod.git
-#    mv  /horovod_repo/horovod/examples /examples
-#    rm -r /horovod_repo
-#
-#cd /tmp
-#
-#python3 -c "import horovod.tensorflow as hvd; hvd.init()"
+HOROVOD_WITH_TENSORFLOW=1 HOROVOD_WITH_MPI=1 HOROVOD_WITHOUT_GLOO=1 HOROVOD_WITHOUT_MXNET=1 HOROVOD_CPU_OPERATIONS=MPI HOROVOD_WITHOUT_PYTORCH=1 pip install --no-cache-dir horovod[tensorflow]==0.22.1 --no-dependencies  --force-reinstall
+ldconfig
+horovodrun --check-build
 
+python3 -m pip freeze
+
+mkdir /horovod_repo
+    cd /horovod_repo
+    git clone https://github.com/horovod/horovod.git
+    mv  /horovod_repo/horovod/examples /examples
+    rm -r /horovod_repo
+
+cd /tmp
+
+python3 -c "import horovod.tensorflow as hvd; hvd.init()"
 
 ####some mpi installations on the rocks cluster that could be bound:
 %environment
