@@ -12,6 +12,10 @@ echo $GH_TOKEN > /tmp/hostvar.txt
 %post
 ############################################
 
+#install gh cli
+apt update
+apt install -y gh
+
 gh_token=$(cat /tmp/hostvar.txt)
 echo $gh_token | gh auth login --with-token
 rm -rf /tmp/hostvar.txt
