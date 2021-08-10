@@ -190,3 +190,4 @@ python3 -c "import horovod.tensorflow as hvd; hvd.init()"
       export LD_LIBRARY_PATH="$MPI_DIR/lib:$LD_LIBRARY_PATH"
       
 export PYTHONUSERBASE="/pseudohome/python" 
+export PYTHONPATH="$PYTHONPATH:/pseudohome/python/bin"
