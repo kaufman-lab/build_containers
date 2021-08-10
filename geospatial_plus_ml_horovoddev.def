@@ -115,7 +115,7 @@ cd /tensorflow_builds_v2.5.0
 gh release download v2.5.0  --repo kaufman-lab/build_tensorflow
 
 #install vanilla tensorflow--horovod needs one version of tensorflow it can use to install
-pip install tensorflow==2.5.0  --no-dependencies
+pip install tensorflow-cpu==2.5.0  --no-dependencies
 
 
 apt-get install -y python3.8-venv
