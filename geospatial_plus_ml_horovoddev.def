@@ -44,7 +44,7 @@ echo "session-quit-child-processes-on-exit=1" >> /etc/rstudio/rsession.conf #qui
 
 
 #try to change the user library for python:
-echo 'PYTHONUSERBASE="/psuedohome/python"' >> /etc/environment
+echo 'PYTHONUSERBASE="/pseudohome/python"' >> /etc/environment
 
 ## tensorflow, specifically the intel version with avx512 instructions #####
 apt-get update
@@ -192,4 +192,4 @@ python3 -c "import horovod.tensorflow as hvd; hvd.init()"
       export PATH="$MPI_DIR/bin:$PATH"
       export LD_LIBRARY_PATH="$MPI_DIR/lib:$LD_LIBRARY_PATH"
       
-export PYTHONUSERBASE="/psuedohome/python" 
+export PYTHONUSERBASE="/pseudohome/python" 
