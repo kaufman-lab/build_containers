@@ -117,6 +117,11 @@ gh release download v2.5.0  --repo kaufman-lab/build_tensorflow
 #install vanilla tensorflow--horovod needs one version of tensorflow it can use to install
 pip install tensorflow==2.5.0  --no-dependencies
 
+
+apt-get install -y python3.8-venv
+
+
+
 #pip install /tensorflow_builds_v2.5.0/tensorflow-2.5.0-6nothing-cp38-cp38-linux_x86_64.whl  --no-dependencies
 
 ### tensorflow for R (via reticulate) ###
