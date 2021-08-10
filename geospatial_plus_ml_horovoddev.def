@@ -193,6 +193,7 @@ python3 -c "import horovod.tensorflow as hvd; hvd.init()"
       MPI_DIR=/share/apps/MPICH/mpich-3.3
       export PATH="$MPI_DIR/bin:$PATH"
       export LD_LIBRARY_PATH="$MPI_DIR/lib:$LD_LIBRARY_PATH"
-      
+
+
 export PYTHONUSERBASE="/pseudohome/python" 
 export PYTHONPATH="$PYTHONPATH:/pseudohome/python/bin"
