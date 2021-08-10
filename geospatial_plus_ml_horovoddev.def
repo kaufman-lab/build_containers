@@ -43,9 +43,6 @@ echo "session-save-action-default=no" >> /etc/rstudio/rsession.conf #don't save 
 echo "session-quit-child-processes-on-exit=1" >> /etc/rstudio/rsession.conf #quit child processes on exit
 
 
-#try to change the user library for python:
-echo 'PYTHONUSERBASE="/pseudohome/python"' >> /etc/environment
-
 ## tensorflow, specifically the intel version with avx512 instructions #####
 apt-get update
 apt-get install -y python3-pip
