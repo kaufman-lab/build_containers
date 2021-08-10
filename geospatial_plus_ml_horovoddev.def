@@ -196,4 +196,4 @@ python3 -c "import horovod.tensorflow as hvd; hvd.init()"
 
 
 export PYTHONUSERBASE="/pseudohome/python" 
-export PYTHONPATH="$PYTHONPATH:/pseudohome/python/bin"
+export PYTHONPATH="/pseudohome/python/bin:$PYTHONPATH"
