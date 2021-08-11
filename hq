@@ -1,0 +1,450 @@
+[33mcommit 1ab14607281fbffdf12de706e28f83aa60117853[m[33m ([m[1;36mHEAD -> [m[1;32mtensorflow_binaries[m[33m, [m[1;31morigin/tensorflow_binaries[m[33m)[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Wed Aug 11 14:17:53 2021 -0700
+
+    use keras 2.6.0
+
+[33mcommit 5769575f3fc1a54c72eb127c9c412ad3578bfd9d[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Wed Aug 11 10:31:50 2021 -0700
+
+    fixup
+
+[33mcommit 46b0de2fe6c9c4df3eba4e9e511f58daa3496b4c[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Wed Aug 11 10:02:07 2021 -0700
+
+    you don't need to install the packages at all. just include the wheels to choose later
+
+[33mcommit 1f89ef50847546e714094f227b0b4458047d78a3[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Wed Aug 11 09:42:13 2021 -0700
+
+    don't remove tensorflow wheels so you can install to local directory
+
+[33mcommit b318a9bbbc72975574eb9788850d1c35f4b426e3[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Wed Aug 11 09:40:50 2021 -0700
+
+    include no tensorflow site library. maybe this makes it possible to switch versions easier
+
+[33mcommit 679cfaa701dbae5149159c6ee1e7b70e0b81b26d[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Tue Aug 10 21:54:03 2021 -0700
+
+    comment-only change to def
+
+[33mcommit 5f7177e24efa3d40b1a318b7a01c7b6c0386676a[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Tue Aug 10 19:47:30 2021 -0700
+
+    install alternate tensorflow versions
+
+[33mcommit 6fd6641aece0a1e1aa66351dcf91d2ead1aac760[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Tue Aug 10 16:14:03 2021 -0700
+
+    path fixup 3
+
+[33mcommit 60191f383b5d84bb49ddf1b8c64ea2c7a27dd492[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Tue Aug 10 16:10:31 2021 -0700
+
+    path fixup2
+
+[33mcommit 255591b0d9a0579b3a8bcab0dfca7270a4cecfbd[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Tue Aug 10 16:07:03 2021 -0700
+
+    path fix
+
+[33mcommit 06c6c00adf52d3d5e13f39f9a8a670eed0691fc2[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Tue Aug 10 16:06:05 2021 -0700
+
+    witch to cpu version of tensorflow
+
+[33mcommit 3279c8455d2cc33bc870ba043c9619cf09816a5a[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Tue Aug 10 10:45:25 2021 -0700
+
+    whitespace change to rerun stalled upload
+
+[33mcommit e6e37b1f8a16295c5657738eb5c257fd06fb1fba[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Tue Aug 10 09:41:19 2021 -0700
+
+    insall python3.8-venv
+
+[33mcommit 8750eed4919b36a40460b2616e806238a745f004[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 22:11:49 2021 -0700
+
+    add pseudohome to PYTHONPATH
+
+[33mcommit 19dbf71b120cb89ab3f16910947624945cfaf2e7[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 18:45:11 2021 -0700
+
+    drop echo of userbase to etc/env since singularity does it fine in the %env section
+
+[33mcommit 1fad8ef1d035b9d8a73586081ed8d3055aa56950[m
+Author: Michael T Young <myoung3@uw.edu>
+Date:   Mon Aug 9 18:34:12 2021 -0700
+
+    Update geospatial_plus_ml_horovoddev.def
+
+[33mcommit c58b695ada266fe0c025cc27fe85a154ed3fe4ba[m
+Author: Michael T Young <myoung3@uw.edu>
+Date:   Mon Aug 9 18:25:06 2021 -0700
+
+    one more time
+
+[33mcommit b172e5d516a71b806b37411fead870b392afe114[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 18:04:04 2021 -0700
+
+    try again
+
+[33mcommit 0a9ed85f209aa8e01efab66d56ca938b57483ff8[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 17:16:14 2021 -0700
+
+    try to change pythonuserbase
+
+[33mcommit 6bbc605a6df0a2009eb4b0a9428077ef0214b0b0[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 16:41:10 2021 -0700
+
+    fix wheel/six/numpy versions to match tensorflow
+
+[33mcommit c5374d8c6ea666ceaaf4ed18914af1512fa8a4d7[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 15:18:16 2021 -0700
+
+    install tensorflow and horovod again
+
+[33mcommit 99a155a0e70d2b2a623cfd8a6024e5f470496343[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 14:32:10 2021 -0700
+
+    load pacakges to /tensorflow_builds_v2.5.0. also don't install R tensorflow temporarily
+
+[33mcommit 4e25bca2934a1201cd1d4bdbab0f7cb628f5482a[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 13:51:14 2021 -0700
+
+    fixup
+
+[33mcommit ae04a89dbedf86118c487f396d0d8241d4ac3f2e[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 13:42:32 2021 -0700
+
+    download tensorflow packages
+
+[33mcommit 16f749a79044973d518dc35c80d72b36bd7368f4[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 13:41:40 2021 -0700
+
+    install gnupg for gpg command to install gh to download tensorflow packages
+
+[33mcommit bbb3c7ebd807b6c56e75a4240bf4f968d95a587c[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 13:31:57 2021 -0700
+
+    actually deploy dev containers
+
+[33mcommit c4410950373df82efe1827040aca65d2ecd22e47[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 13:30:23 2021 -0700
+
+    fixup
+
+[33mcommit a9a52e4cb2ea3b813de59ba67ddc382f5f0fb6d6[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 13:29:33 2021 -0700
+
+    fix tests and fix gh download
+
+[33mcommit 4045e14f265271175ac498708145f232a8dde4f6[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 13:19:57 2021 -0700
+
+    fixup
+
+[33mcommit 34ad50515fceac88004aed06bd36a4e9658a230a[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 13:12:17 2021 -0700
+
+    download gh properly. add some tests for dev tag which doesn't seem to be getting pushed
+
+[33mcommit 78c6267a78fff33d96fbdd18f92735f760d545a9[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 12:50:47 2021 -0700
+
+    fixup
+
+[33mcommit 81d7acdab57ab790166f44852bc14b963f054d63[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 12:42:19 2021 -0700
+
+    test authenticating
+
+[33mcommit 408f1a08c4ff6a9962bccbe61b25d33bacc95a08[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 12:33:56 2021 -0700
+
+    fixup for deployment on dev tag
+
+[33mcommit f510bebed7f26493c1f7090dca708c9037de34ea[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 12:19:54 2021 -0700
+
+    test
+
+[33mcommit 80c5988f5ec191f42828c7d9e822961368071132[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 12:10:59 2021 -0700
+
+    test
+
+[33mcommit 2a4613836ab559692be3e031f9d75dd6589cc93d[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 11:49:13 2021 -0700
+
+    try passing host variable to build environment
+
+[33mcommit a681893b29933bf7b9ccc5ef884112c92af31c4e[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 11:43:20 2021 -0700
+
+    fixup
+
+[33mcommit df491698e520fb4cadb71616d76afecdf5ccdec7[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 11:40:21 2021 -0700
+
+    fix worklow logic--dev tags should now deploy whenever the file has changed
+
+[33mcommit 0fc7fb88b7a83c3464e89be521df395be654abbf[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 11:10:18 2021 -0700
+
+    fixup
+
+[33mcommit 12bbebd6381012714ea6af7d8a0c981e29b9fff3[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 11:09:11 2021 -0700
+
+    fixup
+
+[33mcommit 36d7e8d0e6bce6974c63cfd7ed95bf8b68a9100d[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 11:07:43 2021 -0700
+
+    don't install horovod for now. this will allow testing virtualenvs with multiple versions of the same pacakge. horovod wants a tensorflow installation
+
+[33mcommit 77019c02512e98c375e9f0488f6613c2a4e7cb8c[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 9 10:59:12 2021 -0700
+
+    remove tensorflow, install virtual environments, test passing a variable into definition file (this will be the token to log into gh
+
+[33mcommit a481538c6a83e29c60911a9cd8f63832c3839799[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Sun Aug 8 23:32:28 2021 -0700
+
+    fixup
+
+[33mcommit 8eb363e8f5c6abeafcfa7c058d94da98bf32277e[m[33m ([m[1;31morigin/devtag[m[33m, [m[1;32mdevtag[m[33m)[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Sun Aug 8 23:16:49 2021 -0700
+
+    dev tags now get released even during pull requests
+
+[33mcommit 387412fbd9f8a8a1a07cd423ca13c902bfe2587a[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Sun Aug 8 17:13:46 2021 -0700
+
+    bump version numbers to macth tensorflow builds
+
+[33mcommit 24bceb6bd02c8b5ed903c4cec6f8237a780b0d3f[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Sat Aug 7 23:35:03 2021 -0700
+
+    switch to hard-coding host mpi installations into path since i couldn't get the dynamic approach to work
+
+[33mcommit 6e58c1bc2a3fc9f8e33db2047e82e36897d99d3a[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Sat Aug 7 22:49:58 2021 -0700
+
+    fixup
+
+[33mcommit f0a32f58f5ac622353675b9f92ecf1d642bba439[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Sat Aug 7 21:51:09 2021 -0700
+
+    fix PATH for binding external MPI
+
+[33mcommit 332e249620a1242b420a893e3b52662abdacd36d[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Sat Aug 7 00:40:16 2021 -0700
+
+    switch to non-intel tensorflow and leave openmpi installed
+
+[33mcommit bff9ab9c66cefb0bee1b88e3a02c0c9f6221c123[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Fri Aug 6 23:17:04 2021 -0700
+
+    uninstall mpi to try bind approach
+
+[33mcommit 22571a5346a2784b472ddec45c71430aa4f8e0ba[m
+Author: Michael T Young <myoung3@uw.edu>
+Date:   Fri Aug 6 17:31:12 2021 -0700
+
+    whitespace only change to rerun horovod build
+    
+    it seems like whether horovod installs correctly is stochastic. rerunning with the same code to verify this.
+
+[33mcommit cd96cf6a9a71404f52de0f47ce88bd3d797f0f4c[m
+Author: Michael T Young <myoung3@uw.edu>
+Date:   Fri Aug 6 17:22:05 2021 -0700
+
+    install the IB verbs
+
+[33mcommit 9ea54f68acb43ac1e716c157982132e8d2940732[m
+Author: Michael T Young <myoung3@uw.edu>
+Date:   Fri Aug 6 17:12:33 2021 -0700
+
+    change working directory so hvd.init will work
+
+[33mcommit 8145f3c58d237e0c3953d45ff58cf750397bc781[m
+Author: Michael T Young <myoung3@uw.edu>
+Date:   Fri Aug 6 17:00:40 2021 -0700
+
+    don't install openmpi...it's already there
+    
+    rocker apparently has openmpi 4.0.1
+
+[33mcommit 0fc5988fc7c050f38cc7375061656c647a755487[m
+Author: Michael T Young <myoung3@uw.edu>
+Date:   Fri Aug 6 16:40:32 2021 -0700
+
+    fixup
+
+[33mcommit 5225ca1613b599befdeb72f62e76f3fdfc332510[m
+Author: Michael T Young <myoung3@uw.edu>
+Date:   Fri Aug 6 16:16:40 2021 -0700
+
+    install mpich instead of openmpi 2.1.1
+    
+    since 4.1.0 is running focal, this should install 3.3.2 (https://www.mpich.org/downloads/) which might be close enough to the module installed on the rocks cluster (3.3)
+
+[33mcommit bee007261144971af447a086e95eafdd88a6afef[m
+Author: Michael T Young <myoung3@uw.edu>
+Date:   Fri Aug 6 16:03:12 2021 -0700
+
+    configure horovod installation
+
+[33mcommit 159dd0e4ba6cd0aba37ad28628306a50d3912db4[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Fri Aug 6 09:05:46 2021 -0700
+
+    remove inadvertantly added non-mkl tensorflow installation frohorovod
+
+[33mcommit 962df2bc6cee9fc18ece5407d7fdec1258ef302e[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Fri Aug 6 08:48:01 2021 -0700
+
+    turn off reticulate's prompt to install miniconda
+
+[33mcommit 09141afc4282468c1a6e9ef4398b9bc529fb9ba8[m
+Author: Michael T Young <myoung3@uw.edu>
+Date:   Fri Aug 6 00:13:05 2021 -0700
+
+    horovod (#14)
+    
+    horovod ml image
+
+[33mcommit d7f8b8653dddb3ef8ea7150b505ed78b6a28f076[m
+Author: Michael T Young <myoung3@uw.edu>
+Date:   Thu Aug 5 20:47:46 2021 -0700
+
+    skip unchanged definition files (#13)
+
+[33mcommit de189c4c3c16bff494eb51338c8e140a2a4ca3c7[m
+Author: Michael T Young <myoung3@uw.edu>
+Date:   Wed Aug 4 22:53:59 2021 -0700
+
+    install R package keras (#10)
+
+[33mcommit 0e2b6b92b877d4f029769a5a854b92d9bc88911e[m
+Author: Michael T Young <myoung3@uw.edu>
+Date:   Wed Aug 4 21:48:35 2021 -0700
+
+    Install additional python packages suggested by R tensorflow
+    
+    specifically pillow, pyyaml, scipy
+
+[33mcommit 391da0976028369e8375c006a26a8b8edb195e23[m
+Author: Michael T Young <myoung3@uw.edu>
+Date:   Wed Aug 4 20:52:38 2021 -0700
+
+    Ml fixup (#8)
+    
+    fix image deployment that was broken in 189a35c and freeze (pin) tensorflow and requirements
+
+[33mcommit 0340720ea563aa04bac1bf22520ac818f1ccd4fc[m
+Author: Michael T Young <myoung3@uw.edu>
+Date:   Wed Aug 4 18:51:45 2021 -0700
+
+    write machine learning container definition (#3)
+    
+    machine/deep learning packages (including R reticulate)
+
+[33mcommit 74b53d06c46ac29205771711b681a08032a5957e[m
+Merge: 882a588 cd61749
+Author: Michael T Young <myoung3@uw.edu>
+Date:   Wed Aug 4 16:43:10 2021 -0700
+
+    Merge pull request #2 from kaufman-lab/change_workflow_conditions
+    
+    actions are now only run on either manual dispatch (workflow_dispatch…
+
+[33mcommit cd61749d5b62d79ce7326f5e21c6b61fc2485550[m[33m ([m[1;31morigin/change_workflow_conditions[m[33m, [m[1;32mchange_workflow_conditions[m[33m)[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Wed Aug 4 16:20:58 2021 -0700
+
+    actions are now only run on either manual dispatch (workflow_dispatch),  push to main or PR. during PR builds are not deployed
+
+[33mcommit 882a588debcd6372d08fca41f45db185eea87a6b[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Wed Aug 4 10:47:53 2021 -0700
+
+    remove incorrect section about authentication being required for pulling. this isn't true
+
+[33mcommit 8b73e80bccfd1ff2d527f092ebb24d201e7b87ba[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Tue Aug 3 17:35:14 2021 -0700
+
+    switch from dockerhub to github packages
+
+[33mcommit 63d66903bea9d7a48adbbb2b89f21d45a59dd747[m
+Author: Michael T Young <myoung3@uw.edu>
+Date:   Tue Aug 3 00:03:38 2021 -0700
+
+    Update README.md
+
+[33mcommit cec70bdeda465e7020766a85b7e6275e8dbfa22a[m
+Author: Michael Young <myoung3@uw.edu>
+Date:   Mon Aug 2 21:40:11 2021 -0700
+
+    Setup github action workflow to build a single image:
+    
+    rocker/geospatial:4.1.0 with some added packages
+
+[33mcommit 09aa5c04e7f33e9255c4ebc0ab19a28362b3bfdf[m
+Author: Michael T Young <michaeltyoung@gmail.com>
+Date:   Mon Aug 2 20:56:19 2021 -0700
+
+    Initial commit
