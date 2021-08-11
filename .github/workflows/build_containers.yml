@@ -20,12 +20,14 @@ jobs:
         arrays: [ 
           {repository: "geospatial_plus", tag: "4.1.0", definitionfile: "geospatial_plus4.1.0.def"}, 
           {repository: "geospatial_plus_ml", tag: "4.1.0", definitionfile: "geospatial_plus_ml4.1.0.def"},
-          {repository: "geospatial_plus_ml_horovod", tag: "4.1.0", definitionfile: "geospatial_plus_ml_horovod4.1.0.def"}
+          {repository: "geospatial_plus_ml_horovod", tag: "4.1.0", definitionfile: "geospatial_plus_ml_horovod4.1.0.def"},
+          {repository: "geospatial_plus_ml_horovod", tag: "dev", definitionfile: "geospatial_plus_ml_horovoddev.def"}
         ]
     steps:
     - name: git checkout
       uses: actions/checkout@v1
-      
+
+
     - name: Get changed definition files
       id: changed-files-def
       uses: tj-actions/changed-files@v9.1
@@ -41,6 +43,7 @@ jobs:
       with:
         go-version: 1.16
       id: go
+      
 
     - name: Install Dependencies
       if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
@@ -72,10 +75,11 @@ jobs:
         sudo make -C builddir install          
           
 
+
     - name: Build container
       if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
       run: |
-       ls 
+       export GH_TOKEN=$(echo ${{ secrets.GITHUB_TOKEN }} )
        
        if [ -f "${{ matrix.arrays.definitionfile }}" ]; then
          sudo -E singularity build output.sif ${{ matrix.arrays.definitionfile }}
@@ -85,7 +89,9 @@ jobs:
        fi
 
     - name: log in to github container registry and deploy
-      if: (github.event_name != 'pull_request') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch')
+      if: |
+        ( (github.event_name != 'pull_request') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch') ) || 
+        ( ( (matrix.arrays.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
       run: |
         echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ env.username }} --password-stdin oras://ghcr.io
         singularity remote list

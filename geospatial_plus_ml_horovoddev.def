@@ -168,6 +168,7 @@ cd /tmp
 
 python3 -c "import horovod.tensorflow as hvd; hvd.init()"
 
+
 ####some mpi installations on the rocks cluster that could be bound:
 %environment
       MPI_DIR=/share/apps/OpenMPI/openmpi-4.0.1
@@ -190,3 +191,4 @@ python3 -c "import horovod.tensorflow as hvd; hvd.init()"
 export PYTHONUSERBASE="/pseudohome/python" 
 export PYTHONPATH="/pseudohome/python/bin:$PYTHONPATH"
 export PATH="/pseudohome/python/bin:$PATH"
+export tensorflow_alt_dir=$tensorflow_alt_dir
