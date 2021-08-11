@@ -112,25 +112,6 @@ gh release download v2.5.0  --repo kaufman-lab/build_tensorflow
 #install vanilla tensorflow--horovod needs one version of tensorflow it can use to install
 pip install tensorflow-cpu==2.5.0  --no-dependencies
 
-
-#imo, this is actually a much better way of installing to a desired location than trying to use venv craziness given we only want to possibly switch out a single package
- #https://stackoverflow.com/a/29103053/15709625
-tensorflow_alt_dir=/tensorflow_alt_dir
-mkdir $tensorflow_alt_dir
-PYTHONUSERBASE="$tensorflow_alt_dir/tensorflow-cpu"  pip install tensorflow-cpu --no-dependencies --user --force-reinstall
-PYTHONUSERBASE="$tensorflow_alt_dir/intel-tensorflow-AVX512"  pip install intel-tensorflow-AVX512 --no-dependencies --user --force-reinstall
-PYTHONUSERBASE="$tensorflow_alt_dir/intel-tensorflow"  pip install intel-tensorflow --no-dependencies --user --force-reinstall
-PYTHONUSERBASE="$tensorflow_alt_dir/AVX2_only"  pip install /tensorflow_wheels_v2.5.0/tensorflow-2.5.0-1AVX2_only-cp38-cp38-linux_x86_64.whl --no-dependencies --user --force-reinstall
-PYTHONUSERBASE="$tensorflow_alt_dir/cascadelakecascadelake"  pip install /tensorflow_wheels_v2.5.0/tensorflow-2.5.0-2cascadelakecascadelake-cp38-cp38-linux_x86_64.whl --no-dependencies --user --force-reinstall
-PYTHONUSERBASE="$tensorflow_alt_dir/mkl_AVX2_only"  pip install /tensorflow_wheels_v2.5.0/tensorflow-2.5.0-3mkl_AVX2_only-cp38-cp38-linux_x86_64.whl --no-dependencies --user --force-reinstall
-PYTHONUSERBASE="$tensorflow_alt_dir/mkl_O3_only"  pip install /tensorflow_wheels_v2.5.0/tensorflow-2.5.0-4mkl_O3_only-cp38-cp38-linux_x86_64.whl --no-dependencies --user --force-reinstall
-PYTHONUSERBASE="$tensorflow_alt_dir/mkl_only"  pip install /tensorflow_wheels_v2.5.0/tensorflow-2.5.0-5mkl_only-cp38-cp38-linux_x86_64.whl --no-dependencies --user --force-reinstall
-PYTHONUSERBASE="$tensorflow_alt_dir/nothing"  pip install /tensorflow_wheels_v2.5.0/tensorflow-2.5.0-6nothing-cp38-cp38-linux_x86_64.whl --no-dependencies --user --force-reinstall
-PYTHONUSERBASE="$tensorflow_alt_dir/nothingOs"  pip install /tensorflow_wheels_v2.5.0/tensorflow-2.5.0-7nothingOs-cp38-cp38-linux_x86_64.whl --no-dependencies --user --force-reinstall
-PYTHONUSERBASE="$tensorflow_alt_dir/O3_only"  pip install /tensorflow_wheels_v2.5.0/tensorflow-2.5.0-8O3_only-cp38-cp38-linux_x86_64.whl --no-dependencies --user --force-reinstall
-PYTHONUSERBASE="$tensorflow_alt_dir/skylakeavx512skylakeavx512"  pip install /tensorflow_wheels_v2.5.0/tensorflow-2.5.0-9skylakeavx512skylakeavx512-cp38-cp38-linux_x86_64.whl --no-dependencies --user --force-reinstall
-PYTHONUSERBASE="$tensorflow_alt_dir/kylakeskylake"  pip install /tensorflow_wheels_v2.5.0/tensorflow-2.5.0-10skylakeskylake-cp38-cp38-linux_x86_64.whl --no-dependencies --user --force-reinstall
-
 cd /
 
 
