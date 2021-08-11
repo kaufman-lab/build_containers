@@ -131,7 +131,6 @@ PYTHONUSERBASE="$tensorflow_alt_dir/O3_only"  pip install /tensorflow_wheels_v2.
 PYTHONUSERBASE="$tensorflow_alt_dir/skylakeavx512skylakeavx512"  pip install /tensorflow_wheels_v2.5.0/tensorflow-2.5.0-9skylakeavx512skylakeavx512-cp38-cp38-linux_x86_64.whl --no-dependencies --user --force-reinstall
 PYTHONUSERBASE="$tensorflow_alt_dir/kylakeskylake"  pip install /tensorflow_wheels_v2.5.0/tensorflow-2.5.0-10skylakeskylake-cp38-cp38-linux_x86_64.whl --no-dependencies --user --force-reinstall
 
-rm -rf /tensorflow_wheels_v2.5.0
 cd /
 
 
