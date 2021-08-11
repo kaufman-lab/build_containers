@@ -54,14 +54,11 @@ pip install wheel==0.35
 cat > tensorflow.txt << EOF
 absl-py==0.13.0
 astunparse==1.6.3
-backports.entry-points-selectable==1.1.0
 cachetools==4.2.2
 certifi==2021.5.30
 cffi==1.14.6
 charset-normalizer==2.0.4
 cloudpickle==1.6.0
-distlib==0.3.2
-filelock==3.0.12
 flatbuffers==1.12
 future==0.18.2
 gast==0.4.0
@@ -80,7 +77,6 @@ oauthlib==3.1.1
 opt-einsum==3.3.0
 packaging==21.0
 Pillow==8.3.1
-platformdirs==2.2.0
 protobuf==3.17.3
 psutil==5.8.0
 pyasn1==0.4.8
@@ -101,28 +97,44 @@ termcolor==1.1.0
 typing==3.7.4.3
 typing-extensions==3.7.4.3
 urllib3==1.26.6
-virtualenv==20.7.1
 Werkzeug==2.0.1
 wrapt==1.12.1
 EOF
 
 pip install -r tensorflow.txt --no-dependencies --force-reinstall
-
 python3 -m pip freeze
+rm -r tensorflow.txt
 
-mkdir /tensorflow_builds_v2.5.0
-cd /tensorflow_builds_v2.5.0
+mkdir /tensorflow_wheels_v2.5.0
+cd /tensorflow_wheels_v2.5.0
 gh release download v2.5.0  --repo kaufman-lab/build_tensorflow
 
 #install vanilla tensorflow--horovod needs one version of tensorflow it can use to install
 pip install tensorflow-cpu==2.5.0  --no-dependencies
 
+tensorflow_alt_dir=/tensorflow_alt_dir
+mkdir $tensorflow_alt_dir
+PYTHONUSERBASE="$tensorflow_alt_dir/intel-tensorflow-AVX512"  pip install intel-tensorflow-AVX512 --no-dependencies --user --force-reinstall
+PYTHONUSERBASE="$tensorflow_alt_dir/intel-tensorflow"  pip install intel-tensorflow --no-dependencies --user --force-reinstall
+PYTHONUSERBASE="$tensorflow_alt_dir/AVX2_only"  pip install /tensorflow_wheels_v2.5.0/tensorflow-2.5.0-1AVX2_only-cp38-cp38-linux_x86_64.whl --no-dependencies --user --force-reinstall
+PYTHONUSERBASE="$tensorflow_alt_dir/cascadelakecascadelake"  pip install /tensorflow_wheels_v2.5.0/tensorflow-2.5.0-2cascadelakecascadelake-cp38-cp38-linux_x86_64.whl --no-dependencies --user --force-reinstall
+PYTHONUSERBASE="$tensorflow_alt_dir/mkl_AVX2_only"  pip install /tensorflow_wheels_v2.5.0/tensorflow-2.5.0-3mkl_AVX2_only-cp38-cp38-linux_x86_64.whl --no-dependencies --user --force-reinstall
+PYTHONUSERBASE="$tensorflow_alt_dir/mkl_O3_only"  pip install /tensorflow_wheels_v2.5.0/tensorflow-2.5.0-4mkl_O3_only-cp38-cp38-linux_x86_64.whl --no-dependencies --user --force-reinstall
+PYTHONUSERBASE="$tensorflow_alt_dir/mkl_only"  pip install /tensorflow_wheels_v2.5.0/tensorflow-2.5.0-5mkl_only-cp38-cp38-linux_x86_64.whl --no-dependencies --user --force-reinstall
+PYTHONUSERBASE="$tensorflow_alt_dir/nothing"  pip install /tensorflow_wheels_v2.5.0/tensorflow-2.5.0-6nothing-cp38-cp38-linux_x86_64.whl --no-dependencies --user --force-reinstall
+PYTHONUSERBASE="$tensorflow_alt_dir/nothingOs"  pip install /tensorflow_wheels_v2.5.0/tensorflow-2.5.0-7nothingOs-cp38-cp38-linux_x86_64.whl --no-dependencies --user --force-reinstall
+PYTHONUSERBASE="$tensorflow_alt_dir/O3_only"  pip install /tensorflow_wheels_v2.5.0/tensorflow-2.5.0-8O3_only-cp38-cp38-linux_x86_64.whl --no-dependencies --user --force-reinstall
+PYTHONUSERBASE="$tensorflow_alt_dir/skylakeavx512skylakeavx512"  pip install /tensorflow_wheels_v2.5.0/tensorflow-2.5.0-9skylakeavx512skylakeavx512-cp38-cp38-linux_x86_64.whl --no-dependencies --user --force-reinstall
+PYTHONUSERBASE="$tensorflow_alt_dir/kylakeskylake"  pip install /tensorflow_wheels_v2.5.0/tensorflow-2.5.0-10skylakeskylake-cp38-cp38-linux_x86_64.whl --no-dependencies --user --force-reinstall
 
-apt-get install -y python3.8-venv
+rm -rf /tensorflow_wheels_v2.5.0
+cd /
 
 
 
-#pip install /tensorflow_builds_v2.5.0/tensorflow-2.5.0-6nothing-cp38-cp38-linux_x86_64.whl  --no-dependencies
+
+
+#pip install /tensorflow_wheels_v2.5.0/tensorflow-2.5.0-6nothing-cp38-cp38-linux_x86_64.whl  --no-dependencies
 
 ### tensorflow for R (via reticulate) ###
 Rscript -e 'install.packages(c("reticulate", "tensorflow","keras"))' 
@@ -198,3 +210,4 @@ python3 -c "import horovod.tensorflow as hvd; hvd.init()"
 export PYTHONUSERBASE="/pseudohome/python" 
 export PYTHONPATH="/pseudohome/python/bin:$PYTHONPATH"
 export PATH="/pseudohome/python/bin:$PATH"
+export tensorflow_alt_dir=$tensorflow_alt_dir
