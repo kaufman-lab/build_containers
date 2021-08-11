@@ -112,6 +112,9 @@ gh release download v2.5.0  --repo kaufman-lab/build_tensorflow
 #install vanilla tensorflow--horovod needs one version of tensorflow it can use to install
 pip install tensorflow-cpu==2.5.0  --no-dependencies
 
+
+#imo, this is actually a much better way of installing to a desired location than trying to use venv craziness given we only want to possibly switch out a single package
+ #https://stackoverflow.com/a/29103053/15709625
 tensorflow_alt_dir=/tensorflow_alt_dir
 mkdir $tensorflow_alt_dir
 PYTHONUSERBASE="$tensorflow_alt_dir/intel-tensorflow-AVX512"  pip install intel-tensorflow-AVX512 --no-dependencies --user --force-reinstall
