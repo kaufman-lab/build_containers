@@ -105,6 +105,7 @@ pip install -r tensorflow.txt --no-dependencies --force-reinstall
 python3 -m pip freeze
 rm -r tensorflow.txt
 
+#download alternate binaries:
 mkdir /tensorflow_wheels_v2.5.0
 cd /tensorflow_wheels_v2.5.0
 gh release download v2.5.0  --repo kaufman-lab/build_tensorflow
@@ -166,11 +167,6 @@ mkdir /horovod_repo
 cd /tmp
 
 python3 -c "import horovod.tensorflow as hvd; hvd.init()"
-
-
-#uninstall tensorflow from site library so there's no default and I can more easily choose between the various version. otherwise it seems to be impossible to override using the site library for tensorflow
-#https://twitter.com/michaeltyoung3/status/1425333951044808706
-pip uninstall -y tensorflow-cpu
 
 
 ####some mpi installations on the rocks cluster that could be bound:
