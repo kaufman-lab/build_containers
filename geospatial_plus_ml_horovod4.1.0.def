@@ -2,9 +2,30 @@ Bootstrap: docker
 From: rocker/geospatial:4.1.0
 Stage: build
 
+###########################################
+%setup
+###########################################
+echo $GH_TOKEN > /tmp/hostvar.txt
+
+
 ############################################
 %post
 ############################################
+
+#install gh cli
+
+apt-get update
+apt-get install -y gnupg
+
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+apt-get update
+apt install -y gh
+
+gh_token=$(cat /tmp/hostvar.txt)
+echo $gh_token | gh auth login --with-token
+rm -rf /tmp/hostvar.txt
+
 
 ##### install packages #########
 Rscript -e 'install.packages(c("data.table","labelled","terra","batchtools", "here", "intervalaverage", "renv"))'
@@ -27,11 +48,10 @@ apt-get update
 apt-get install -y python3-pip
 
 
+pip install wheel==0.35
 
-pip install wheel==0.36.2
 
-
-cat > tensorflowavx512_req.txt << EOF
+cat > tensorflow.txt << EOF
 absl-py==0.13.0
 astunparse==1.6.3
 cachetools==4.2.2
@@ -49,11 +69,10 @@ google-pasta==0.2.0
 grpcio==1.34.1
 h5py==3.1.0
 idna==3.2
-keras-nightly==2.5.0.dev2021032900
+keras==2.6.0
 Keras-Preprocessing==1.1.2
-tensorflow==2.5.0
 Markdown==3.3.4
-numpy==1.21.1
+numpy==1.19.2
 oauthlib==3.1.1
 opt-einsum==3.3.0
 packaging==21.0
@@ -69,7 +88,7 @@ requests==2.26.0
 requests-oauthlib==1.3.0
 rsa==4.7.2
 scipy==1.7.1
-six==1.16.0
+six==1.15.0
 tensorboard==2.5.0
 tensorboard-data-server==0.6.1
 tensorboard-plugin-wit==1.8.0
@@ -82,9 +101,20 @@ Werkzeug==2.0.1
 wrapt==1.12.1
 EOF
 
-pip install -r tensorflowavx512_req.txt --no-dependencies --force-reinstall
-
+pip install -r tensorflow.txt --no-dependencies --force-reinstall
 python3 -m pip freeze
+rm -r tensorflow.txt
+
+#download alternate binaries:
+mkdir /tensorflow_wheels_v2.5.0
+cd /tensorflow_wheels_v2.5.0
+gh release download v2.5.0  --repo kaufman-lab/build_tensorflow
+
+#install vanilla tensorflow--horovod needs one version of tensorflow it can use to install
+pip install tensorflow-cpu==2.5.0  --no-dependencies
+
+cd /
+
 
 ### tensorflow for R (via reticulate) ###
 Rscript -e 'install.packages(c("reticulate", "tensorflow","keras"))' 
@@ -156,4 +186,9 @@ python3 -c "import horovod.tensorflow as hvd; hvd.init()"
       MPI_DIR=/share/apps/MPICH/mpich-3.3
       export PATH="$MPI_DIR/bin:$PATH"
       export LD_LIBRARY_PATH="$MPI_DIR/lib:$LD_LIBRARY_PATH"
-      
+
+
+export PYTHONUSERBASE="/pseudohome/python" 
+export PYTHONPATH="/pseudohome/python/bin:$PYTHONPATH"
+export PATH="/pseudohome/python/bin:$PATH"
+export tensorflow_alt_dir=$tensorflow_alt_dir
