@@ -117,6 +117,7 @@ pip install tensorflow-cpu==2.5.0  --no-dependencies
  #https://stackoverflow.com/a/29103053/15709625
 tensorflow_alt_dir=/tensorflow_alt_dir
 mkdir $tensorflow_alt_dir
+PYTHONUSERBASE="$tensorflow_alt_dir/tensorflow-cpu"  pip install tensorflow-cpu --no-dependencies --user --force-reinstall
 PYTHONUSERBASE="$tensorflow_alt_dir/intel-tensorflow-AVX512"  pip install intel-tensorflow-AVX512 --no-dependencies --user --force-reinstall
 PYTHONUSERBASE="$tensorflow_alt_dir/intel-tensorflow"  pip install intel-tensorflow --no-dependencies --user --force-reinstall
 PYTHONUSERBASE="$tensorflow_alt_dir/AVX2_only"  pip install /tensorflow_wheels_v2.5.0/tensorflow-2.5.0-1AVX2_only-cp38-cp38-linux_x86_64.whl --no-dependencies --user --force-reinstall
@@ -190,6 +191,12 @@ mkdir /horovod_repo
 cd /tmp
 
 python3 -c "import horovod.tensorflow as hvd; hvd.init()"
+
+
+#uninstall tensorflow from site library so there's no default and I can more easily choose between the various version. otherwise it seems to be impossible to override using the site library for tensorflow
+#https://twitter.com/michaeltyoung3/status/1425333951044808706
+pip uninstall -y intel-cpu
+
 
 ####some mpi installations on the rocks cluster that could be bound:
 %environment
