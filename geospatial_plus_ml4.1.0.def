@@ -69,7 +69,7 @@ wrapt==1.12.1
 EOF
 
 pip install -r tensorflow.txt --no-dependencies --force-reinstall
-pip install tensorflow-cpu==2.5.0  --no-dependencies --force-reinstall
+pip install intel-tensorflow==2.5.0  --no-dependencies --force-reinstall
 
 cd /
 
