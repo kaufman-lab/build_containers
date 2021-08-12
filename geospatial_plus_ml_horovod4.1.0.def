@@ -110,6 +110,7 @@ rm -r tensorflow.txt
 #cd /tensorflow_wheels_v2.5.0
 #gh release download v2.5.0  --repo kaufman-lab/build_tensorflow
 
+
 #install vanilla tensorflow--horovod needs one version of tensorflow it can use to install
 pip install tensorflow-cpu==2.5.0  --no-dependencies
 

@@ -71,6 +71,7 @@ EOF
 pip install -r tensorflow.txt --no-dependencies --force-reinstall
 pip install intel-tensorflow==2.5.0  --no-dependencies --force-reinstall
 
+
 cd /
 
 python3 -m pip freeze
