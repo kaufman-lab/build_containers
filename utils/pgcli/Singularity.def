@@ -1,0 +1,24 @@
+Bootstrap: docker 
+From: python:3.8-slim
+
+%help
+  echo "pgcli running in a container"
+
+%post
+	apt-get -u update 
+    apt-get -y install libpq-dev build-essential less 
+    pip install pgcli
+    rm -rf "/var/lib/apt/lists/*"
+
+%environment
+  PGHOST="${PGHOST:=/var/run/postgresql}"
+  PGPORT="${PGPORT:=5432}"
+  PGDATABASE="${PGDATABASE:=loganap}"
+  PGUSER="${PGUSER:=$USER}"
+  HUSER="$USER"
+  export PGHOST PGPORT PGDATABASE PGUSER HUSER
+
+%runscript
+  pgcli "$@"
+
+
