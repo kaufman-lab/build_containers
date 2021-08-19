@@ -1,0 +1,11 @@
+# source this file for singularity shortcuts 
+
+alias sils='singularity instance list'
+alias sisa='singularity instance start'
+alias sisab='singularity instance start --bind'
+alias siso='singularity instance stop'
+alias sish='singularity shell'
+alias sibash='SINGULARITY_SHELL=/bin/bash singularity shell'
+
+sibr () { singularity build --remote "$@" }
+
