@@ -8,13 +8,6 @@ From: python:3.8-slim
 %post
     pip install pgcli
 
-%environment
-  export PGHOST="${PGHOST:=/var/run/postgresql}"
-  export PGPORT="${PGPORT:=5432}"
-  export PGDATABASE="${PGDATABASE:=loganap}"
-  export PGUSER="${PGUSER:=$USER}"
-  export HUSER="${HUSER:=USER}"
-  export PGHOST PGPORT PGDATABASE PGUSER HUSER
 
 %runscript
   pgcli "$@"
