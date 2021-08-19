@@ -51,8 +51,11 @@ wrapt==1.12.1
 EOF
 
 pip install -r tensorflow_dep.txt --no-dependencies --force-reinstall
+rm -rf tensorflow_dep.txt 
 pip install intel-tensorflow==2.5.0  --no-dependencies --force-reinstall
 python3 -m pip freeze
+
+
 
 ### tensorflow for R (via reticulate) ###
 Rscript -e 'install.packages(c("reticulate", "tensorflow","keras"))' 

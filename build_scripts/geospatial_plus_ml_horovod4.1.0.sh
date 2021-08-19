@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cat > tensorflow.txt << EOF
+cat > tensorflow_horovod_dep << EOF
 cffi==1.14.6
 cloudpickle==1.6.0
 future==0.18.2
@@ -10,11 +10,11 @@ pycparser==2.20
 pyparsing==2.4.7
 EOF
 
-python3 -m pip freeze
-
-pip uninstall
+pip install -r tensorflow_horovod_dep.txt --no-dependencies --force-reinstall
+rm -rf tensorflow_horovod_dep.txt
+pip uninstall intel-tensorflow
 pip install tensorflow-cpu==2.5.0  --no-dependencies --force-reinstall
-
+python3 -m pip freeze
 
 #### horovod for distributed learning.######
 
