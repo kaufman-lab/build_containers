@@ -16,3 +16,11 @@ Stage: build
 
 chmod 755 /build_scripts -R
 /build_scripts/geospatial_plus4.1.0.sh
+
+
+############################################
+%environment
+############################################
+export PYTHONUSERBASE="/pseudohome/python" 
+export PYTHONPATH="/pseudohome/python/bin:$PYTHONPATH"
+export PATH="/pseudohome/python/bin:$PATH"
