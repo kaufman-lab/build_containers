@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cat > tensorflow_horovod_dep << EOF
+cat > tensorflow_horovod_dep.txt << EOF
 cffi==1.14.6
 cloudpickle==1.6.0
 future==0.18.2
