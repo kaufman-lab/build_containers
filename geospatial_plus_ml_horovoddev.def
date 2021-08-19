@@ -5,30 +5,36 @@ Stage: build
 ###########################################
 %setup
 ###########################################
-echo $GH_TOKEN > /tmp/hostvar.txt
+  
+  echo $GH_TOKEN > /tmp/hostvar.txt
+
+############################################
+%files
+############################################
+  
+  $GITHUB_WORKSPACE/build_scripts /build_scripts
 
 
 ############################################
 %post
 ############################################
 
-
-chmod 755 /build_scripts -R
-/build_scripts/geospatial_plus4.1.0.sh
-/build_scripts/geospatial_plus_ml4.1.0.sh
-/build_scripts/geospatial_plus_ml_horovod4.1.0.sh
-/build_scripts/geospatial_plus_ml_horovoddev.sh
-
-
+  chmod 755 /build_scripts -R
+  /build_scripts/geospatial_plus4.1.0.sh
+  /build_scripts/geospatial_plus_ml4.1.0.sh
+  /build_scripts/geospatial_plus_ml_horovod4.1.0.sh
+  /build_scripts/geospatial_plus_ml_horovoddev.sh
+  
+  rm -rf /tmp/hostvar.txt
 
 ############################################
 %environment
 ############################################
-MPI_DIR=/share/apps/OpenMPI/openmpi-4.0.1
-export PATH="$MPI_DIR/bin:$PATH"
-export LD_LIBRARY_PATH="$MPI_DIR/lib:$LD_LIBRARY_PATH"
-
-export PYTHONUSERBASE="/pseudohome/python" 
-export PYTHONPATH="/pseudohome/python/bin:$PYTHONPATH"
-export PATH="/pseudohome/python/bin:$PATH"
+  MPI_DIR=/share/apps/OpenMPI/openmpi-4.0.1
+  export PATH="$MPI_DIR/bin:$PATH"
+  export LD_LIBRARY_PATH="$MPI_DIR/lib:$LD_LIBRARY_PATH"
+  
+  export PYTHONUSERBASE="/pseudohome/python" 
+  export PYTHONPATH="/pseudohome/python/bin:$PYTHONPATH"
+  export PATH="/pseudohome/python/bin:$PATH"
 

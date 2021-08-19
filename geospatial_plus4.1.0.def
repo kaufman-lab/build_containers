@@ -9,18 +9,17 @@ Stage: build
   
   $GITHUB_WORKSPACE/build_scripts /build_scripts
 
-
 ############################################
 %post
 ############################################
 
-chmod 755 /build_scripts -R
-/build_scripts/geospatial_plus4.1.0.sh
-
+  chmod 755 /build_scripts -R
+  /build_scripts/geospatial_plus4.1.0.sh
+  
 
 ############################################
 %environment
 ############################################
-export PYTHONUSERBASE="/pseudohome/python" 
-export PYTHONPATH="/pseudohome/python/bin:$PYTHONPATH"
-export PATH="/pseudohome/python/bin:$PATH"
+  export PYTHONUSERBASE="/pseudohome/python" 
+  export PYTHONPATH="/pseudohome/python/bin:$PYTHONPATH"
+  export PATH="/pseudohome/python/bin:$PATH"
