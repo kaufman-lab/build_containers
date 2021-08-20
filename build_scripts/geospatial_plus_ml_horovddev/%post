@@ -1,5 +1,3 @@
-#!/bin/bash
-
 gh_token=$(cat /tmp/hostvar.txt)
 echo $gh_token | gh auth login --with-token
 rm -rf /tmp/hostvar.txt
