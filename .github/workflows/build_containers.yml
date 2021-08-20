@@ -7,32 +7,9 @@ on:
   # Do the builds on all pull requests (to test them), but don't deploy on PR (see below)
   pull_request: []
 jobs:
-  update-def-files:
-    runs-on: ubuntu-latest
-
-    steps:
-    
-    - uses: r-lib/actions/setup-r@v1 #install R
-      with:
-        r-version: '4.1.0' 
-    - run: Rscript -e 'print("hello")' #test R
-    
-    - uses: actions/checkout@v2
-      with:
-        ref: ${{ github.head_ref }} #this is necessary for stefanzweifel/git-auto-commit-action@v4
-
-    - name: create files
-      run: |
-        cd $GITHUB_WORKSPACE
-        Rscript create_def_files.R #update definition files
-
-    - uses: stefanzweifel/git-auto-commit-action@v4
-      with:
-        commit_message: create definition files #commit updated definition files.
   build:
     name: Build
     runs-on: ubuntu-18.04
-    needs: update-def-files
     env: 
       username: myoung3
       organization: kaufman-lab
@@ -46,29 +23,42 @@ jobs:
           {repository: "geospatial_plus_ml_horovod", tag: "dev", definitionfile: "geospatial_plus_ml_horovoddev.def"}
         ]
     steps:
-    - name: git checkout
-      uses: actions/checkout@v1
+    - uses: r-lib/actions/setup-r@v1 #install R, since the script to combine sections of definition files is written in R
+      with:
+        r-version: '4.1.0' 
+    - run: Rscript -e 'print("hello")' #test R
+    
+    - uses: actions/checkout@v2 #checkout github repo
+      with:
+        ref: ${{ github.head_ref }} #this is necessary for stefanzweifel/git-auto-commit-action@v4
 
+    - name: create definition files #paste together sections of singularity defintion using a dependency structure
+      run: |
+        cd $GITHUB_WORKSPACE
+        Rscript create_def_files.R #update definition files
 
     - name: Get changed definition files
-      id: changed-files-def
-      uses: tj-actions/changed-files@v9.1
+      run: |
+        echo "all_modified_files=$(git status --porcelain | sed s/^...//)" >> $GITHUB_ENV 
+        #https://stackoverflow.com/questions/57968497/how-do-i-set-an-env-var-with-a-bash-expression-in-github-actions
+        #https://stackoverflow.com/questions/5237605/how-can-i-run-git-status-and-just-get-the-filenames
+
+    - name: print changed definition files
+      run: echo ${{ env.all_modified_files }}
+
+    - uses: stefanzweifel/git-auto-commit-action@v4 #commit updated definition files.
       with:
-        files: |
-          .(def)$
-    - name: Print changed definition files
-      run: echo ${{ steps.changed-files-def.outputs.all_modified_files }}
-            
-    - name: Set up Go
-      if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
+        commit_message: create definition files 
+
+    - name: Set up Go #prereq for singularity
+      if: contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
       uses: actions/setup-go@v1
       with:
         go-version: 1.16
       id: go
       
-
-    - name: Install Dependencies
-      if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
+    - name: Install other singularity dependencies
+      if: contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
       run: |
         sudo apt-get update && sudo apt-get install -y \
           build-essential \
@@ -80,7 +70,7 @@ jobs:
           pkg-config
           
     - name: Install Singularity
-      if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
+      if: contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
       env:
         SINGULARITY_VERSION: 3.8.1
         GOPATH: /tmp/go
@@ -97,9 +87,8 @@ jobs:
         sudo make -C builddir install          
           
 
-
     - name: Build container
-      if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
+      if: contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
       run: |
        export GH_TOKEN=$(echo ${{ secrets.GITHUB_TOKEN }} )
        
@@ -112,8 +101,8 @@ jobs:
 
     - name: log in to github container registry and deploy
       if: |
-        ( (github.event_name != 'pull_request') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch') ) || 
-        ( ( (matrix.arrays.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
+        ( (github.event_name != 'pull_request') && (contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch') ) || 
+        ( ( (matrix.arrays.tag == 'dev') && (contains(env.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
       run: |
         echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ env.username }} --password-stdin oras://ghcr.io
         singularity remote list
