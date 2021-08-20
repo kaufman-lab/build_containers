@@ -83,7 +83,7 @@ jobs:
 
     - name: concatenate changed files into one actions variable
       run: |
-        changed=${{ steps.changed-files-def-vs-main.outputs.all_modified_files }}${{ steps.changed-files-def-vs-main-minus-1.outputs.all_modified_files }}
+        changed="${{ steps.changed-files-def-vs-main.outputs.all_modified_files }}${{ steps.changed-files-def-vs-main-minus-1.outputs.all_modified_files }}"
         echo "all_modified_files=changed" >> $GITHUB_ENV  #https://stackoverflow.com/questions/57968497/how-do-i-set-an-env-var-with-a-bash-expression-in-github-actions
     - run: echo ${{env.all_modified_files}}
         
