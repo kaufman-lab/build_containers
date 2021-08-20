@@ -51,8 +51,10 @@ jobs:
     steps:
     
     - name: checkout current commit
-      uses: actions/checkout@v2 #checkout github repo
       if: github.event_name != 'worfklow_dispatch'
+      uses: actions/checkout@v2 #checkout github repo
+      with:
+        fetch-depth:  0
 
     - name: alternatively, checkout main if trigger is workflow_dispatch
       uses: actions/checkout@v2 
