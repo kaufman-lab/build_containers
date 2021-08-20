@@ -42,13 +42,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arrays: [ 
-          {repository: "geospatial_plus", tag: "4.1.0", definitionfile: "geospatial_plus4.1.0.def"}, 
-          {repository: "geospatial_plus_ml", tag: "4.1.0", definitionfile: "geospatial_plus_ml4.1.0.def"},
-          {repository: "geospatial_plus_ml_horovod", tag: "4.1.0", definitionfile: "geospatial_plus_ml_horovod4.1.0.def"},
-          {repository: "geospatial_plus_ml_horovod", tag: "dev", definitionfile: "geospatial_plus_ml_horovoddev.def"}
-        ]
+        definitionfile: ["geospatial_plus__4.1.0.def", "geospatial_plus_ml__4.1.0.def", "geospatial_plus_ml_horovod__4.1.0.def", "geospatial_plus_ml_horovod__dev.def"]
     steps:
+    
+    - name: create tag and repo workflow variables
+      run: |
+        def=${{ matrix.definitionfile }}
+        tag=$(echo $def | awk '{gsub(".*__|\\.def","")}1')
+        repository=$(echo $def | awk '{gsub("__.*","")}1')
+        echo "tag=$tag" >> $GITHUB_ENV  #https://stackoverflow.com/questions/57968497/how-do-i-set-an-env-var-with-a-bash-expression-in-github-actions
+        echo "repository=$repository" >> $GITHUB_ENV  
+        
     
     - name: checkout current commit
       if: github.event_name != 'worfklow_dispatch'
@@ -87,6 +91,7 @@ jobs:
       if: github.event_name != 'workflow_dispatch'
       run: |
         changed="${{ steps.changed-files-def-vs-main.outputs.all_modified_files }}${{ steps.changed-files-def-vs-main-minus-1.outputs.all_modified_files }}"
+        changed=$(echo $changed | awk '{gsub("definition_files/","")}1') #drop preceding definition_files/
         echo "all_modified_files=$changed" >> $GITHUB_ENV  #https://stackoverflow.com/questions/57968497/how-do-i-set-an-env-var-with-a-bash-expression-in-github-actions
         
     - name: Print changed definition files
@@ -94,14 +99,14 @@ jobs:
       run: echo ${{ env.all_modified_files }}
 
     - name: Set up Go #prereq for singularity
-      if: contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
+      if: contains(env.all_modified_files, matrix.definitionfile) || github.event_name == 'workflow_dispatch'
       uses: actions/setup-go@v1
       with:
         go-version: 1.16
       id: go
       
     - name: Install other singularity dependencies
-      if: contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
+      if: contains(env.all_modified_files, matrix.definitionfile) || github.event_name == 'workflow_dispatch'
       run: |
         sudo apt-get update && sudo apt-get install -y \
           build-essential \
@@ -113,7 +118,7 @@ jobs:
           pkg-config
           
     - name: Install Singularity
-      if: contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
+      if: contains(env.all_modified_files, matrix.definitionfile) || github.event_name == 'workflow_dispatch'
       env:
         SINGULARITY_VERSION: 3.8.1
         GOPATH: /tmp/go
@@ -130,12 +135,12 @@ jobs:
         sudo make -C builddir install          
           
     - name: Build container
-      if: contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
+      if: contains(env.all_modified_files, matrix.definitionfile) || github.event_name == 'workflow_dispatch'
       run: |
        export GH_TOKEN=$(echo ${{ secrets.GITHUB_TOKEN }} )
        
-       if [ -f "${{ matrix.arrays.definitionfile }}" ]; then
-         sudo -E singularity build output.sif ${{ matrix.arrays.definitionfile }}
+       if [ -f "definition_files/${{ matrix.definitionfile }}" ]; then
+         sudo -E singularity build output.sif definition_files/${{ matrix.definitionfile }}
        else
          echo "${SINGULARITY_RECIPE} is not found."
          echo "Present working directory: $PWD"
@@ -143,12 +148,12 @@ jobs:
 
     - name: log in to github container registry and deploy
       if: |
-        ( (github.event_name != 'pull_request') && (contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch') ) || 
-        ( ( (matrix.arrays.tag == 'dev') && (contains(env.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
+        ( (github.event_name != 'pull_request') && (contains(env.all_modified_files, matrix.definitionfile) || github.event_name == 'workflow_dispatch') ) || 
+        ( ( (env.tag == 'dev') && (contains(env.all_modified_files, matrix.definitionfile))) || github.event_name == 'workflow_dispatch') 
       run: |
         #if it's not a pull request (this means it's a push to main or a worfklow dispatch) AND the definition has changed then deploy
         #OR deploy always for a workflow_dispatch
         #OR deploy if it's a dev tag and there are changeds to the defintion file
         echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ env.username }} --password-stdin oras://ghcr.io
         singularity remote list
-        singularity push output.sif oras://ghcr.io/${{ env.organization }}/${{ matrix.arrays.repository }}:${{ matrix.arrays.tag}} 
+        singularity push output.sif oras://ghcr.io/${{ env.organization }}/${{ env.repository }}:${{ env.tag}} 
