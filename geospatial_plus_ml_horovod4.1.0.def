@@ -25,13 +25,10 @@ Stage: build
 #### install github cli #######
 apt-get update
 apt-get install -y gnupg
-curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | gpg --dearmor -o /usr/share/keyrings/githubclirchive-keyring.gpg
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.githubom/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
 apt-get update
 apt install -y gh
-gh_token=$(cat /tmp/hostvar.txt)
-echo $gh_token | gh auth login --with-token
-rm -rf /tmp/hostvar.txt
 
 ##### install packages #########
 Rscript -e 'install.packages(c("data.table","labelled","terra","batchtools", "here", "intervalaverage", "renv"))'
@@ -46,7 +43,6 @@ echo "RETICULATE_MINICONDA_ENABLED=FALSE"  >> usr/local/lib/R/etc/Renviron.site 
 #####rstudio server defaults#########
 echo "session-save-action-default=no" >> /etc/rstudio/rsession.conf #don't save workspace by default.
 echo "session-quit-child-processes-on-exit=1" >> /etc/rstudio/rsession.conf #quit child processes on exit
-
 
 
 
@@ -119,7 +115,6 @@ cd /
 
 
 
-
 cat > tensorflow_horovod_dep.txt << EOF
 cffi==1.14.6
 cloudpickle==1.6.0
@@ -132,7 +127,7 @@ EOF
 
 pip install -r tensorflow_horovod_dep.txt --no-dependencies --force-reinstall
 rm -rf tensorflow_horovod_dep.txt
-pip uninstall intel-tensorflow
+pip uninstall -y intel-tensorflow
 pip install tensorflow-cpu==2.5.0  --no-dependencies --force-reinstall
 python3 -m pip freeze
 
@@ -174,7 +169,6 @@ mkdir /horovod_repo
 cd /tmp
 
 python3 -c "import horovod.tensorflow as hvd; hvd.init()"
-
 
 
 
