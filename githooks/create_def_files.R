@@ -4,10 +4,14 @@ images <- list.files("./build_scripts")
 read_dependencies <- function(i){
   dependencies_exists_current <- file.exists(file.path("build_scripts",i,"dependencies.R"))
   if(dependencies_exists_current){
-    source(file.path("build_scripts",i,"dependencies.R"))
-    if(!exists("dependencies")){
-      stop("dependencies file detected but sourcing this R file does not result in creation of global object named dependencies")
-    }
+    dependencies <- local(expr={
+      source(file.path("build_scripts",i,"dependencies.R"),local=TRUE)
+      z <- environment()
+      if(!exists("dependencies",where=z,inherits=FALSE)){
+        stop("dependencies file detected but sourcing this R file does not result in creation of global object named dependencies")
+      }
+      dependencies
+    })
     if(length(dependencies)!=1L){
       stop("an image must have exactly one parent.")
     }
@@ -15,16 +19,15 @@ read_dependencies <- function(i){
     dependencies <- NULL
   }
   
-  
   if(!is.null(dependencies)){
-    x <- Recall(dependencies)  
+    x <- read_dependencies(dependencies[1])  
   }else{
     x <- NULL
   }
   c(x,dependencies)
 }
 
-lapply(images, function(i){
+invisible(lapply(images, function(i){
   bootstrap_exists <- file.exists(file.path("build_scripts",i,"bootstrap"))
   dependencies_exists <- file.exists(file.path("build_scripts",i,"dependencies.R"))
   stopifnot(bootstrap_exists || dependencies_exists) #the image must depend on another image OR have a bootstrap
@@ -77,5 +80,7 @@ lapply(images, function(i){
   })
   
   close(f)
+  cat(paste0("successfully updated ", outfile,"\n"))
+  NULL
 
-})
+}))
