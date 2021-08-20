@@ -150,7 +150,7 @@ jobs:
       with:
         ref: ${{ github.head_ref }}
 
-    - name: copy altered definition file back
+    - name: copy altered definition file back into repo
       if: contains(env.all_modified_files, matrix.arrays.definitionfile)
       run: |
         #copy altered definition file back over

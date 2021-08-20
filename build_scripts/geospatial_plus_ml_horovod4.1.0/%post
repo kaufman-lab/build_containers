@@ -10,7 +10,7 @@ EOF
 
 pip install -r tensorflow_horovod_dep.txt --no-dependencies --force-reinstall
 rm -rf tensorflow_horovod_dep.txt
-pip uninstall intel-tensorflow
+pip uninstall -y intel-tensorflow
 pip install tensorflow-cpu==2.5.0  --no-dependencies --force-reinstall
 python3 -m pip freeze
 
