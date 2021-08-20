@@ -54,7 +54,7 @@ jobs:
       if: github.event_name != 'worfklow_dispatch'
       uses: actions/checkout@v2 #checkout github repo
       with:
-        fetch-depth:  0
+        fetch-depth: 2 #get current commit and previous one. this is needed for push events. for some reason you don't need all history for pull_requests? https://github.com/actions/checkout
 
     - name: alternatively, checkout main if trigger is workflow_dispatch
       uses: actions/checkout@v2 
