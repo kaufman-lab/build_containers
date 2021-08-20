@@ -49,11 +49,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2 #checkout github repo
     - run: |
-      git branch
-      git rev-parse HEAD
-      git pull
-      git rev-parse HEAD
-    
+        git branch
+        git rev-parse HEAD
+        git pull
+        git rev-parse HEAD
+      
     - name: Get changed definition files
       id: changed-files-def
       uses: tj-actions/changed-files@v9.1
