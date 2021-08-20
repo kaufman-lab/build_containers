@@ -72,12 +72,12 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: definition_files
-        path: ~/download/path
+        path: ~/definition_files
     - run: |
-        pwd
+        cp -arf ~/definition_files/. $GITHUB_WORKSPACE
+    - run:
+        cd $GITHUB_WORKSPACE
         ls
-        ls -a
-    - run: unzip definition_files.zip
     
     - name: Set up Go #prereq for singularity
       if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
