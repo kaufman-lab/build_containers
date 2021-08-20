@@ -65,7 +65,9 @@ jobs:
     
     - uses: actions/checkout@v2 #checkout github repo
       with:
-        ref: ${{ github.base_ref }} #target branch of pull request. if files are different than this target, then build.
+        ref: ${{ github.base_ref }} 
+          #target branch of pull request. if files are different than this target (typically main), then build.
+          #this means definition files will be built even if there isn't a change relative to the last commit on the PR branch as long as they're different than main.
         
     - run: cd ~
     - name: Download definition files as artifacts
@@ -85,7 +87,7 @@ jobs:
         all_mod_files=$(git ls-files --modified)
         all_mod_files=$(echo "$all_mod_files" | tr '\n' ' ') #https://unix.stackexchange.com/questions/26788/using-sed-to-convert-newlines-into-spaces
         echo "all_modified_files=$all_mod_files" >> $GITHUB_ENV  #https://stackoverflow.com/questions/57968497/how-do-i-set-an-env-var-with-a-bash-expression-in-github-actions
-        echo $$all_mod_files
+    - run: echo ${{env.all_modified_files}}
 
     - name: Set up Go #prereq for singularity
       if: contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
