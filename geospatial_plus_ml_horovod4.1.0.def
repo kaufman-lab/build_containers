@@ -33,7 +33,6 @@ gh_token=$(cat /tmp/hostvar.txt)
 echo $gh_token | gh auth login --with-token
 rm -rf /tmp/hostvar.txt
 
-
 ##### install packages #########
 Rscript -e 'install.packages(c("data.table","labelled","terra","batchtools", "here", "intervalaverage", "renv"))'
 Rscript -e "devtools::install_github('kaufman-lab/survivaltools',ref='a9c75521fa58961e59d3c884681862f44c7683d6')"
@@ -47,6 +46,7 @@ echo "RETICULATE_MINICONDA_ENABLED=FALSE"  >> usr/local/lib/R/etc/Renviron.site 
 #####rstudio server defaults#########
 echo "session-save-action-default=no" >> /etc/rstudio/rsession.conf #don't save workspace by default.
 echo "session-quit-child-processes-on-exit=1" >> /etc/rstudio/rsession.conf #quit child processes on exit
+
 
 
 #install tensorflow
@@ -115,6 +115,8 @@ Rscript -e 'torch::install_torch()'
 cd /
 
 
+
+
 cat > tensorflow_horovod_dep.txt << EOF
 cffi==1.14.6
 cloudpickle==1.6.0
@@ -169,6 +171,8 @@ mkdir /horovod_repo
 cd /tmp
 
 python3 -c "import horovod.tensorflow as hvd; hvd.init()"
+
+
 
 
 
