@@ -7,9 +7,10 @@ on:
   # Do the builds on all pull requests (to test them), but don't deploy on PR (see below)
   pull_request:
 jobs:
-
   check-def-files:
     runs-on: ubuntu-18.04
+    outputs: 
+      definitions: ${{ env.definitions }}
     steps:
 
     - uses: r-lib/actions/setup-r@v1 #install R, since the script to combine sections of definition files is written in R
@@ -32,6 +33,12 @@ jobs:
            exit 1
         fi
 
+    - name: pass all definitions filenames as JSON to be used in the next job's matrix
+      run: |
+        Rscript -e 'install.packages("jsonlite")'
+        definitions=$(Rscript -e 'jsonlite::toJSON(list.files("definition_files"))')
+        echo "definitions=$definitions" >> $GITHUB_ENV  #https://stackoverflow.com/questions/57968497/how-do-i-set-an-env-var-with-a-bash-expression-in-github-actions
+        
   build:
     name: Build
     needs: check-def-files
@@ -41,7 +48,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        definitionfile: ["geospatial_plus__4.1.0.def", "geospatial_plus_ml__4.1.0.def", "geospatial_plus_ml_horovod__4.1.0.def", "geospatial_plus_ml_horovod__dev.def"]
+        definitionfile: ${{ fromJson(needs.check-def-files.outputs.definitions) }}
     steps:
     
     - name: create tag and repo workflow variables
