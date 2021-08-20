@@ -1,6 +1,33 @@
 images <- list.files("./build_scripts")
 
-lapply(images, function(i){
+
+read_dependencies <- function(i){
+  dependencies_exists_current <- file.exists(file.path("build_scripts",i,"dependencies.R"))
+  if(dependencies_exists_current){
+    dependencies <- local(expr={
+      source(file.path("build_scripts",i,"dependencies.R"),local=TRUE)
+      z <- environment()
+      if(!exists("dependencies",where=z,inherits=FALSE)){
+        stop("dependencies file detected but sourcing this R file does not result in creation of global object named dependencies")
+      }
+      dependencies
+    })
+    if(length(dependencies)!=1L){
+      stop("an image must have exactly one parent.")
+    }
+  }else{
+    dependencies <- NULL
+  }
+  
+  if(!is.null(dependencies)){
+    x <- read_dependencies(dependencies[1])  
+  }else{
+    x <- NULL
+  }
+  c(x,dependencies)
+}
+
+invisible(lapply(images, function(i){
   bootstrap_exists <- file.exists(file.path("build_scripts",i,"bootstrap"))
   dependencies_exists <- file.exists(file.path("build_scripts",i,"dependencies.R"))
   stopifnot(bootstrap_exists || dependencies_exists) #the image must depend on another image OR have a bootstrap
@@ -8,20 +35,13 @@ lapply(images, function(i){
     stop("bootstrap file and dependency file cannot both be specified.")
   }
   
-  if(dependencies_exists){
-    source(file.path("build_scripts",i,"dependencies.R"))
-    if(!exists("dependencies")){
-      stop("dependencies file detected but sourcing this R file does not result in creation of global object named dependencies")
-    }
-  }else{
-    dependencies <- NULL
-  }
-  
+  dependencies <- read_dependencies(i)
+
   if(length(unique(dependencies)) !=length(dependencies)){
     stop("duplicated dependencies detected")
   }
   
-  dependencies <- c(dependencies,  i)
+  dependencies <- c(dependencies,  i) #concat current image to the end.
   
   if(length(unique(dependencies)) !=length(dependencies)){
     stop("current image detected in dependencies vector. Please remove this.")
@@ -60,6 +80,7 @@ lapply(images, function(i){
   })
   
   close(f)
+  cat(paste0("successfully updated ", outfile,"\n"))
+  NULL
 
-  
-})
+}))
