@@ -26,15 +26,6 @@ jobs:
         cd $GITHUB_WORKSPACE
         Rscript create_def_files.R #update definition files
 
-    - name: Get changed definition files
-      run: |
-        echo "all_modified_files=$(git status --porcelain | sed s/^...//)" >> $GITHUB_ENV 
-        #https://stackoverflow.com/questions/57968497/how-do-i-set-an-env-var-with-a-bash-expression-in-github-actions
-        #https://stackoverflow.com/questions/5237605/how-can-i-run-git-status-and-just-get-the-filenames
-
-    - name: print changed definition files
-      run: echo ${{ steps.changed-files-def.outputs.all_modified_files }}
-
     - uses: stefanzweifel/git-auto-commit-action@v4 #commit updated definition files.
       with:
         commit_message: create definition files 
