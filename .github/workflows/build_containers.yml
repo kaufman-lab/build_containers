@@ -26,10 +26,16 @@ jobs:
         cd $GITHUB_WORKSPACE
         Rscript create_def_files.R #update definition files
 
-    - uses: stefanzweifel/git-auto-commit-action@v4 #commit updated definition files.
-      with:
-        commit_message: create definition files 
-
+    - name: Get changed definition files
+      run: |
+        all_mod_files=$(git status --porcelain | sed s/^...//) #https://stackoverflow.com/questions/5237605/how-can-i-run-git-status-and-just-get-the-filenames
+        all_mod_files=$(echo "$all_mod_files" | tr '\n' ' ') #https://unix.stackexchange.com/questions/26788/using-sed-to-convert-newlines-into-spaces
+        echo "all_modified_files=$all_mod_files" >> $GITHUB_ENV  #https://stackoverflow.com/questions/57968497/how-do-i-set-an-env-var-with-a-bash-expression-in-github-actions
+        
+    - name: print changed definition files
+      run: echo ${{ env.all_modified_files }}
+      
+  
   build:
     name: Build
     needs: update-def-files
