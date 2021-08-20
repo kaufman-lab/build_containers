@@ -33,7 +33,7 @@ jobs:
         #https://stackoverflow.com/questions/5237605/how-can-i-run-git-status-and-just-get-the-filenames
 
     - name: print changed definition files
-      run: echo ${{ env.all_modified_files }}
+      run: echo ${{ steps.changed-files-def.outputs.all_modified_files }}
 
     - uses: stefanzweifel/git-auto-commit-action@v4 #commit updated definition files.
       with:
@@ -57,17 +57,26 @@ jobs:
     steps:
     - uses: actions/checkout@v2 #checkout github repo
       with:
-        ref: ${{ github.head_ref }} #this is necessary for stefanzweifel/git-auto-commit-action@v4
+        ref: ${{ github.head_ref }} #get the head of whatever branch you're on--this includes changed files that were just committed.
+    
+    - name: Get changed definition files
+      id: changed-files-def
+      uses: tj-actions/changed-files@v9.1
+      with:
+        files: |
+          .(def)$
+    - name: Print changed definition files
+      run: echo ${{ steps.changed-files-def.outputs.all_modified_files }}
     
     - name: Set up Go #prereq for singularity
-      if: contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
+      if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
       uses: actions/setup-go@v1
       with:
         go-version: 1.16
       id: go
       
     - name: Install other singularity dependencies
-      if: contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
+      if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
       run: |
         sudo apt-get update && sudo apt-get install -y \
           build-essential \
@@ -79,7 +88,7 @@ jobs:
           pkg-config
           
     - name: Install Singularity
-      if: contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
+      if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
       env:
         SINGULARITY_VERSION: 3.8.1
         GOPATH: /tmp/go
@@ -98,7 +107,7 @@ jobs:
 
 
     - name: Build container
-      if: contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
+      if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
       run: |
        export GH_TOKEN=$(echo ${{ secrets.GITHUB_TOKEN }} )
        
@@ -111,8 +120,8 @@ jobs:
 
     - name: log in to github container registry and deploy
       if: |
-        ( (github.event_name != 'pull_request') && (contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch') ) || 
-        ( ( (matrix.arrays.tag == 'dev') && (contains(env.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
+        ( (github.event_name != 'pull_request') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch') ) || 
+        ( ( (matrix.arrays.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
       run: |
         echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ env.username }} --password-stdin oras://ghcr.io
         singularity remote list
