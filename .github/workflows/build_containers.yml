@@ -140,7 +140,7 @@ jobs:
        export GH_TOKEN=$(echo ${{ secrets.GITHUB_TOKEN }} )
        
        if [ -f "definition_files/${{ matrix.definitionfile }}" ]; then
-         sudo -E singularity build output.sif ${{ matrix.definitionfile }}
+         sudo -E singularity build output.sif definition_files/${{ matrix.definitionfile }}
        else
          echo "${SINGULARITY_RECIPE} is not found."
          echo "Present working directory: $PWD"
