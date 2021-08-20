@@ -52,7 +52,6 @@ echo "session-quit-child-processes-on-exit=1" >> /etc/rstudio/rsession.conf #qui
 
 
 
-
 #install tensorflow
 apt-get update
 apt-get install -y python3-pip
@@ -121,7 +120,6 @@ cd /
 
 
 
-
 cat > tensorflow_horovod_dep.txt << EOF
 cffi==1.14.6
 cloudpickle==1.6.0
@@ -180,7 +178,6 @@ python3 -c "import horovod.tensorflow as hvd; hvd.init()"
 
 
 
-
 gh_token=$(cat /tmp/hostvar.txt)
 echo $gh_token | gh auth login --with-token
 rm -rf /tmp/hostvar.txt
@@ -190,7 +187,6 @@ cd /tensorflow_wheels_v2.5.0
 gh release download v2.5.0  --repo kaufman-lab/build_tensorflow
 
 cd /
-
 
 
 

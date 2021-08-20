@@ -49,7 +49,6 @@ echo "session-quit-child-processes-on-exit=1" >> /etc/rstudio/rsession.conf #qui
 
 
 
-
 #install tensorflow
 apt-get update
 apt-get install -y python3-pip
@@ -118,7 +117,6 @@ cd /
 
 
 
-
 cat > tensorflow_horovod_dep.txt << EOF
 cffi==1.14.6
 cloudpickle==1.6.0
@@ -173,7 +171,6 @@ mkdir /horovod_repo
 cd /tmp
 
 python3 -c "import horovod.tensorflow as hvd; hvd.init()"
-
 
 
 
