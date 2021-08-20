@@ -32,9 +32,9 @@ jobs:
         all_mod_files=$(echo "$all_mod_files" | tr '\n' ' ') #https://unix.stackexchange.com/questions/26788/using-sed-to-convert-newlines-into-spaces
         echo "all_modified_files=$all_mod_files" >> $GITHUB_ENV  #https://stackoverflow.com/questions/57968497/how-do-i-set-an-env-var-with-a-bash-expression-in-github-actions
         
-        sudo mkdir /modified
-        sudo cp $(git ls-files --modified) /modified
-        ls /modified
+        sudo mkdir /modified_definitions
+        sudo cp $(git ls-files --modified) /modified_definitions
+        ls /modified_definitions
         
     - name: Get changed definition files
       run: |
@@ -43,8 +43,8 @@ jobs:
     - name: Archive production artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: dist-without-markdown
-        path: /modified
+        name: definition_files
+        path: /modified_definitions
   build:
     name: Build
     needs: update-def-files
@@ -62,23 +62,15 @@ jobs:
           {repository: "geospatial_plus_ml_horovod", tag: "dev", definitionfile: "geospatial_plus_ml_horovoddev.def"}
         ]
     steps:
+    
     - uses: actions/checkout@v2 #checkout github repo
-    - run: |
-        echo ${{ github.ref }}
-        git branch
-        echo $GH_TOKEN | gh auth login --with-token
-        gh pr checkout ${{ github.ref}}
-        git pull
-        git rev-parse HEAD
-      
-    - name: Get changed definition files
-      id: changed-files-def
-      uses: tj-actions/changed-files@v9.1
+      run: pwd
+    
+    - name: Download definition files as artifacts
+      uses: actions/download-artifact@v2
       with:
-        files: |
-          .(def)$
-    - name: Print changed definition files
-      run: echo ${{ steps.changed-files-def.outputs.all_modified_files }}
+        name: definition_files
+    - run: unzip definition_files.zip
     
     - name: Set up Go #prereq for singularity
       if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
