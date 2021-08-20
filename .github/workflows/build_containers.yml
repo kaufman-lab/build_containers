@@ -48,8 +48,11 @@ jobs:
         ]
     steps:
     - uses: actions/checkout@v2 #checkout github repo
-      with:
-        ref: ${{ github.head_ref }} #get the head of whatever branch you're on--this includes changed files that were just committed.
+    - run: |
+      git branch
+      git rev-parse HEAD
+      git pull
+      git rev-parse HEAD
     
     - name: Get changed definition files
       id: changed-files-def
