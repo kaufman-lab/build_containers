@@ -76,11 +76,8 @@ jobs:
         name: definition_files
         path: ~/definition_files
     - run: |
-        cp -arf ~/definition_files/. $GITHUB_WORKSPACE
-    - run: |
-        cd $GITHUB_WORKSPACE
-        ls
-        git status
+        cp -arf ~/definition_files/${{ matrix.arrays.definitionfile }} $GITHUB_WORKSPACE #copy updated definition file to repo
+    - run: git status
 
     - name: Get changed definition files
       run: |
@@ -147,5 +144,19 @@ jobs:
         echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ env.username }} --password-stdin oras://ghcr.io
         singularity remote list
         singularity push output.sif oras://ghcr.io/${{ env.organization }}/${{ matrix.arrays.repository }}:${{ matrix.arrays.tag}} 
-       
-
+    
+    - run: |
+      cd $GITHUB_WORKSPACE
+      git reset --HARD #discard all changes so I can switch to current ref
+    
+    - uses: actions/checkout@v2 #checkout github repo
+      with:
+        ref: ${{ github.head_ref }}
+    
+    - run: |
+        #copy altered definition file back over
+        cp -arf ~/definition_files/${{ matrix.arrays.definitionfile }} $GITHUB_WORKSPACE #copy updated definition file to repo
+    
+    - uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: auto-generated changes to ${{ matrix.arrays.definitionfile }} 
