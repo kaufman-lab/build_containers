@@ -53,6 +53,7 @@ echo "session-quit-child-processes-on-exit=1" >> /etc/rstudio/rsession.conf #qui
 
 
 
+
 #install tensorflow
 apt-get update
 apt-get install -y python3-pip
