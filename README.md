@@ -6,7 +6,7 @@ This repo builds and stores singularity images to be used in lab workflows.
 
 The set of image types that are available are displayed on the right under "packages".
 
-There are two images types:
+There are three images types:
 
 -   `geospatial_plus`: Builds on the [rocker](https://github.com/rocker-org/rocker-versioned2) geospatial docker image.
 
@@ -16,11 +16,11 @@ There are two images types:
 
 -   `geospatial_plus_ml`
 
-    -   additionally includes torch for R, and tensorflow for python, and the reticulate package. The version of tensorflow is specifically intel's version for avx512 since this is primarily intended to be run on an intel high performance compute (HPC) cluster.
+    -   additionally includes torch for R, and tensorflow for python, and the reticulate package. The version of tensorflow is specifically intel's version since this is primarily intended to be run on an intel high performance compute (HPC) cluster.
 
 -   `geospatial_plus_ml_horovod`
 
-    -   additionally includes horovod (tensorflow only, set up for CPU) and openmpi.
+    -   additionally includes horovod (tensorflow only, set up for CPU) and openmpi. This doesn't use the intel version of tensorflow since it seems to cause poor performance when combined with horovod.
 
 ## Using Images
 
