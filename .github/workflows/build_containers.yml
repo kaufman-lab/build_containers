@@ -20,13 +20,12 @@ jobs:
 
     - uses: actions/checkout@v2 #checkout github repo
     
-    - name: create definition files #paste together sections of singularity defintion using a dependency structure
+    - name: update definition files #paste together sections of singularity defintion using a dependency structure
       run: |
         cd $GITHUB_WORKSPACE
-        chmod -R u+x githooks
-        ./githooks/create_def_files.R #update definition files
+        Rscript ./githooks/create_def_files.R #update definition files
 
-    - name: Get changed definition files
+    - name: Check for changed definition files--if changes are detected, fail.
       run: |
         if [ -z "$(git ls-files --modified)" ]; then
            echo "success! no defintion files changes detected; either the precommit hook ran successfully or definition components were not altered"
