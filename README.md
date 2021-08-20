@@ -53,6 +53,8 @@ This auto-generated definition file strategy allows different images to rely on 
 
 Note that github action build jobs will fail if the definition file isn't detected to be the exact result of the pasted-together contents of build_scripts. This ensures everyone uses the pre-commit hooks and mitigates the consequences of accidental direct editing of the definition files.
 
+Note that the pre-commit hook calls an R script, so this is a local dependency as well as in the action where that script is run again to ensure it had been run as a pre-commit hook.
+
 ## Building images
 
 This repo uses github actions to build images. There are three triggers:

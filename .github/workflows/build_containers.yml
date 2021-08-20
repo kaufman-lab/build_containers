@@ -66,35 +66,40 @@ jobs:
       
     - name: Get changed definition files (relative to main branch)
       if: github.event_name == 'pull_request'
-      id: changed-files-def
+      id: changed-files-def-vs-main
       uses: tj-actions/changed-files@v9.1
       with:
         files: |
           .(def)$
         base_sha: ${{ env.main_hash }}
-      
 
     - name: Get changed definition files (relative to previous commit when pushing)
       if: github.event_name == 'push'
-      id: changed-files-def
+      id: changed-files-def-vs-main-minus-1
       uses: tj-actions/changed-files@v9.1
       with:
         files: |
           .(def)$
+
+    - name: concatenate changed files into one actions variable
+      run: |
+        changed=${{ steps.changed-files-def-vs-main.outputs.all_modified_files }}${{ steps.changed-files-def-vs-main-minus-1.outputs.all_modified_files }}
+        echo "all_modified_files=changed" >> $GITHUB_ENV  #https://stackoverflow.com/questions/57968497/how-do-i-set-an-env-var-with-a-bash-expression-in-github-actions
+    - run: echo ${{env.all_modified_files}}
         
     - name: Print changed definition files
       if: github.event_name != 'workflow_dispatch'
-      run: echo ${{ steps.changed-files-def.outputs.all_modified_files }}
+      run: echo ${{ env.all_modified_files }}
 
     - name: Set up Go #prereq for singularity
-      if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
+      if: contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
       uses: actions/setup-go@v1
       with:
         go-version: 1.16
       id: go
       
     - name: Install other singularity dependencies
-      if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
+      if: contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
       run: |
         sudo apt-get update && sudo apt-get install -y \
           build-essential \
@@ -106,7 +111,7 @@ jobs:
           pkg-config
           
     - name: Install Singularity
-      if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
+      if: contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
       env:
         SINGULARITY_VERSION: 3.8.1
         GOPATH: /tmp/go
@@ -123,7 +128,7 @@ jobs:
         sudo make -C builddir install          
           
     - name: Build container
-      if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
+      if: contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
       run: |
        export GH_TOKEN=$(echo ${{ secrets.GITHUB_TOKEN }} )
        
@@ -136,8 +141,8 @@ jobs:
 
     - name: log in to github container registry and deploy
       if: |
-        ( (github.event_name != 'pull_request') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch') ) || 
-        ( ( (matrix.arrays.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
+        ( (github.event_name != 'pull_request') && (contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch') ) || 
+        ( ( (matrix.arrays.tag == 'dev') && (contains(env.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
       run: |
         #if it's not a pull request (this means it's a push to main or a worfklow dispatch) AND the definition has changed then deploy
         #OR deploy always for a workflow_dispatch
