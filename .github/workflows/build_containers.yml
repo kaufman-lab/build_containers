@@ -37,7 +37,6 @@ jobs:
     needs: check-def-files
     runs-on: ubuntu-18.04
     env: 
-      username: myoung3
       organization: kaufman-lab
     strategy:
       fail-fast: false
@@ -154,6 +153,6 @@ jobs:
         #if it's not a pull request (this means it's a push to main or a worfklow dispatch) AND the definition has changed then deploy
         #OR deploy always for a workflow_dispatch
         #OR deploy if it's a dev tag and there are changeds to the defintion file
-        echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ env.username }} --password-stdin oras://ghcr.io
+        echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ github.actor }} --password-stdin oras://ghcr.io
         singularity remote list
         singularity push output.sif oras://ghcr.io/${{ env.organization }}/${{ env.repository }}:${{ env.tag}} 
