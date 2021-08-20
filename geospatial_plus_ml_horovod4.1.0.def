@@ -45,8 +45,6 @@ echo "session-save-action-default=no" >> /etc/rstudio/rsession.conf #don't save 
 echo "session-quit-child-processes-on-exit=1" >> /etc/rstudio/rsession.conf #quit child processes on exit
 
 
-
-
 #install tensorflow
 apt-get update
 apt-get install -y python3-pip
@@ -113,7 +111,6 @@ Rscript -e 'torch::install_torch()'
 cd /
 
 
-
 cat > tensorflow_horovod_dep.txt << EOF
 cffi==1.14.6
 cloudpickle==1.6.0
@@ -168,9 +165,6 @@ mkdir /horovod_repo
 cd /tmp
 
 python3 -c "import horovod.tensorflow as hvd; hvd.init()"
-
-
-
 
 
 
