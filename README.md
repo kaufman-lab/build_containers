@@ -55,6 +55,28 @@ Note that github action build jobs will fail if the definition file isn't detect
 
 Note that the pre-commit hook calls an R script, so this is a local dependency as well as in the action where that script is run again to ensure it had been run as a pre-commit hook.
 
+## Automated definition file creation
+
+During the pre-commit hook, create_def_files.R (stored in the githooks directory) pastes together the contents of the build_scripts directory in the following way to create definition files:
+
+-   Each directory in the build_scripts directory corresponds to an image. The directory name will determine name of the definition file (.def will be appended) which will be placed at the git repo root.
+
+-   For each image, a definition file is constructed from the following files, corresponding to sections of a singularity definition file. All of these files are optional. If any of these files is not in the image directory it is silently skipped. (note bootstrap is only optional if a dependency structure is specified. see below).
+
+    -   bootstrap
+
+    -   %setup
+
+    -   %files
+
+    -   %post
+
+    -   %environment
+
+-   an image directory also may contain a dependencies.R script. This script is used to define the dependency structure of an image. Ie, the geospatial_plus_ml4.1.0 image depends on geospatial_plus4.1.0. This means that all the code in the geospatial_plus4.1.0 definition file is run prior to any geospatial_plus_ml4.1.0-specific definition code. This is done a on a section-by-section basis. So the %post section of geospatial_plus_ml4.1.0's definition file is constructed first from geospatial_plus_ml's post section, then from geospatial_plus_ml4.1.0's post section. Then this process is repeated again for the environment section. The one exception is the bootstrap section. Each singularity definition can only have one bootstrap, so an image directory must contain either a bootstrap file or a dependency.R file. If a dependency file is present, the bootstrap file from the first dependency is used as the image's bootstrap.
+
+-   Specifying the dependency.R script: this should be an R script that creates an R object called dependencies, which is a vector containing directory names in build_scripts. The the order of this vector is important--the order of the images specified here determines the order in which code is added to the definition file, so the most fundamental dependency get specified first. Do not include an image's own directory name in the dependency file.
+
 ## Building images
 
 This repo uses github actions to build images. There are three triggers:
@@ -63,6 +85,6 @@ This repo uses github actions to build images. There are three triggers:
 -   pull_request: Any commit in a pull request will run the action, but images are only built if the definitions are changed relative to the main branch (this prevents building for things like readme-only changes). When the trigger is pull_request, images are built but not deployed. This allows testing that the definition files works without uploading the image. The exception is dev tags which are built *and* deployed (which allows testing an image without the bother of merging a PR to main). Note that the pull_request trigger is really only designed to be a pull request where the target is main. Unpredictable results may occur if the destination branch isn't main.
 -   push: This occurs when a pull request is merged into main (or a push to main without a pull request). This will cause images to be built and deployed, but only if the definition files are changed relative to the last commit on main (this prevents building for things like readme-only changes).
 
-Warning: if a push workflow fails on main, a dangerous situation is created: definition files are committed to main but no corresponding images to those definitions have been deployed. To resolve this situation you need first fix the issue that caused the workflow failture then manually rerun the builds (either using workflow_dispatch or by pushing whitespace changes to the corresponding build_scripts).
+Warning: if a push workflow fails on main, a dangerous situation is created: definition files are committed to main but no corresponding images to those definitions have been deployed. To resolve this situation you need first fix the issue that caused the workflow failure then manually rerun the builds (either using workflow_dispatch or by pushing whitespace changes to the corresponding build_scripts).
 
 Inspiration for this repo, along with more complicated examples for building multiple images can be found here: <https://github.com/singularityhub/github-ci>
