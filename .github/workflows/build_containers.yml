@@ -32,10 +32,19 @@ jobs:
         all_mod_files=$(echo "$all_mod_files" | tr '\n' ' ') #https://unix.stackexchange.com/questions/26788/using-sed-to-convert-newlines-into-spaces
         echo "all_modified_files=$all_mod_files" >> $GITHUB_ENV  #https://stackoverflow.com/questions/57968497/how-do-i-set-an-env-var-with-a-bash-expression-in-github-actions
         
-    - name: print changed definition files
-      run: echo ${{ env.all_modified_files }}
-      
-  
+        mkdir /modified
+        cp $(git ls-files --modified) /modified
+        ls /modified
+        
+    - name: Get changed definition files
+      run: |
+        echo ${{env.all_modified_files}}
+
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: dist-without-markdown
+        path: /modified
   build:
     name: Build
     needs: update-def-files
