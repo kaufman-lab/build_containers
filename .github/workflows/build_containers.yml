@@ -127,10 +127,10 @@ jobs:
       if: |
         ( (github.event_name != 'pull_request') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch') ) || 
         ( ( (matrix.arrays.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
+      run: |
         #if it's not a pull request (this means it's a push to main or a worfklow dispatch) AND the definition has changed then deploy
         #OR deploy always for a workflow_dispatch
         #OR deploy if it's a dev tag and there are changeds to the defintion file
-      run: |
         echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ env.username }} --password-stdin oras://ghcr.io
         singularity remote list
         singularity push output.sif oras://ghcr.io/${{ env.organization }}/${{ matrix.arrays.repository }}:${{ matrix.arrays.tag}} 
