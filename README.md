@@ -44,4 +44,13 @@ Within a version-tag (e.g. geospatial_plus:4.1.0), R packages built into the ima
 
 ## Building Images
 
-This repository uses github actions to build images. Inspiration for this repo, along with more complicated examples for building multiple images can be found here: <https://github.com/singularityhub/github-ci>
+This repository uses both git a pre-commit hook (to autogenerate definition files) and github actions to build images.
+
+To set up the pre-commit hook, run:
+
+```
+git config --local core.hooksPath githooks/
+chmod -R u+x githooks
+```
+
+Inspiration for this repo, along with more complicated examples for building multiple images can be found here: <https://github.com/singularityhub/github-ci>

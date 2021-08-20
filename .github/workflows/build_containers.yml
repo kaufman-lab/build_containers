@@ -5,7 +5,9 @@ on:
     branches:
       - main
   # Do the builds on all pull requests (to test them), but don't deploy on PR (see below)
-  pull_request: []
+  pull_request:
+    branches:
+      -main
 jobs:
 
   update-def-files:
@@ -17,25 +19,21 @@ jobs:
         r-version: '4.1.0' 
 
     - uses: actions/checkout@v2 #checkout github repo
-      with:
-        ref: ${{ github.head_ref }} #this is necessary for stefanzweifel/git-auto-commit-action@v4
-
+    
     - name: create definition files #paste together sections of singularity defintion using a dependency structure
       run: |
         cd $GITHUB_WORKSPACE
-        Rscript create_def_files.R #update definition files
+        chmod -R u+x githooks
+        ./githooks/create_def_files.R #update definition files
 
     - name: Get changed definition files
       run: |
-        sudo mkdir /modified_definitions
-        sudo cp $(git ls-files --modified) /modified_definitions
-        ls /modified_definitions
-
-    - name: Archive definition files as artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: definition_files
-        path: /modified_definitions
+        if [ -z "$(git ls-files --modified)" ]; then
+           echo "success! no defintion files changes detected; either the precommit hook ran successfully or definition components were not altered"
+        else
+           echo "definition files have changed meaning the precommit hook failed to run"
+           exit 1
+        fi
 
   build:
     name: Build
@@ -55,39 +53,40 @@ jobs:
         ]
     steps:
     
-    - uses: actions/checkout@v2 #checkout github repo
-      with:
-        ref: ${{ github.base_ref }} 
-          #target branch of pull request. if files are different than this target (typically main), then build.
-          #this means definition files will be built even if there isn't a change relative to the last commit on the PR branch as long as they're different than main.
-        
-    - run: cd ~
-    - name: Download definition files as artifacts
-      uses: actions/download-artifact@v2
-      with:
-        name: definition_files
-        path: ~/definition_files
-    - run: |
-        cp -rf ~/definition_files/${{ matrix.arrays.definitionfile }} $GITHUB_WORKSPACE//${{ matrix.arrays.definitionfile }} || : #copy updated definition file to repo
-         #do nothing and don't return an error if that definition file doesn't exist in changed files.
-    - run: git status
+    - name: checkout current commit
+      uses: actions/checkout@v2 #checkout github repo
+      if: github.event_name != 'worfklow_dispatch'
 
-    - name: Get changed definition files
-      run: |
-        all_mod_files=$(git ls-files --modified)
-        all_mod_files=$(echo "$all_mod_files" | tr '\n' ' ') #https://unix.stackexchange.com/questions/26788/using-sed-to-convert-newlines-into-spaces
-        echo "all_modified_files=$all_mod_files" >> $GITHUB_ENV  #https://stackoverflow.com/questions/57968497/how-do-i-set-an-env-var-with-a-bash-expression-in-github-actions
-    - run: echo ${{env.all_modified_files}}
+    - name: alternatively, checkout main if trigger is workflow_dispatch
+      uses: actions/checkout@v2 
+      if: github.event_name == 'workflow_dispatch'
+      with:
+        ref: main
+
+
+    - name: get SHA of main branch (used subsequently to see if definition files have changed relative to main)
+      run:   echo "main_hash=$(git rev-parse main)" >> $GITHUB_ENV 
+      
+    - name: Get changed definition files (relative to main branch)
+      id: changed-files-def
+      uses: tj-actions/changed-files@v9.1
+      with:
+        files: |
+          .(def)$
+        base_sha: ${{ env.main_hash }}
+        
+    - name: Print changed definition files (relative to main branch)
+      run: echo ${{ steps.changed-files-def.outputs.all_modified_files }}
 
     - name: Set up Go #prereq for singularity
-      if: contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
+      if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
       uses: actions/setup-go@v1
       with:
         go-version: 1.16
       id: go
       
     - name: Install other singularity dependencies
-      if: contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
+      if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
       run: |
         sudo apt-get update && sudo apt-get install -y \
           build-essential \
@@ -99,7 +98,7 @@ jobs:
           pkg-config
           
     - name: Install Singularity
-      if: contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
+      if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
       env:
         SINGULARITY_VERSION: 3.8.1
         GOPATH: /tmp/go
@@ -115,10 +114,8 @@ jobs:
         make -C builddir && \
         sudo make -C builddir install          
           
-
-
     - name: Build container
-      if: contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
+      if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
       run: |
        export GH_TOKEN=$(echo ${{ secrets.GITHUB_TOKEN }} )
        
@@ -131,33 +128,12 @@ jobs:
 
     - name: log in to github container registry and deploy
       if: |
-        ( (github.event_name != 'pull_request') && (contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch') ) || 
-        ( ( (matrix.arrays.tag == 'dev') && (contains(env.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
+        ( (github.event_name != 'pull_request') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch') ) || 
+        ( ( (matrix.arrays.tag == 'dev') && (contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile))) || github.event_name == 'workflow_dispatch') 
+        #if it's not a pull request (this means it's a push to main or a worfklow dispatch) AND the definition has changed then deploy
+        #OR deploy always for a workflow_dispatch
+        #OR deploy if it's a dev tag and there are changeds to the defintion file
       run: |
         echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ env.username }} --password-stdin oras://ghcr.io
         singularity remote list
         singularity push output.sif oras://ghcr.io/${{ env.organization }}/${{ matrix.arrays.repository }}:${{ matrix.arrays.tag}} 
-    
-    - name: reset git repo
-      if: contains(env.all_modified_files, matrix.arrays.definitionfile)
-      run: |
-        cd $GITHUB_WORKSPACE
-        git reset --hard #discard all changes so I can switch to current ref
-
-    - name: checkout git repo,  target ref (probably main)
-      if: contains(env.all_modified_files, matrix.arrays.definitionfile)
-      uses: actions/checkout@v2 #checkout github repo
-      with:
-        ref: ${{ github.head_ref }}
-
-    - name: copy altered definition file back into repo
-      if: contains(env.all_modified_files, matrix.arrays.definitionfile)
-      run: |
-        #copy altered definition file back over
-        cp -arf ~/definition_files/${{ matrix.arrays.definitionfile }} $GITHUB_WORKSPACE #copy updated definition file to repo again since I just cleared it.
-
-    - name: commit changed definition file
-      uses: stefanzweifel/git-auto-commit-action@v4
-      if: contains(env.all_modified_files, matrix.arrays.definitionfile)
-      with:
-        commit_message: auto-generated changes to ${{ matrix.arrays.definitionfile }} 

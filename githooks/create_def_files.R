@@ -1,3 +1,4 @@
+#!/usr/bin/Rscript
 
 images <- list.files("./build_scripts")
 
