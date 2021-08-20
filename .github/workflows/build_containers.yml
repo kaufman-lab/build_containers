@@ -78,7 +78,13 @@ jobs:
     - run: |
         cd $GITHUB_WORKSPACE
         ls
-    
+
+    - name: Get changed definition files
+      run: |
+        all_mod_files=$(git ls-files --modified)
+        all_mod_files=$(echo "$all_mod_files" | tr '\n' ' ') #https://unix.stackexchange.com/questions/26788/using-sed-to-convert-newlines-into-spaces
+        echo "all_modified_files=$all_mod_files" >> $GITHUB_ENV  #https://stackoverflow.com/questions/57968497/how-do-i-set-an-env-var-with-a-bash-expression-in-github-actions
+
     - name: Set up Go #prereq for singularity
       if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
       uses: actions/setup-go@v1
