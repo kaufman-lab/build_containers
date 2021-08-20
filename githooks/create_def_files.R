@@ -1,5 +1,29 @@
 images <- list.files("./build_scripts")
 
+
+read_dependencies <- function(i){
+  dependencies_exists_current <- file.exists(file.path("build_scripts",i,"dependencies.R"))
+  if(dependencies_exists_current){
+    source(file.path("build_scripts",i,"dependencies.R"))
+    if(!exists("dependencies")){
+      stop("dependencies file detected but sourcing this R file does not result in creation of global object named dependencies")
+    }
+    if(length(dependencies)!=1L){
+      stop("an image must have exactly one parent.")
+    }
+  }else{
+    dependencies <- NULL
+  }
+  
+  
+  if(!is.null(dependencies)){
+    x <- Recall(dependencies)  
+  }else{
+    x <- NULL
+  }
+  c(x,dependencies)
+}
+
 lapply(images, function(i){
   bootstrap_exists <- file.exists(file.path("build_scripts",i,"bootstrap"))
   dependencies_exists <- file.exists(file.path("build_scripts",i,"dependencies.R"))
@@ -8,20 +32,13 @@ lapply(images, function(i){
     stop("bootstrap file and dependency file cannot both be specified.")
   }
   
-  if(dependencies_exists){
-    source(file.path("build_scripts",i,"dependencies.R"))
-    if(!exists("dependencies")){
-      stop("dependencies file detected but sourcing this R file does not result in creation of global object named dependencies")
-    }
-  }else{
-    dependencies <- NULL
-  }
-  
+  dependencies <- read_dependencies(i)
+
   if(length(unique(dependencies)) !=length(dependencies)){
     stop("duplicated dependencies detected")
   }
   
-  dependencies <- c(dependencies,  i)
+  dependencies <- c(dependencies,  i) #concat current image to the end.
   
   if(length(unique(dependencies)) !=length(dependencies)){
     stop("current image detected in dependencies vector. Please remove this.")
@@ -61,5 +78,4 @@ lapply(images, function(i){
   
   close(f)
 
-  
 })
