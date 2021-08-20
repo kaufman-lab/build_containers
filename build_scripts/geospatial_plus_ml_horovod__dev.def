@@ -1,0 +1,209 @@
+Bootstrap: docker
+From: rocker/geospatial:4.1.0
+Stage: build
+
+
+#######################################
+%setup
+#######################################
+
+
+  echo $GH_TOKEN > /tmp/hostvar.txt
+
+
+
+
+
+#######################################
+%files
+#######################################
+
+
+
+
+#######################################
+%post
+#######################################
+
+
+#### install github cli #######
+apt-get update
+apt-get install -y gnupg
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+apt-get update
+apt install -y gh
+
+##### install packages #########
+Rscript -e 'install.packages(c("data.table","labelled","terra","batchtools", "here", "intervalaverage", "renv"))'
+Rscript -e "devtools::install_github('kaufman-lab/survivaltools',ref='a9c75521fa58961e59d3c884681862f44c7683d6')"
+
+######set user library to somewhere other than home, to avoid library conflicts with the local machine######
+#this affects all R sessions, not just rstudio server sessions. 
+echo "R_LIBS_USER=/pseudohome/R/packages" >> usr/local/lib/R/etc/Renviron.site  #note that /pseudohome doesn't exist. you need  bind it when running the image.
+echo "RETICULATE_MINICONDA_ENABLED=FALSE"  >> usr/local/lib/R/etc/Renviron.site  #turn off reticulate's prompt to install niconda
+
+
+#####rstudio server defaults#########
+echo "session-save-action-default=no" >> /etc/rstudio/rsession.conf #don't save workspace by default.
+echo "session-quit-child-processes-on-exit=1" >> /etc/rstudio/rsession.conf #quit child processes on exit
+
+
+#install tensorflow
+apt-get update
+apt-get install -y python3-pip
+
+cat > tensorflow_dep.txt << EOF
+absl-py==0.12.0
+astunparse==1.6.3
+attrs==21.2.0
+cachetools==4.2.2
+certifi==2021.5.30
+charset-normalizer==2.0.4
+dill==0.3.4
+flatbuffers==1.12
+future==0.18.2
+gast==0.4.0
+GDAL==3.0.4
+google-auth==1.34.0
+google-auth-oauthlib==0.4.5
+google-pasta==0.2.0
+googleapis-common-protos==1.53.0
+grpcio==1.34.1
+h5py==3.1.0
+idna==3.2
+importlib-resources==5.2.2
+keras==2.6.0
+Keras-Preprocessing==1.1.2
+Markdown==3.3.4
+mnist==0.2.2
+numpy==1.19.2
+oauthlib==3.1.1
+opt-einsum==3.3.0
+Pillow==8.3.1
+portpicker==1.4.0
+promise==2.3
+protobuf==3.17.3
+pyasn1==0.4.8
+pyasn1-modules==0.2.8
+PyYAML==5.4.1
+requests==2.26.0
+requests-oauthlib==1.3.0
+rsa==4.7.2
+scipy==1.7.1
+six==1.15.0
+tensorboard==2.5.0
+tensorboard-data-server==0.6.1
+tensorboard-plugin-wit==1.8.0
+tensorflow-datasets==4.4.0
+tensorflow-estimator==2.5.0
+tensorflow-metadata==1.2.0
+termcolor==1.1.0
+tqdm==4.62.1
+typing==3.7.4.3
+typing-extensions==3.7.4.3
+urllib3==1.26.6
+Werkzeug==2.0.1
+wrapt==1.12.1
+
+EOF
+
+pip install -r tensorflow_dep.txt --no-dependencies --force-reinstall
+rm -rf tensorflow_dep.txt 
+pip install intel-tensorflow==2.5.0  --no-dependencies --force-reinstall
+python3 -m pip freeze
+
+
+### tensorflow for R (via reticulate) ###
+Rscript -e 'install.packages(c("reticulate", "tensorflow","keras"))' 
+
+### torch for R (native) ###
+Rscript -e 'install.packages(c("torch","luz","torchvision","torchdatasets"))'
+Rscript -e 'torch::install_torch()' 
+
+cd /
+
+
+cat > tensorflow_horovod_dep.txt << EOF
+cffi==1.14.6
+cloudpickle==1.6.0
+packaging==21.0
+psutil==5.8.0
+pycparser==2.20
+pyparsing==2.4.7
+EOF
+
+pip install -r tensorflow_horovod_dep.txt --no-dependencies --force-reinstall
+rm -rf tensorflow_horovod_dep.txt
+pip uninstall -y intel-tensorflow
+pip install tensorflow-cpu==2.5.0  --no-dependencies --force-reinstall
+python3 -m pip freeze
+
+#### horovod for distributed learning.######
+
+apt-get update && apt-get install -y  --no-install-recommends \
+        libjpeg-dev \
+        openjdk-8-jdk-headless \
+        openssh-server \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+
+# Allow OpenSSH to talk to containers without asking for confirmation
+mkdir -p /var/run/sshd
+cat /etc/ssh/ssh_config | grep -v StrictHostKeyChecking > /etc/ssh/ssh_config.new && \
+    echo "    StrictHostKeyChecking no" >> /etc/ssh/ssh_config.new && \
+    mv /etc/ssh/ssh_config.new /etc/ssh/ssh_config
+
+ln -s /usr/bin/python3 /usr/bin/python
+
+# Install the IB verbs as recommended here: https://github.com/sylabs/examples/blob/master/machinelearning/horovod/horovod.def
+apt-get update
+apt install -y --no-install-recommends libibverbs*
+apt install -y --no-install-recommends ibverbs-utils librdmacm* infiniband-diags libmlx4* libmlx5* libnuma*
+
+# Install Horovod
+HOROVOD_WITH_TENSORFLOW=1 HOROVOD_WITH_MPI=1 HOROVOD_WITHOUT_GLOO=1 HOROVOD_WITHOUT_MXNET=1 HOROVOD_CPU_OPERATIONS=MPI HOROVOD_WITHOUT_PYTORCH=1 pip install --no-cache-dir horovod[tensorflow]==0.22.1 --no-dependencies  --force-reinstall
+ldconfig
+horovodrun --check-build
+
+python3 -m pip freeze
+
+mkdir /horovod_repo
+    cd /horovod_repo
+    git clone https://github.com/horovod/horovod.git
+    mv  /horovod_repo/horovod/examples /examples
+    rm -r /horovod_repo
+
+cd /tmp
+
+python3 -c "import horovod.tensorflow as hvd; hvd.init()"
+
+
+gh_token=$(cat /tmp/hostvar.txt)
+echo $gh_token | gh auth login --with-token
+rm -rf /tmp/hostvar.txt
+
+mkdir /tensorflow_wheels_v2.5.0
+cd /tensorflow_wheels_v2.5.0
+gh release download v2.5.0  --repo kaufman-lab/build_tensorflow
+
+cd /
+
+
+
+
+#######################################
+%environment
+#######################################
+
+
+  export PYTHONUSERBASE="/pseudohome/python" 
+  export PYTHONPATH="/pseudohome/python/bin:$PYTHONPATH"
+  export PATH="/pseudohome/python/bin:$PATH"
+
+
+  MPI_DIR=/share/apps/OpenMPI/openmpi-4.0.1
+  export PATH="$MPI_DIR/bin:$PATH"
+  export LD_LIBRARY_PATH="$MPI_DIR/lib:$LD_LIBRARY_PATH"
+
+
