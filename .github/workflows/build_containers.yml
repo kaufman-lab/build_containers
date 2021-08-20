@@ -68,7 +68,8 @@ jobs:
         name: definition_files
         path: ~/definition_files
     - run: |
-        cp -rf ~/definition_files/${{ matrix.arrays.definitionfile }} $GITHUB_WORKSPACE//${{ matrix.arrays.definitionfile }} #copy updated definition file to repo
+        cp -rf ~/definition_files/${{ matrix.arrays.definitionfile }} $GITHUB_WORKSPACE//${{ matrix.arrays.definitionfile }} || : #copy updated definition file to repo
+         #do nothing and don't return an error if that definition file doesn't exist in changed files.
     - run: git status
 
     - name: Get changed definition files
