@@ -46,7 +46,6 @@ jobs:
       organization: kaufman-lab
     strategy:
       fail-fast: false
-      matrix:
         arrays: [ 
           {repository: "geospatial_plus", tag: "4.1.0", definitionfile: "geospatial_plus4.1.0.def"}, 
           {repository: "geospatial_plus_ml", tag: "4.1.0", definitionfile: "geospatial_plus_ml4.1.0.def"},
@@ -138,19 +137,26 @@ jobs:
         singularity remote list
         singularity push output.sif oras://ghcr.io/${{ env.organization }}/${{ matrix.arrays.repository }}:${{ matrix.arrays.tag}} 
     
-    - run: |
+    - name: reset git repo
+      if: contains(env.all_modified_files, matrix.arrays.definitionfile)
+      run: |
         cd $GITHUB_WORKSPACE
-        git reset --HARD #discard all changes so I can switch to current ref
-    
-    - uses: actions/checkout@v2 #checkout github repo
+        git reset --hard #discard all changes so I can switch to current ref
+
+    - name: checkout git repo,  target ref (probably main)
+      if: contains(env.all_modified_files, matrix.arrays.definitionfile)
+      uses: actions/checkout@v2 #checkout github repo
       with:
         ref: ${{ github.head_ref }}
-    
-    - run: |
+
+    - name: copy altered definition file back
+      if: contains(env.all_modified_files, matrix.arrays.definitionfile)
+      run: |
         #copy altered definition file back over
         cp -arf ~/definition_files/${{ matrix.arrays.definitionfile }} $GITHUB_WORKSPACE #copy updated definition file to repo again since I just cleared it.
-    
-    - uses: stefanzweifel/git-auto-commit-action@v4
+
+    - name: commit changed definition file
+      uses: stefanzweifel/git-auto-commit-action@v4
       if: contains(env.all_modified_files, matrix.arrays.definitionfile)
       with:
         commit_message: auto-generated changes to ${{ matrix.arrays.definitionfile }} 
