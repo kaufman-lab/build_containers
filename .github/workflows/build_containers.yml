@@ -31,7 +31,7 @@ jobs:
         sudo cp $(git ls-files --modified) /modified_definitions
         ls /modified_definitions
 
-    - name: Archive production artifacts
+    - name: Archive definition files as artifacts
       uses: actions/upload-artifact@v2
       with:
         name: definition_files
