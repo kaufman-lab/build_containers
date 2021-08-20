@@ -28,7 +28,7 @@ lapply(images, function(i){
   }
   
   #bootstrap is a special case. there must only be one
-  outfile <- paste0(i, ".def")
+  outfile <- file.path("definition_files", paste0(i, ".def"))
   f <- file(outfile, open="w") #open a connection to the definition file for writing
   
   if(bootstrap_exists){
