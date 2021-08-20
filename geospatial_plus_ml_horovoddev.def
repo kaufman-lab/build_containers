@@ -73,7 +73,6 @@ grpcio==1.34.1
 h5py==3.1.0
 idna==3.2
 importlib-resources==5.2.2
-intel-tensorflow==2.5.0
 keras==2.6.0
 Keras-Preprocessing==1.1.2
 Markdown==3.3.4
@@ -128,7 +127,6 @@ cd /
 cat > tensorflow_horovod_dep.txt << EOF
 cffi==1.14.6
 cloudpickle==1.6.0
-future==0.18.2
 packaging==21.0
 psutil==5.8.0
 pycparser==2.20
