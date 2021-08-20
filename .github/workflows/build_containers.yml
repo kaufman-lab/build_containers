@@ -51,6 +51,7 @@ jobs:
     - run: |
         echo ${{ github.ref }}
         git branch
+        echo $GH_TOKEN | gh auth login --with-token
         gh pr checkout ${{ github.ref}}
         git pull
         git rev-parse HEAD

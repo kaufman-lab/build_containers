@@ -24,3 +24,4 @@ echo "session-save-action-default=no" >> /etc/rstudio/rsession.conf #don't save 
 echo "session-quit-child-processes-on-exit=1" >> /etc/rstudio/rsession.conf #quit child processes on exit
 
 
+
