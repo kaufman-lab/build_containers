@@ -7,7 +7,7 @@ on:
   # Do the builds on all pull requests (to test them), but don't deploy on PR (see below)
   pull_request:
     branches:
-      -main
+      - main
 jobs:
 
   update-def-files:

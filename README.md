@@ -50,7 +50,7 @@ To set up the pre-commit hook, run:
 
 ```
 git config --local core.hooksPath githooks/
-chmod -R u+x ./githooks/create_def_files
+chmod -R u+x ./githooks/pre-commit
 ```
 
 Inspiration for this repo, along with more complicated examples for building multiple images can be found here: <https://github.com/singularityhub/github-ci>
