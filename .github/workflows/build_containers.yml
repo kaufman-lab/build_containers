@@ -76,8 +76,7 @@ jobs:
         pwd
         ls
         ls -a
-    - run: unzip defini tion_files.zip
-    -
+    - run: unzip definition_files.zip
     
     - name: Set up Go #prereq for singularity
       if: contains(steps.changed-files-def.outputs.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
