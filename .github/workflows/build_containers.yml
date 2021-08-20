@@ -49,8 +49,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2 #checkout github repo
     - run: |
+        echo ${{ github.ref }}
         git branch
-        git rev-parse HEAD
+        git checkout ${{ github.ref}}
         git pull
         git rev-parse HEAD
       
