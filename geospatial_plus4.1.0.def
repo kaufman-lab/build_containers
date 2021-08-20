@@ -38,7 +38,6 @@ rm -rf /tmp/hostvar.txt
 Rscript -e 'install.packages(c("data.table","labelled","terra","batchtools", "here", "intervalaverage", "renv"))'
 Rscript -e "devtools::install_github('kaufman-lab/survivaltools',ref='a9c75521fa58961e59d3c884681862f44c7683d6')"
 
-
 ######set user library to somewhere other than home, to avoid library conflicts with the local machine######
 #this affects all R sessions, not just rstudio server sessions. 
 echo "R_LIBS_USER=/pseudohome/R/packages" >> usr/local/lib/R/etc/Renviron.site  #note that /pseudohome doesn't exist. you need  bind it when running the image.
