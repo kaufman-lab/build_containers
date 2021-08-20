@@ -23,3 +23,4 @@ echo "RETICULATE_MINICONDA_ENABLED=FALSE"  >> usr/local/lib/R/etc/Renviron.site 
 echo "session-save-action-default=no" >> /etc/rstudio/rsession.conf #don't save workspace by default.
 echo "session-quit-child-processes-on-exit=1" >> /etc/rstudio/rsession.conf #quit child processes on exit
 
+
