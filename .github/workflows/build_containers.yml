@@ -8,7 +8,7 @@ on:
   pull_request:
 jobs:
 
-  update-def-files:
+  check-def-files:
     runs-on: ubuntu-18.04
     steps:
 
@@ -34,7 +34,7 @@ jobs:
 
   build:
     name: Build
-    needs: update-def-files
+    needs: check-def-files
     runs-on: ubuntu-18.04
     env: 
       username: myoung3
@@ -60,19 +60,30 @@ jobs:
       with:
         ref: main
 
-
     - name: get SHA of main branch (used subsequently to see if definition files have changed relative to main)
+      if: github.event_name == 'pull_request'
       run:   echo "main_hash=$(git rev-parse main)" >> $GITHUB_ENV 
       
     - name: Get changed definition files (relative to main branch)
+      if: github.event_name == 'pull_request'
       id: changed-files-def
       uses: tj-actions/changed-files@v9.1
       with:
         files: |
           .(def)$
         base_sha: ${{ env.main_hash }}
+      
+
+    - name: Get changed definition files (relative to previous commit when pushing)
+      if: github.event_name == 'push'
+      id: changed-files-def
+      uses: tj-actions/changed-files@v9.1
+      with:
+        files: |
+          .(def)$
         
-    - name: Print changed definition files (relative to main branch)
+    - name: Print changed definition files
+      if: github.event_name != 'workflow_dispatch'
       run: echo ${{ steps.changed-files-def.outputs.all_modified_files }}
 
     - name: Set up Go #prereq for singularity
