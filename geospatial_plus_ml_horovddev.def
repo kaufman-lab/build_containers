@@ -8,6 +8,9 @@ Stage: build
 #######################################
 
 
+  echo $GH_TOKEN > /tmp/hostvar.txt
+
+
 
 
 #######################################
@@ -118,6 +121,74 @@ cd /
 
 
 
+cat > tensorflow_horovod_dep.txt << EOF
+cffi==1.14.6
+cloudpickle==1.6.0
+future==0.18.2
+packaging==21.0
+psutil==5.8.0
+pycparser==2.20
+pyparsing==2.4.7
+EOF
+
+pip install -r tensorflow_horovod_dep.txt --no-dependencies --force-reinstall
+rm -rf tensorflow_horovod_dep.txt
+pip uninstall intel-tensorflow
+pip install tensorflow-cpu==2.5.0  --no-dependencies --force-reinstall
+python3 -m pip freeze
+
+#### horovod for distributed learning.######
+
+apt-get update && apt-get install -y  --no-install-recommends \
+        libjpeg-dev \
+        openjdk-8-jdk-headless \
+        openssh-server \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+
+# Allow OpenSSH to talk to containers without asking for confirmation
+mkdir -p /var/run/sshd
+cat /etc/ssh/ssh_config | grep -v StrictHostKeyChecking > /etc/ssh/ssh_config.new && \
+    echo "    StrictHostKeyChecking no" >> /etc/ssh/ssh_config.new && \
+    mv /etc/ssh/ssh_config.new /etc/ssh/ssh_config
+
+ln -s /usr/bin/python3 /usr/bin/python
+
+# Install the IB verbs as recommended here: https://github.com/sylabs/examples/blob/master/machinelearning/horovod/horovod.def
+apt-get update
+apt install -y --no-install-recommends libibverbs*
+apt install -y --no-install-recommends ibverbs-utils librdmacm* infiniband-diags libmlx4* libmlx5* libnuma*
+
+
+# Install Horovod
+HOROVOD_WITH_TENSORFLOW=1 HOROVOD_WITH_MPI=1 HOROVOD_WITHOUT_GLOO=1 HOROVOD_WITHOUT_MXNET=1 HOROVOD_CPU_OPERATIONS=MPI HOROVOD_WITHOUT_PYTORCH=1 pip install --no-cache-dir horovod[tensorflow]==0.22.1 --no-dependencies  --force-reinstall
+ldconfig
+horovodrun --check-build
+
+python3 -m pip freeze
+
+mkdir /horovod_repo
+    cd /horovod_repo
+    git clone https://github.com/horovod/horovod.git
+    mv  /horovod_repo/horovod/examples /examples
+    rm -r /horovod_repo
+
+cd /tmp
+
+python3 -c "import horovod.tensorflow as hvd; hvd.init()"
+
+
+gh_token=$(cat /tmp/hostvar.txt)
+echo $gh_token | gh auth login --with-token
+rm -rf /tmp/hostvar.txt
+
+mkdir /tensorflow_wheels_v2.5.0
+cd /tensorflow_wheels_v2.5.0
+gh release download v2.5.0  --repo kaufman-lab/build_tensorflow
+
+cd /
+
+
 
 
 #######################################
@@ -128,5 +199,10 @@ cd /
   export PYTHONUSERBASE="/pseudohome/python" 
   export PYTHONPATH="/pseudohome/python/bin:$PYTHONPATH"
   export PATH="/pseudohome/python/bin:$PATH"
+
+
+  MPI_DIR=/share/apps/OpenMPI/openmpi-4.0.1
+  export PATH="$MPI_DIR/bin:$PATH"
+  export LD_LIBRARY_PATH="$MPI_DIR/lib:$LD_LIBRARY_PATH"
 
 
