@@ -1,0 +1,4 @@
+#!/bin/bash
+
+Rscript ./githooks/create_def_files.R
+git add *.def

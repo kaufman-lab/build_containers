@@ -1,5 +1,3 @@
-#!/bin/bash
-
 cat > tensorflow_horovod_dep.txt << EOF
 cffi==1.14.6
 cloudpickle==1.6.0
@@ -12,7 +10,7 @@ EOF
 
 pip install -r tensorflow_horovod_dep.txt --no-dependencies --force-reinstall
 rm -rf tensorflow_horovod_dep.txt
-pip uninstall intel-tensorflow
+pip uninstall -y intel-tensorflow
 pip install tensorflow-cpu==2.5.0  --no-dependencies --force-reinstall
 python3 -m pip freeze
 
@@ -38,7 +36,6 @@ apt-get update
 apt install -y --no-install-recommends libibverbs*
 apt install -y --no-install-recommends ibverbs-utils librdmacm* infiniband-diags libmlx4* libmlx5* libnuma*
 
-
 # Install Horovod
 HOROVOD_WITH_TENSORFLOW=1 HOROVOD_WITH_MPI=1 HOROVOD_WITHOUT_GLOO=1 HOROVOD_WITHOUT_MXNET=1 HOROVOD_CPU_OPERATIONS=MPI HOROVOD_WITHOUT_PYTORCH=1 pip install --no-cache-dir horovod[tensorflow]==0.22.1 --no-dependencies  --force-reinstall
 ldconfig
@@ -55,4 +52,6 @@ mkdir /horovod_repo
 cd /tmp
 
 python3 -c "import horovod.tensorflow as hvd; hvd.init()"
+
+
 
