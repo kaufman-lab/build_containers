@@ -7,22 +7,11 @@ on:
   # Do the builds on all pull requests (to test them), but don't deploy on PR (see below)
   pull_request: []
 jobs:
-  build:
-    name: Build
+
+  update-def-files:
     runs-on: ubuntu-18.04
-    env: 
-      username: myoung3
-      organization: kaufman-lab
-    strategy:
-      fail-fast: false
-      matrix:
-        arrays: [ 
-          {repository: "geospatial_plus", tag: "4.1.0", definitionfile: "geospatial_plus4.1.0.def"}, 
-          {repository: "geospatial_plus_ml", tag: "4.1.0", definitionfile: "geospatial_plus_ml4.1.0.def"},
-          {repository: "geospatial_plus_ml_horovod", tag: "4.1.0", definitionfile: "geospatial_plus_ml_horovod4.1.0.def"},
-          {repository: "geospatial_plus_ml_horovod", tag: "dev", definitionfile: "geospatial_plus_ml_horovoddev.def"}
-        ]
     steps:
+
     - uses: r-lib/actions/setup-r@v1 #install R, since the script to combine sections of definition files is written in R
       with:
         r-version: '4.1.0' 
@@ -50,6 +39,26 @@ jobs:
       with:
         commit_message: create definition files 
 
+  build:
+    name: Build
+    runs-on: ubuntu-18.04
+    env: 
+      username: myoung3
+      organization: kaufman-lab
+    strategy:
+      fail-fast: false
+      matrix:
+        arrays: [ 
+          {repository: "geospatial_plus", tag: "4.1.0", definitionfile: "geospatial_plus4.1.0.def"}, 
+          {repository: "geospatial_plus_ml", tag: "4.1.0", definitionfile: "geospatial_plus_ml4.1.0.def"},
+          {repository: "geospatial_plus_ml_horovod", tag: "4.1.0", definitionfile: "geospatial_plus_ml_horovod4.1.0.def"},
+          {repository: "geospatial_plus_ml_horovod", tag: "dev", definitionfile: "geospatial_plus_ml_horovoddev.def"}
+        ]
+    steps:
+    - uses: actions/checkout@v2 #checkout github repo
+      with:
+        ref: ${{ github.head_ref }} #this is necessary for stefanzweifel/git-auto-commit-action@v4
+    
     - name: Set up Go #prereq for singularity
       if: contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
       uses: actions/setup-go@v1
@@ -86,6 +95,7 @@ jobs:
         make -C builddir && \
         sudo make -C builddir install          
           
+
 
     - name: Build container
       if: contains(env.all_modified_files, matrix.arrays.definitionfile) || github.event_name == 'workflow_dispatch'
