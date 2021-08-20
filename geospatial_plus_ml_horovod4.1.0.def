@@ -38,7 +38,6 @@ rm -rf /tmp/hostvar.txt
 Rscript -e 'install.packages(c("data.table","labelled","terra","batchtools", "here", "intervalaverage", "renv"))'
 Rscript -e "devtools::install_github('kaufman-lab/survivaltools',ref='a9c75521fa58961e59d3c884681862f44c7683d6')"
 
-
 ######set user library to somewhere other than home, to avoid library conflicts with the local machine######
 #this affects all R sessions, not just rstudio server sessions. 
 echo "R_LIBS_USER=/pseudohome/R/packages" >> usr/local/lib/R/etc/Renviron.site  #note that /pseudohome doesn't exist. you need  bind it when running the image.
@@ -106,7 +105,6 @@ pip install intel-tensorflow==2.5.0  --no-dependencies --force-reinstall
 python3 -m pip freeze
 
 
-
 ### tensorflow for R (via reticulate) ###
 Rscript -e 'install.packages(c("reticulate", "tensorflow","keras"))' 
 
@@ -115,7 +113,6 @@ Rscript -e 'install.packages(c("torch","luz","torchvision","torchdatasets"))'
 Rscript -e 'torch::install_torch()' 
 
 cd /
-
 
 
 cat > tensorflow_horovod_dep.txt << EOF
@@ -155,7 +152,6 @@ ln -s /usr/bin/python3 /usr/bin/python
 apt-get update
 apt install -y --no-install-recommends libibverbs*
 apt install -y --no-install-recommends ibverbs-utils librdmacm* infiniband-diags libmlx4* libmlx5* libnuma*
-
 
 # Install Horovod
 HOROVOD_WITH_TENSORFLOW=1 HOROVOD_WITH_MPI=1 HOROVOD_WITHOUT_GLOO=1 HOROVOD_WITHOUT_MXNET=1 HOROVOD_CPU_OPERATIONS=MPI HOROVOD_WITHOUT_PYTORCH=1 pip install --no-cache-dir horovod[tensorflow]==0.22.1 --no-dependencies  --force-reinstall
