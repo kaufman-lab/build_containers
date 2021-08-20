@@ -15,8 +15,7 @@ jobs:
     - uses: r-lib/actions/setup-r@v1 #install R, since the script to combine sections of definition files is written in R
       with:
         r-version: '4.1.0' 
-    - run: Rscript -e 'print("hello")' #test R
-    
+
     - uses: actions/checkout@v2 #checkout github repo
       with:
         ref: ${{ github.head_ref }} #this is necessary for stefanzweifel/git-auto-commit-action@v4
@@ -28,23 +27,16 @@ jobs:
 
     - name: Get changed definition files
       run: |
-        all_mod_files=$(git status --porcelain | sed s/^...//) #https://stackoverflow.com/questions/5237605/how-can-i-run-git-status-and-just-get-the-filenames
-        all_mod_files=$(echo "$all_mod_files" | tr '\n' ' ') #https://unix.stackexchange.com/questions/26788/using-sed-to-convert-newlines-into-spaces
-        echo "all_modified_files=$all_mod_files" >> $GITHUB_ENV  #https://stackoverflow.com/questions/57968497/how-do-i-set-an-env-var-with-a-bash-expression-in-github-actions
-        
         sudo mkdir /modified_definitions
         sudo cp $(git ls-files --modified) /modified_definitions
         ls /modified_definitions
-        
-    - name: Get changed definition files
-      run: |
-        echo ${{env.all_modified_files}}
 
     - name: Archive production artifacts
       uses: actions/upload-artifact@v2
       with:
         name: definition_files
         path: /modified_definitions
+
   build:
     name: Build
     needs: update-def-files
@@ -76,7 +68,7 @@ jobs:
         name: definition_files
         path: ~/definition_files
     - run: |
-        cp -arf ~/definition_files/${{ matrix.arrays.definitionfile }} $GITHUB_WORKSPACE #copy updated definition file to repo
+        cp -rf ~/definition_files/${{ matrix.arrays.definitionfile }} $GITHUB_WORKSPACE//${{ matrix.arrays.definitionfile }} #copy updated definition file to repo
     - run: git status
 
     - name: Get changed definition files
@@ -155,7 +147,7 @@ jobs:
     
     - run: |
         #copy altered definition file back over
-        cp -arf ~/definition_files/${{ matrix.arrays.definitionfile }} $GITHUB_WORKSPACE #copy updated definition file to repo
+        cp -arf ~/definition_files/${{ matrix.arrays.definitionfile }} $GITHUB_WORKSPACE #copy updated definition file to repo again since I just cleared it.
     
     - uses: stefanzweifel/git-auto-commit-action@v4
       if: contains(env.all_modified_files, matrix.arrays.definitionfile)
