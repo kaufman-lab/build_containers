@@ -64,7 +64,8 @@ jobs:
     steps:
     
     - uses: actions/checkout@v2 #checkout github repo
-    - run: pwd
+    - run: cd ~
+    - run: ls
     
     - name: Download definition files as artifacts
       uses: actions/download-artifact@v2
