@@ -34,10 +34,19 @@ apt install -y gh
 Rscript -e 'install.packages(c("data.table","labelled","terra","batchtools", "here", "intervalaverage", "renv"))'
 Rscript -e "devtools::install_github('kaufman-lab/survivaltools',ref='a9c75521fa58961e59d3c884681862f44c7683d6')"
 
-######set user library to somewhere other than home, to avoid library conflicts with the local machine######
-#this affects all R sessions, not just rstudio server sessions. 
-echo "R_LIBS_USER=/pseudohome/R/packages" >> usr/local/lib/R/etc/Renviron.site  #note that /pseudohome doesn't exist. you need  bind it when running the image.
-echo "RETICULATE_MINICONDA_ENABLED=FALSE"  >> usr/local/lib/R/etc/Renviron.site  #turn off reticulate's prompt to install niconda
+#set user library to somewhere other than home, to avoid library conflicts with the local machine
+#note that /pseudohome doesn't exist. you need to mount it when starting the images if you want to install user packages.
+echo "R_LIBS_USER=/pseudohome/R/packages" >> usr/local/lib/R/etc/Renviron.site
+echo "RETICULATE_MINICONDA_ENABLED=FALSE"  >> usr/local/lib/R/etc/Renviron.site  #turn off reticulate's prompt to install miniconda
+
+#while these are also specified in environment below, 
+ #writing them to Renviron.site is necessary for reticulate python in R via rstudio server, since rstudio server doesn't inherit environment variables.
+ #so this should make it so python packages installed via pip install --user get put in /pseudohome rather than in the host's home directory which can cause conflicts/irreproducible states
+echo "PYTHONUSERBASE='/pseudohome/python'" >> usr/local/lib/R/etc/Renviron.site  
+echo "PYTHONPATH='/pseudohome/python/bin:$PYTHONPATH'"  >> usr/local/lib/R/etc/Renviron.site
+
+
+
 
 
 #####rstudio server defaults#########
@@ -52,6 +61,8 @@ echo "session-quit-child-processes-on-exit=1" >> /etc/rstudio/rsession.conf #qui
 #######################################
 
 
+  #set user python library to somewhere other than home, to avoid library conflicts with the local machine
+  #note that /pseudohome doesn't exist. you need to mount it when starting the images if you want to install user packages.
   export PYTHONUSERBASE="/pseudohome/python" 
   export PYTHONPATH="/pseudohome/python/bin:$PYTHONPATH"
   export PATH="/pseudohome/python/bin:$PATH"
