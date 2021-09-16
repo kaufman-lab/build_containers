@@ -22,8 +22,8 @@ Stage: build
 #######################################
 
 
-yum install epel-release
-yum install R
+yum -y install epel-release
+yum -y install R
 
 #set user library to somewhere other than home, to avoid library conflicts with the local machine
 #note that /pseudohome doesn't exist. you need to mount it when starting the images if you want to install user packages.
