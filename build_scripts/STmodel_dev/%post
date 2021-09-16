@@ -3,8 +3,8 @@ yum -y install R
 
 #set user library to somewhere other than home, to avoid library conflicts with the local machine
 #note that /pseudohome doesn't exist. you need to mount it when starting the images if you want to install user packages.
-echo "R_LIBS_USER=/pseudohome/R/packages" >> usr/local/lib/R/etc/Renviron.site
-echo "options(repos = c(REPO_NAME = "https://packagemanager.rstudio.com/all/latest"))" >> usr/local/lib/R/etc/Rprofile.site
+#echo "R_LIBS_USER=/pseudohome/R/packages" >> usr/local/lib/R/etc/Renviron.site
+#echo "options(repos = c(REPO_NAME = "https://packagemanager.rstudio.com/all/latest"))" >> usr/local/lib/R/etc/Rprofile.site
 
 Rscript -e 'install.packages(c("remotes"))' #bootstrap from most recent version of remotes since this is where the remotes::install_version function lives.
  
