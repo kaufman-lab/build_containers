@@ -31,6 +31,7 @@ cd /workspace
 
 
 cat > intel-mkl.repo << EOF
+[intel-mkl-repo]
 name='Intel(R) Intel Math Kernel Library'
 baseurl=https://yum.repos.intel.com/mkl
 enabled=1
@@ -42,6 +43,7 @@ enabled=1
 EOF
 
 yum-config-manager --add-repo intel-mkl.repo
+#yum-config-manager --add-repo https://yum.repos.intel.com/mkl/setup/intel-mkl.repo
 yum -y install intel-mkl-2020.0-088
 
 #wget http://registrationcenter-download.intel.com/akdlm/irc_nas/tec/15275/l_mkl_2019.3.199.tgz
