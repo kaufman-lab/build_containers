@@ -24,6 +24,7 @@ Stage: build
 
 yum -y install wget
 yum -y install cpio
+yum -y install readline-devel
 yum -y group install "Development Tools"
 mkdir /workspace
 cd /workspace
@@ -60,7 +61,7 @@ cd R-3.6.2/
 
 mkdir -p /share/apps/R
 MKL="-Wl,--no-as-needed -lmkl_gf_lp64 -Wl,--start-group -lmkl_gnu_thread -lmkl_core -Wl,--end-group -fopenmp -ldl -lpthread -lm"
-./configure --prefix=/share/apps/R/R-3.6.2 --enable-R-shlib --with-blas="$MKL" --with-lapack
+./configure --prefix=/share/apps/R/R-3.6.2 --enable-R-shlib --with-blas="$MKL" --with-lapack --with-x=no
 make
 make install
 
