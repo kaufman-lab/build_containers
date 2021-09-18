@@ -26,6 +26,7 @@ yum -y install wget
 yum -y install cpio
 yum -y install readline-devel
 yum -y install zlib-devel
+yum -y install bzip2
 yum -y group install "Development Tools"
 mkdir /workspace
 cd /workspace
