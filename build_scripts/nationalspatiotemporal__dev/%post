@@ -1,10 +1,14 @@
 yum -y install wget
 yum -y install cpio
+yum -y group install "Development Tools"
 mkdir /workspace
 cd /workspace
 
+#install mkl
+#use this, except something about the key is messed up
 #https://software.intel.com/content/www/us/en/develop/articles/installing-intel-free-libs-and-python-yum-repo.html
 
+#so use some solutions from here: https://stackoverflow.com/questions/58140187/gpg-keys-failure-prevent-yum-install-of-intel-libraries
 
 cat > intel-mkl.repo << EOF
 [intel-mkl-repo]
