@@ -23,10 +23,9 @@ Stage: build
 
 
 yum -y install wget
-mkdir /root/workspace
-cd /root/workspace/
+mkdir /workspace
+cd /workspace
 
-cd /root/workspace/
 wget https://cran.r-project.org/src/base/R-3/R-3.6.2.tar.gz
 tar zxf R-3.6.2.tar.gz
 cd R-3.6.2/
