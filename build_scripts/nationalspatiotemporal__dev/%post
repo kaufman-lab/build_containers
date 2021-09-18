@@ -23,27 +23,19 @@ yum-config-manager --add-repo intel-mkl.repo
 rpm --import https://yum.repos.intel.com/mkl/setup/PUBLIC_KEY.PUB
 yum -y install intel-mkl-2020.0-088
 
-#wget http://registrationcenter-download.intel.com/akdlm/irc_nas/tec/15275/l_mkl_2019.3.199.tgz
-#tar zxf l_mkl_2019.3.199.tgz
 
-
-#wget http://registrationcenter-download.intel.com/akdlm/irc_nas/tec/16917/l_mkl_2020.4.304.tgz
-#tar zxf l_mkl_2020.4.304.tgz
-
-
-#./install.sh --SHARED_INSTALL --duplicate
-#./install.sh --SHARED_INSTALL --silent
-
+##install R
 cd /workspace
 wget https://cran.r-project.org/src/base/R-3/R-3.6.2.tar.gz
 tar zxf R-3.6.2.tar.gz
 cd R-3.6.2/
 
+mkdir -p /share/apps/R
+MKL="-Wl,--no-as-needed -lmkl_gf_lp64 -Wl,--start-group -lmkl_gnu_thread -lmkl_core -Wl,--end-group -fopenmp -ldl -lpthread -lm"
+./configure --prefix=/share/apps/R/R-3.6.2 --enable-R-shlib --with-blas="$MKL" --with-lapack
+make
+make install
 
-
-
-#yum -y install epel-release
-#yum -y install R
 
 #set user library to somewhere other than home, to avoid library conflicts with the local machine
 #note that /pseudohome doesn't exist. you need to mount it when starting the images if you want to install user packages.
