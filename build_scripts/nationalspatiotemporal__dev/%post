@@ -20,6 +20,7 @@ EOF
 
 yum-config-manager --add-repo intel-mkl.repo
 #yum-config-manager --add-repo https://yum.repos.intel.com/mkl/setup/intel-mkl.repo
+rpm --import https://yum.repos.intel.com/mkl/setup/PUBLIC_KEY.PUB
 yum -y install intel-mkl-2020.0-088
 
 #wget http://registrationcenter-download.intel.com/akdlm/irc_nas/tec/15275/l_mkl_2019.3.199.tgz
