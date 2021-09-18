@@ -1,8 +1,5 @@
 yum -y install wget
 yum -y install cpio
-yum -y install readline-devel
-yum -y install zlib-devel
-yum -y install bzip2
 yum -y group install "Development Tools"
 mkdir /workspace
 cd /workspace
@@ -36,6 +33,11 @@ cd /workspace
 wget https://cran.r-project.org/src/base/R-3/R-3.6.2.tar.gz
 tar zxf R-3.6.2.tar.gz
 cd R-3.6.2/
+
+#yum -y install readline-devel
+#yum -y install zlib-devel
+#yum -y install bzip2
+yum-builddep -y R
 
 mkdir -p /share/apps/R
 MKL="-Wl,--no-as-needed -lmkl_gf_lp64 -Wl,--start-group -lmkl_gnu_thread -lmkl_core -Wl,--end-group -fopenmp -ldl -lpthread -lm"
