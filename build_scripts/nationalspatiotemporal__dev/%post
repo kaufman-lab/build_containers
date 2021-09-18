@@ -2,14 +2,18 @@ yum -y install wget
 mkdir /workspace
 cd /workspace
 
-wget https://cran.r-project.org/src/base/R-3/R-3.6.2.tar.gz
-tar zxf R-3.6.2.tar.gz
-cd R-3.6.2/
+
 
 wget http://registrationcenter-download.intel.com/akdlm/irc_nas/tec/15275/l_mkl_2019.3.199.tgz
 tar zxf l_mkl_2019.3.199.tgz
 cd l_mkl_2019.3.199/
-#./install.sh --SHARED_INSTALL
+./install.sh --SHARED_INSTALL
+
+cd /workspace
+wget https://cran.r-project.org/src/base/R-3/R-3.6.2.tar.gz
+tar zxf R-3.6.2.tar.gz
+cd R-3.6.2/
+
 
 
 
