@@ -22,8 +22,24 @@ Stage: build
 #######################################
 
 
-yum -y install epel-release
-yum -y install R
+yum -y install wget
+mkdir /root/workspace
+cd /root/workspace/
+
+cd /root/workspace/
+wget https://cran.r-project.org/src/base/R-3/R-3.6.2.tar.gz
+tar zxf R-3.6.2.tar.gz
+cd R-3.6.2/
+
+wget http://registrationcenter-download.intel.com/akdlm/irc_nas/tec/15275/l_mkl_2019.3.199.tgz
+tar zxf l_mkl_2019.3.199.tgz
+cd l_mkl_2019.3.199/
+#./install.sh --SHARED_INSTALL
+
+
+
+#yum -y install epel-release
+#yum -y install R
 
 #set user library to somewhere other than home, to avoid library conflicts with the local machine
 #note that /pseudohome doesn't exist. you need to mount it when starting the images if you want to install user packages.
