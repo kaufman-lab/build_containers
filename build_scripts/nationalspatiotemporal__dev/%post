@@ -7,7 +7,7 @@ wget http://registrationcenter-download.intel.com/akdlm/irc_nas/tec/15275/l_mkl_
 tar zxf l_mkl_2019.3.199.tgz
 
 
-http://registrationcenter-download.intel.com/akdlm/irc_nas/tec/16917/l_mkl_2020.4.304.tgz
+wget http://registrationcenter-download.intel.com/akdlm/irc_nas/tec/16917/l_mkl_2020.4.304.tgz
 tar zxf l_mkl_2020.4.304.tgz
 
 
