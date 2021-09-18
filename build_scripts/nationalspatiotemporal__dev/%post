@@ -37,6 +37,7 @@ cd R-3.6.2/
 #yum -y install readline-devel
 #yum -y install zlib-devel
 #yum -y install bzip2
+yum -y install epel-release
 yum-builddep -y R
 
 mkdir -p /share/apps/R
