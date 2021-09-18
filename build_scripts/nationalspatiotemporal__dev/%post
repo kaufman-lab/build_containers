@@ -1,13 +1,15 @@
 yum -y install wget
+yum -y install cpio
 mkdir /workspace
 cd /workspace
-
-
 
 wget http://registrationcenter-download.intel.com/akdlm/irc_nas/tec/15275/l_mkl_2019.3.199.tgz
 tar zxf l_mkl_2019.3.199.tgz
 cd l_mkl_2019.3.199/
-./install.sh --SHARED_INSTALL
+
+
+#./install.sh --SHARED_INSTALL --duplicate
+#./install.sh --SHARED_INSTALL --silent
 
 cd /workspace
 wget https://cran.r-project.org/src/base/R-3/R-3.6.2.tar.gz
