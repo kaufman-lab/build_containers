@@ -29,7 +29,8 @@ cd /workspace
 
 #https://software.intel.com/content/www/us/en/develop/articles/installing-intel-free-libs-and-python-yum-repo.html
 
-yum-config-manager --add-repo https://yum.repos.intel.com/mkl/setup/intel-mkl.repo
+#yum-config-manager --add-repo https://yum.repos.intel.com/mkl/setup/intel-mkl.repo
+yum-config-manager --add-repo https://yum.repos.intel.com/setup/intelproducts.repo
 yum install intel-mkl-2020.0-088
 
 
