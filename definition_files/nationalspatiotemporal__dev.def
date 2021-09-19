@@ -69,8 +69,9 @@ yum-builddep -y R
 
 mkdir -p /share/apps/R
 #MKL_LIB_PATH="/opt/intel/mkl/lib/intel64"
-source /opt/intel/compilers_and_libraries_2020.0.166/linux/mkl/bin/mklvars.sh
-MKL_LIB_PATH="/opt/intel/compilers_and_libraries_2020.0.166/linux/mkl/lib/intel64_lin"
+source /opt/intel/compilers_and_libraries_2020.0.166/linux/mkl/bin/mklvars.sh intel64
+source /opt/intel/bin/compilervars.sh intel64
+MKL_LIB_PATH="${MKLROOT}/lib/intel64/"
 MKL="-L${MKL_LIB_PATH} -lmkl_gf_lp64 -lmkl_core -lmkl_gnu_thread -dl -fopenmp"
 
 ./configure --prefix=/share/apps/R/R-3.6.2 --enable-R-shlib --with-blas="$MKL" --with-lapack --with-x=no
