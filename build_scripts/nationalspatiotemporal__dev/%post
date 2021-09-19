@@ -53,6 +53,8 @@ MKL="-Wl,--no-as-needed -lmkl_gf_lp64 -Wl,--start-group -lmkl_gnu_thread  -lmkl_
 make
 make install
 
+echo "MKL_THREADING_LAYER=GNU" >> /etc/environment 
+
 
 #set user library to somewhere other than home, to avoid library conflicts with the local machine
 #note that /pseudohome doesn't exist. you need to mount it when starting the images if you want to install user packages.
