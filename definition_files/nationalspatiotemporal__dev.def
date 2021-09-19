@@ -58,21 +58,20 @@ wget https://cran.r-project.org/src/base/R-3/R-3.6.2.tar.gz
 tar zxf R-3.6.2.tar.gz
 cd R-3.6.2/
 
-#yum -y install readline-devel
-#yum -y install zlib-devel
-#yum -y install bzip2
+#this link might be useful, but it seems yum-builddep R works fine
+#https://stackoverflow.com/questions/17473547/error-with-readline-yes-default-and-headers-libs-are-not-available
 yum -y install epel-release
 yum -y install which
 yum-builddep -y R
 
-#https://stackoverflow.com/questions/17473547/error-with-readline-yes-default-and-headers-libs-are-not-available
-
+#some useful code here, but I'm not using icc:
+#https://stat.ethz.ch/pipermail/r-devel/2015-October/071919.html
+#also a good reference: https://www.posdefecology.net/post/compiling-r/
+#https://software.intel.com/content/www/us/en/develop/articles/using-intel-mkl-with-r.html
 mkdir -p /share/apps/R
-#MKL_LIB_PATH="/opt/intel/mkl/lib/intel64"
 source /opt/intel/compilers_and_libraries_2020.0.166/linux/mkl/bin/mklvars.sh intel64
 source /opt/intel/bin/compilervars.sh intel64
-MKL_LIB_PATH="${MKLROOT}/lib/intel64/"
-MKL="-L${MKL_LIB_PATH} -lmkl_gf_lp64 -lmkl_core -lmkl_gnu_thread -dl -fopenmp"
+MKL="-Wl,--no-as-needed -lmkl_gf_lp64 -Wl,--start-group -lmkl_gnu_thread  -lmkl_core  -Wl,--end-group -fopenmp  -ldl -lpthread -lm"
 
 ./configure --prefix=/share/apps/R/R-3.6.2 --enable-R-shlib --with-blas="$MKL" --with-lapack --with-x=no
 make
