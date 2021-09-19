@@ -65,14 +65,16 @@ yum -y install epel-release
 yum -y install which
 yum-builddep -y R
 
+#https://stackoverflow.com/questions/17473547/error-with-readline-yes-default-and-headers-libs-are-not-available
+
 mkdir -p /share/apps/R
-MKL_LIB_PATH="/opt/intel/mkl/lib/intel64"
+#MKL_LIB_PATH="/opt/intel/mkl/lib/intel64"
+MKL_LIB_PATH="/opt/intel/compilers_and_libraries_2020.0.166/linux/mkl/lib/intel64_lin"
 MKL="-L${MKL_LIB_PATH} -lmkl_gf_lp64 -lmkl_core -lmkl_gnu_thread -dl -fopenmp"
 
 ./configure --prefix=/share/apps/R/R-3.6.2 --enable-R-shlib --with-blas="$MKL" --with-lapack --with-x=no
 make
 make install
-PATH=$PATH:/share/apps/R/R-3.6.2/bin
 
 
 #set user library to somewhere other than home, to avoid library conflicts with the local machine
@@ -217,5 +219,8 @@ PATH=$PATH:/share/apps/R/R-3.6.2/bin
 #######################################
 %environment
 #######################################
+
+
+PATH=$PATH:/share/apps/R/R-3.6.2/bin
 
 
