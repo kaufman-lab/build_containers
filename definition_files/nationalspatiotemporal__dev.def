@@ -67,13 +67,12 @@ yum-builddep -y R
 
 mkdir -p /share/apps/R
 MKL_LIB_PATH="/opt/intel/mkl/lib/intel64"
-MKL="-L${MKL_LIB_PATH} -Wl,--no-as-needed -lmkl_gf_lp64 -Wl,--start-group -lmkl_gnu_thread -lmkl_core -Wl,--end-group -fopenmp -ldl -lpthread -lm"
-
-
+MKL="-L${MKL_LIB_PATH} -lmkl_gf_lp64 -lmkl_core -lmkl_gnu_thread -dl -fopenmp"
 
 ./configure --prefix=/share/apps/R/R-3.6.2 --enable-R-shlib --with-blas="$MKL" --with-lapack --with-x=no
 make
 make install
+PATH=$PATH:/share/apps/R/R-3.6.2/bin
 
 
 #set user library to somewhere other than home, to avoid library conflicts with the local machine
