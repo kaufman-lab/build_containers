@@ -1,5 +1,5 @@
-Bootstrap: docker
-From: centos:7.6.1810
+Bootstrap: oras
+From: kaufman-lab/mkl_centos7:2021.3.0
 Stage: build
 
 
