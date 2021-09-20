@@ -66,7 +66,7 @@ export SHLIB_OPENMP_CFLAGS="-qopenmp"
 export SHLIB_OPENMP_CXXFLAGS="-qopenmp"
 export SHLIB_OPENMP_FFLAGS="-qopenmp"
 
-MKL_LIB_PATH="${MKLROOT}/lib/intel64/"
+#statically link MKL https://software.intel.com/content/www/us/en/develop/articles/using-intel-mkl-with-r.html
 MKL=" -L${MKLROOT}/lib/intel64 -Wl,--start-group 
 ${MKLROOT}/lib/intel64/libmkl_gf_lp64.a 
  ${MKLROOT}/lib/intel64/libmkl_gnu_thread.a
