@@ -1,0 +1,59 @@
+Bootstrap: docker
+From: centos:7.6.1810
+Stage: build
+
+
+#######################################
+%setup
+#######################################
+
+
+
+
+#######################################
+%files
+#######################################
+
+
+
+
+#######################################
+%post
+#######################################
+
+
+yum -y install wget
+yum -y install cpio
+yum -y group install "Development Tools"
+mkdir /workspace
+cd /workspace
+
+#install mkl, icc: 
+#https://software.intel.com/content/www/us/en/develop/documentation/installation-guide-for-intel-oneapi-toolkits-linux/top/installation/install-using-package-managers/yum-dnf-zypper.html#yum-dnf-zypper
+
+
+tee > /tmp/oneAPI.repo << EOF
+[oneAPI]
+name=Intel® oneAPI repository
+baseurl=https://yum.repos.intel.com/oneapi
+enabled=1
+gpgcheck=1
+#repo_gpgcheck=1
+#gpgkey=https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+EOF
+
+mv /tmp/oneAPI.repo /etc/yum.repos.d
+rpm --import https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+#yum -y install intel-basekit-2021.3.0.x86_64
+yum -y install intel-oneapi-mkl-devel-2021.3.0.x86_64 
+yum -y install intel-oneapi-mkl-2021.3.0.x86_64    
+yum -y install intel-hpckit-2021.3.0.x86_64
+
+
+
+
+#######################################
+%environment
+#######################################
+
+
