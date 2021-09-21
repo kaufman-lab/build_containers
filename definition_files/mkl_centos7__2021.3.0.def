@@ -50,6 +50,14 @@ yum -y install intel-oneapi-mkl-2021.3.0.x86_64
 yum -y install intel-hpckit-2021.3.0.x86_64
 
 
+#install R dependencies
+#this link might be useful, but it seems yum-builddep R works fine
+#https://stackoverflow.com/questions/17473547/error-with-readline-yes-default-and-headers-libs-are-not-available
+yum -y install epel-release
+yum -y install which
+yum-builddep -y R
+
+
 
 
 #######################################
