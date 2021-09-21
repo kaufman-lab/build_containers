@@ -61,7 +61,7 @@ export SHLIB_OPENMP_CXXFLAGS="-qopenmp"
 export SHLIB_OPENMP_FFLAGS="-qopenmp"
 
 MKL_LIB_PATH="${MKLROOT}/lib/intel64/"
-MKL="L${MKL_LIB_PATH} -lmkl_rt -liomp5 -lpthread"
+MKL="L${MKL_LIB_PATH} -Wl,--no-as-needed -lmkl_gf_lp64 -Wl,--start-group -lmkl_gnu_thread  -lmkl_core  -Wl,--end-group -fopenmp  -ldl -lpthread -lm"
 
 ./configure --prefix=/share/apps/R/R-3.6.2 --enable-R-shlib --with-blas="$MKL" --with-lapack --with-x=no
 make
