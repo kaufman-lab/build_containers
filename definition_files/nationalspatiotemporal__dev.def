@@ -49,27 +49,24 @@ export FC="ifort"
 export AR="xiar"
 export LD="xild"
 
-export CFLAGS="-fPIC -O2 -ipo -xHost -march=skylake-avx512 -mtune=skylake-avx512 -multiple-processes=8"
-export CXXFLAGS="-fPIC -O2 -ipo -xHost -march=skylake-avx512 -mtune=skylake-avx512 -multiple-processes=8"
-export FFLAGS="-fPIC -O2 -ipo -xHost -march=skylake-avx512 -mtune=skylake-avx512 -multiple-processes=8"
-export FCFLAGS="-fPIC -O2 -ipo -xHost -march=skylake-avx512 -mtune=skylake-avx512 -multiple-processes=8"
+export CFLAGS="-fPIC -qopenmp -O3 -ipo -xHost -march=skylake-avx512 -mtune=skylake-avx512 -multiple-processes=8"
+export CXXFLAGS="-fPIC -qopenmp -O3 -ipo -xHost -march=skylake-avx512 -mtune=skylake-avx512 -multiple-processes=8"
+export FFLAGS="-fPIC -qopenmp -O3 -ipo -xHost -march=skylake-avx512 -mtune=skylake-avx512 -multiple-processes=8"
+export FCFLAGS="-fPIC -qopenmp -O3 -ipo -xHost -march=skylake-avx512 -mtune=skylake-avx512 -multiple-processes=8"
 export LDFLAGS=""
-
-export R_OPENMP_CFLAGS="-qopenmp"
-export SHLIB_OPENMP_CFLAGS="-qopenmp"
-export SHLIB_OPENMP_CXXFLAGS="-qopenmp"
-export SHLIB_OPENMP_FFLAGS="-qopenmp"
 
 MKL_LIB_PATH="${MKLROOT}/lib/intel64/"
 MKL="-fopenmp -m64 -I${MKLROOT}/include cgesv_ex.c -Wl,--no-as-needed -L${MKLROOT}/lib/intel64 -lmkl_intel_lp64 -lmkl_core -lmkl_gnu_thread -lpthread -lm -ldl" #https://software.intel.com/sites/products/documentation/doclib/mkl_sa/11/mkl_lapack_examples/c_bindings.htm
 
-./configure --prefix=/share/apps/R/R-3.6.2 --enable-R-shlib --with-blas="$MKL" --with-lapack --with-x=no
+./configure --prefix=/share/apps/R/R-3.6.2 --enable-R-static-lib --with-blas="$MKL" --with-lapack --with-x=no --enable-memory-profiling --disable-BLAS-shlib
 make
 make install
+
 
 #not sure if this actually needed: Dirk mentions it for dynamic linking. No mentions about this specifically when building from source...
 echo "MKL_THREADING_LAYER=GNU" >> /etc/environment  
 
+rm -rf /opt/intel
 
 #set user library to somewhere other than home, to avoid library conflicts with the local machine
 #note that /pseudohome doesn't exist. you need to mount it when starting the images if you want to install user packages.
