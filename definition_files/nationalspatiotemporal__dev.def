@@ -79,14 +79,18 @@ export FC="ifort"
 export AR="xiar"
 export LD="xild"
 
-export CFLAGS="-fPIC -qopenmp -O3 -ipo -xHost -march=skylake-avx512 -mtune=skylake-avx512 -multiple-processes=8"
-export CXXFLAGS="-fPIC -qopenmp -O3 -ipo -xHost -march=skylake-avx512 -mtune=skylake-avx512 -multiple-processes=8"
-export FFLAGS="-fPIC -qopenmp -O3 -ipo -xHost -march=skylake-avx512 -mtune=skylake-avx512 -multiple-processes=8"
-export FCFLAGS="-fPIC -qopenmp -O3 -ipo -xHost -march=skylake-avx512 -mtune=skylake-avx512 -multiple-processes=8"
-export LDFLAGS=""
+#use link advisor to generate CFLAGS and MKL for dynamic
+##https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/onemkl/link-line-advisor.html?wapkw=(Intel+64+and+IA-32+Architectures+Software+Developer)
 
-MKL_LIB_PATH="${MKLROOT}/lib/intel64/"
-MKL="-fopenmp -m64 -I${MKLROOT}/include cgesv_ex.c -Wl,--no-as-needed -L${MKLROOT}/lib/intel64 -lmkl_intel_lp64 -lmkl_core -lmkl_gnu_thread -lpthread -lm -ldl" #https://software.intel.com/sites/products/documentation/doclib/mkl_sa/11/mkl_lapack_examples/c_bindings.htm
+
+export CFLAGS='-DMKL_ILP64  -I"${MKLROOT}/include" -fPIC -qopenmp -O3 -ipo -xHost -march=skylake-avx512 -mtune=skylake-avx512 -multiple-processes=8'
+export CXXFLAGS='-DMKL_ILP64  -I"${MKLROOT}/include" -fPIC -qopenmp -O3 -ipo -xHost -march=skylake-avx512 -mtune=skylake-avx512 -multiple-processes=8'
+export FFLAGS='-i8  -I"${MKLROOT}/include" -fPIC -qopenmp -O3 -ipo -xHost -march=skylake-avx512 -mtune=skylake-avx512 -multiple-processes=8'
+export FCFLAGS='-i8  -I"${MKLROOT}/include" -fPIC -qopenmp -O3 -ipo -xHost -march=skylake-avx512 -mtune=skylake-avx512 -multiple-processes=8'
+export LDFLAGS="-qopenmp"
+
+
+MKL="-L${MKLROOT}/lib/intel64 -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread -lm -ldl"
 
 
 ./configure --prefix=/share/apps/R/R-3.6.2 --enable-R-shlib --with-blas="$MKL" --with-lapack --with-x=no --enable-memory-profiling
