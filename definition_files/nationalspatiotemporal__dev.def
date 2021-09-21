@@ -86,7 +86,7 @@ export FCFLAGS="-fPIC -qopenmp -O3 -ipo -xHost -march=skylake-avx512 -mtune=skyl
 export LDFLAGS=""
 
 MKL_LIB_PATH="${MKLROOT}/lib/intel64/"
-MKL="L${MKL_LIB_PATH} -Wl,--no-as-needed -lmkl_gf_lp64 -Wl,--start-group -lmkl_gnu_thread  -lmkl_core  -Wl,--end-group -fopenmp  -ldl -lpthread -lm"
+MKL="-fopenmp -m64 -I${MKLROOT}/include cgesv_ex.c -Wl,--no-as-needed -L${MKLROOT}/lib/intel64 -lmkl_intel_lp64 -lmkl_core -lmkl_gnu_thread -lpthread -lm -ldl" #https://software.intel.com/sites/products/documentation/doclib/mkl_sa/11/mkl_lapack_examples/c_bindings.htm
 
 
 ./configure --prefix=/share/apps/R/R-3.6.2 --enable-R-shlib --with-blas="$MKL" --with-lapack --with-x=no --enable-memory-profiling
