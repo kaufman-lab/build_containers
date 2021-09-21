@@ -28,10 +28,10 @@ export LD="xild"
 #use link advisor to generate CFLAGS and MKL for static
 ##https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/onemkl/link-line-advisor.html?wapkw=(Intel+64+and+IA-32+Architectures+Software+Developer)
 
-export CFLAGS='-DMKL_ILP64  -I"${MKLROOT}/include" -fPIC -qopenmp -O2 -ipo -xHost -multiple-processes=8'
-export CXXFLAGS='-DMKL_ILP64  -I"${MKLROOT}/include" -fPIC -qopenmp -O2 -ipo -xHost -multiple-processes=8'
-export FFLAGS='-i8  -I"${MKLROOT}/include" -fPIC -qopenmp -O2 -ipo -xHost -multiple-processes=8'
-export FCFLAGS='-i8  -I"${MKLROOT}/include" -fPIC -qopenmp -O2 -ipo -xHost -multiple-processes=8'
+export CFLAGS='-DMKL_ILP64 -I"${MKLROOT}/include" -fPIC -qopenmp -O2 -ipo -xHost -multiple-processes=8'
+export CXXFLAGS='-DMKL_ILP64 -I"${MKLROOT}/include" -fPIC -qopenmp -O2 -ipo -xHost -multiple-processes=8'
+export FFLAGS='-i8 -I"${MKLROOT}/include" -fPIC -qopenmp -O2 -ipo -xHost -multiple-processes=8'
+export FCFLAGS='-i8 -I"${MKLROOT}/include" -fPIC -qopenmp -O2 -ipo -xHost -multiple-processes=8'
 export LDFLAGS="-qopenmp"
 
 MKL_LIB_PATH="${MKLROOT}/lib/intel64/"
