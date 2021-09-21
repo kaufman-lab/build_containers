@@ -76,6 +76,7 @@ echo "MKL_THREADING_LAYER=GNU" >> /etc/environment
 #echo "R_LIBS_USER=/pseudohome/R/packages" >> usr/local/lib/R/etc/Renviron.site
 #echo "options(repos = c(REPO_NAME = "https://packagemanager.rstudio.com/all/latest"))" >> usr/local/lib/R/etc/Rprofile.site
 
+
 #Rscript -e 'install.packages(c("remotes",repos = "http://cran.us.r-project.org"))' #bootstrap from most recent version of remotes since this is where the remotes::install_version function lives.
 #  
 # 
