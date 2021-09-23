@@ -54,8 +54,7 @@ export FFLAGS="-fPIC -qopenmp -O3 -qopt-mem-layout-trans=3 -march=skylake-avx512
 export FCFLAGS="-fPIC -qopenmp -O3 -qopt-mem-layout-trans=3 -march=skylake-avx512 -ipo -xHost -multiple-processes=8"
 export LDFLAGS="-qopenmp"
 
-MKL_LIB_PATH="${MKLROOT}/lib/intel64/"
-MKL="L${MKL_LIB_PATH} -lmkl_rt -liomp5 -lpthread"
+MKL="-lmkl_rt -lpthread"
 
 ./configure --prefix=/share/apps/R/R-3.6.2 --enable-R-shlib --with-blas="$MKL" --with-lapack --enable-BLAS-shlib --with-x=no --enable-memory-profiling
 make -j8
@@ -73,7 +72,7 @@ rm -rf /opt/intel/oneapi/vtune
 #set user library to somewhere other than home, to avoid library conflicts with the local machine
 #note that /pseudohome doesn't exist. you need to mount it when starting the images if you want to install user packages.
 echo "R_LIBS_USER=/pseudohome/R/packages" >> /share/apps/R/R-3.6.2/lib64/R/etc/Renviron.site
-echo "options(repos = c(REPO_NAME = "https://packagemanager.rstudio.com/all/latest"))" >> /share/apps/R/R-3.6.2/lib64/R/etc/Rprofile.site
+echo "options(repos = c(REPO_NAME = 'https://packagemanager.rstudio.com/all/latest'))" >> /share/apps/R/R-3.6.2/lib64/R/etc/Rprofile.site
 
 #Rscript -e 'install.packages(c("remotes",repos = "http://cran.us.r-project.org"))' #bootstrap from most recent version of remotes since this is where the remotes::install_version function lives.
 #  
