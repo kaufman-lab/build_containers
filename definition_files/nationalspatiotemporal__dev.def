@@ -67,16 +67,19 @@ source /opt/intel/oneapi/setvars.sh
 
 export CC="icc"
 export CXX="icpc"
+export OBJC="icc"
 export F77="ifort"
 export FC="ifort"
 export AR="xiar"
 export LD="xild"
 
-export CFLAGS="-fPIC -qopenmp -O3 -qopt-mem-layout-trans=3 -march=skylake-avx512 -ipo -xHost -multiple-processes=8"
-export CXXFLAGS="-fPIC -qopenmp -O3 -qopt-mem-layout-trans=3 -march=skylake-avx512 -ipo -xHost -multiple-processes=8"
-export FFLAGS="-fPIC -qopenmp -O3 -qopt-mem-layout-trans=3 -march=skylake-avx512 -ipo -xHost -multiple-processes=8"
-export FCFLAGS="-fPIC -qopenmp -O3 -qopt-mem-layout-trans=3 -march=skylake-avx512 -ipo -xHost -multiple-processes=8"
+export CFLAGS="-fPIC -qopenmp -O3 -qopt-mem-layout-trans=3 -march=skylake-avx512 -ipo -multiple-processes=8"
+export CXXFLAGS="-fPIC -qopenmp -O3 -qopt-mem-layout-trans=3 -march=skylake-avx512 -ipo -multiple-processes=8"
+export OBJC="-fPIC -qopenmp -O3 -qopt-mem-layout-trans=3 -march=skylake-avx512 -ipo -multiple-processes=8"
+export FFLAGS="-fPIC -qopenmp -O3 -qopt-mem-layout-trans=3 -march=skylake-avx512 -ipo -multiple-processes=8"
+export FCFLAGS="-fPIC -qopenmp -O3 -qopt-mem-layout-trans=3 -march=skylake-avx512 -ipo -multiple-processes=8"
 export LDFLAGS="-qopenmp"
+
 
 MKL="-lmkl_rt -lpthread"
 
