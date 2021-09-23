@@ -4,7 +4,6 @@ yum -y group install "Development Tools"
 mkdir /workspace
 cd /workspace
 
-
 #install mkl, icc: 
 
 tee > /tmp/oneAPI.repo << EOF
@@ -19,10 +18,18 @@ EOF
 
 mv /tmp/oneAPI.repo /etc/yum.repos.d
 rpm --import https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+#yum -y install intel-basekit-2021.3.0.x86_64
 yum -y install intel-oneapi-mkl-devel-2021.3.0.x86_64 
 yum -y install intel-oneapi-mkl-2021.3.0.x86_64    
-yum -y install intel-hpckit-2021.3.0.x86_64 #contains icc/compilers
- 
+yum -y install intel-hpckit-2021.3.0.x86_64
+
+
+#install R dependencies
+#this link might be useful, but it seems yum-builddep R works fine
+#https://stackoverflow.com/questions/17473547/error-with-readline-yes-default-and-headers-libs-are-not-available
+yum -y install epel-release
+yum -y install which
+yum-builddep -y R
 
 
 ##install R
