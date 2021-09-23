@@ -71,7 +71,8 @@ export FFLAGS="-fPIC -qopenmp -O3 -qopt-mem-layout-trans=3 -march=skylake-avx512
 export FCFLAGS="-fPIC -qopenmp -O3 -qopt-mem-layout-trans=3 -march=skylake-avx512 -ipo -xHost -multiple-processes=8"
 export LDFLAGS="-qopenmp"
 
-MKL="-lmkl_rt -lpthread"
+MKL_LIB_PATH="${MKLROOT}/lib/intel64/"
+MKL="L${MKL_LIB_PATH} -lmkl_rt -liomp5 -lpthread"
 
 ./configure --prefix=/share/apps/R/R-3.6.2 --enable-R-shlib --with-blas="$MKL" --with-lapack --enable-BLAS-shlib --with-x=no --enable-memory-profiling
 make -j8
