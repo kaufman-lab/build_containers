@@ -77,6 +77,10 @@ rm -rf /opt/intel/oneapi/vtune
 echo "R_LIBS_USER=/pseudohome/R/packages" >> /share/apps/R/R-3.6.2/lib64/R/etc/Renviron.site
 echo "options(repos = c(REPO_NAME = 'https://packagemanager.rstudio.com/all/latest'))" >> /share/apps/R/R-3.6.2/lib64/R/etc/Rprofile.site
 
+
+export PATH=/share/apps/R/R-3.6.2/bin:$PATH 
+
+
 Rscript -e 'install.packages("remotes",repos = "http://cran.us.r-project.org")' #bootstrap from most recent version of remotes since this is where the remotes::install_version function lives.
   
  
