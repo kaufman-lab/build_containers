@@ -30,8 +30,6 @@ cd /workspace
 
 
 #install mkl, icc: 
-#https://software.intel.com/content/www/us/en/develop/documentation/installation-guide-for-intel-oneapi-toolkits-linux/top/installation/install-using-package-managers/yum-dnf-zypper.html#yum-dnf-zypper
-
 
 tee > /tmp/oneAPI.repo << EOF
 [oneAPI]
@@ -45,11 +43,10 @@ EOF
 
 mv /tmp/oneAPI.repo /etc/yum.repos.d
 rpm --import https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
-#yum -y install intel-basekit-2021.3.0.x86_64
 yum -y install intel-oneapi-mkl-devel-2021.3.0.x86_64 
 yum -y install intel-oneapi-mkl-2021.3.0.x86_64    
-yum -y install intel-hpckit-2021.3.0.x86_64
-
+yum -y install intel-hpckit-2021.3.0.x86_64 #contains icc/compilers
+ 
 
 
 ##install R
@@ -57,18 +54,7 @@ cd /workspace
 wget https://cran.r-project.org/src/base/R-3/R-3.6.2.tar.gz
 tar zxf R-3.6.2.tar.gz
 cd R-3.6.2/
-  
-#this link might be useful, but it seems yum-builddep R works fine
-#https://stackoverflow.com/questions/17473547/error-with-readline-yes-default-and-headers-libs-are-not-available
-yum -y install epel-release
-yum -y install which
-yum-builddep -y R
 
-#some useful code here, but I'm not using icc:
-#https://stat.ethz.ch/pipermail/r-devel/2015-October/071919.html
-#https://software.intel.com/content/www/us/en/develop/articles/using-intel-mkl-with-r.html
-#using John's approach: https://www.posdefecology.net/post/compiling-r/
-mkdir -p /share/apps/R
 
 source /opt/intel/oneapi/setvars.sh
 
@@ -79,25 +65,18 @@ export FC="ifort"
 export AR="xiar"
 export LD="xild"
 
-#use link advisor to generate CFLAGS and MKL for dynamic
-##https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/onemkl/link-line-advisor.html?wapkw=(Intel+64+and+IA-32+Architectures+Software+Developer)
-
-
-export CFLAGS="-DMKL_ILP64 -I${MKLROOT}/include -fPIC -qopenmp -O2 -ipo -xHost -multiple-processes=8"
-export CXXFLAGS="-DMKL_ILP64 -I${MKLROOT}/include -fPIC -qopenmp -O2 -ipo -xHost -multiple-processes=8"
-export FFLAGS="-i8 -I${MKLROOT}/include -fPIC -qopenmp -O2 -ipo -xHost -multiple-processes=8"
-export FCFLAGS="-i8 -I${MKLROOT}/include -fPIC -qopenmp -O2 -ipo -xHost -multiple-processes=8"
+export CFLAGS="-fPIC -qopenmp -O3 -qopt-mem-layout-trans=3 -march=skylake-avx512 -ipo -xHost -multiple-processes=8"
+export CXXFLAGS="-fPIC -qopenmp -O3 -qopt-mem-layout-trans=3 -march=skylake-avx512 -ipo -xHost -multiple-processes=8"
+export FFLAGS="-fPIC -qopenmp -O3 -qopt-mem-layout-trans=3 -march=skylake-avx512 -ipo -xHost -multiple-processes=8"
+export FCFLAGS="-fPIC -qopenmp -O3 -qopt-mem-layout-trans=3 -march=skylake-avx512 -ipo -xHost -multiple-processes=8"
 export LDFLAGS="-qopenmp"
 
-MKL="-L${MKLROOT}/lib/intel64 -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread -lm -ldl"
+MKL="-lmkl_rt -lpthread"
 
-
-./configure --prefix=/share/apps/R/R-3.6.2 --enable-R-shlib --with-blas="$MKL" --with-lapack --with-x=no --enable-memory-profiling
-make
+./configure --prefix=/share/apps/R/R-3.6.2 --enable-R-shlib --with-blas="$MKL" --with-lapack --enable-BLAS-shlib --with-x=no --enable-memory-profiling
+make -j8
 make install
 
-#not sure if this actually needed: Dirk mentions it for dynamic linking. No mentions about this specifically when building from source...
-echo "MKL_THREADING_LAYER=GNU" >> /etc/environment  
 
 
 #set user library to somewhere other than home, to avoid library conflicts with the local machine
