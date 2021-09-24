@@ -79,8 +79,6 @@ echo "R_LIBS_USER=/pseudohome/R/packages" >> /share/apps/R/R-3.6.2/lib64/R/etc/R
 export PATH=/share/apps/R/R-3.6.2/bin:$PATH 
 Rscript -e 'install.packages("renv",repos = "http://cran.us.r-project.org")' #bootstrap from most recent version of renv to install versioned package dependencies
 
-#disable renv cache
-echo "renv::settings$use.cache(FALSE)" >> /share/apps/R/R-3.6.2/lib64/R/etc/Rprofile.site
 
 cd /workspace
 
@@ -816,6 +814,6 @@ cat > renv.lock << EOF
 EOF
 
 
-Rscript -e 'renv::restore(library="/share/apps/R/R-3.6.2/lib64/R/library", lockfile="/workspace/renv.lock",)'
+Rscript -e 'renv::settings$use.cache(FALSE); renv::restore(library="/share/apps/R/R-3.6.2/lib64/R/library", lockfile="/workspace/renv.lock")'
 
 
