@@ -1,0 +1,6 @@
+export PATH=/share/apps/R/R-3.6.2/bin:$PATH 
+export PATH=/opt/intel/oneapi/compiler/2021.3.0/linux/lib/oclfpga/llvm/aocl-bin:/opt/intel/oneapi/compiler/2021.3.0/linux/lib/oclfpga/bin:/opt/intel/oneapi/compiler/2021.3.0/linux/bin/intel64:/opt/intel/oneapi/compiler/2021.3.0/linux/bin:$PATH
+export PATH=/opt/intel/oneapi/mkl/2021.3.0/bin/intel64:$PATH
+
+export LD_LIBRARY_PATH=/opt/intel/oneapi/compiler/2021.3.0/linux/compiler/lib/intel64_lin/:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/opt/intel/oneapi/mkl/2021.3.0/lib/intel64:$LD_LIBRARY_PATH
