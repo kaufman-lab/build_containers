@@ -6,7 +6,7 @@ This repo builds and stores singularity images to be used in lab workflows.
 
 The set of image types that are available are displayed on the right under "packages".
 
-There are three images types:
+These are the current image types:
 
 -   `geospatial_plus`: Builds on the [rocker](https://github.com/rocker-org/rocker-versioned2) geospatial docker image.
 
@@ -16,11 +16,17 @@ There are three images types:
 
 -   `geospatial_plus_ml`
 
-    -   additionally includes torch for R, and tensorflow for python, and the reticulate package. The version of tensorflow is specifically intel's version since this is primarily intended to be run on an intel high performance compute (HPC) cluster.
+    -   additionally includes torch for R, and tensorflow for python, and the reticulate package. The version of tensorflow is specifically intel's version since this is primarily intended to be run on an intel high performance compute (HPC) cluster. This is for a test project Michael was trying out using deep learning for air pollution prediction. Not currently in production anywhere.
 
 -   `geospatial_plus_ml_horovod`
 
-    -   additionally includes horovod (tensorflow only, set up for CPU) and openmpi. This doesn't use the intel version of tensorflow since it seems to cause poor performance when combined with horovod.
+    -   additionally includes horovod (tensorflow only, set up for CPU) and openmpi. This doesn't use the intel version of tensorflow since it seems to cause poor performance when combined with horovod. This is also for a test project Michael was trying out using deep learning for air pollution prediction. Not currently in production anywhere.
+
+- `nationalspatiotemporal`
+   - This is for the national spatiotemporal model. It doesn't contain rstudio server, and it's not designed to be used interactively. It reproduces the R enviroment used for making predicitons/model fitting (R version, MKL, R packages) and shouldn't be used for anything other than that codebase (or projects that need to reproduce the environment of that codebase)
+
+- `mkl_centos7`
+   - This is used for nothing. It's just a demonstration of how to build R from source using MKL on CentOS 7. (this work formed the basis of getting nationalspatiotemporal working with MKL, although nationalspatiotemporal does not depend on mkl_centos7 in the way that geospatial_plus_ml depends on geospatial_plus. nationalspatiotemporal is an entirely different container image from mkl_centos7 and changes to mkl_centos7 won't affect nationalspatiotemporal).
 
 ## Using Images
 
@@ -89,6 +95,12 @@ This repo uses github actions to build images. There are three triggers:
 -   pull_request: Any commit in a pull request will run the action, but images are only built if the definitions are changed relative to the main branch (this prevents building for things like readme-only changes). When the trigger is pull_request, images are built but not deployed. This allows testing that the definition files works without uploading the image. The exception is dev tags which are built *and* deployed (which allows testing an image without the bother of merging a PR to main). Note that the pull_request trigger is really only designed to be a pull request where the target is main. Unpredictable results may occur if the destination branch isn't main.
 -   push: This occurs when a pull request is merged into main (or a push to main without a pull request). This will cause images to be built and deployed, but only if the definition files are changed relative to the last commit on main (this prevents building for things like readme-only changes).
 
-Warning: if a push workflow fails on main, a dangerous situation is created: definition files are committed to main but no corresponding images to those definitions have been deployed. To resolve this situation you need first fix the issue that caused the workflow failure then manually rerun the builds (either using workflow_dispatch or by pushing whitespace changes to the corresponding build_scripts).
+A couple more notes:
+- Images cannot be deployed from a forked image since they rely on secrets.GITHUB_TOKEN which doesn't work from forks.
+- Tags are features of the github container regisry which allow multiple versions of a container to exist under a single package. To create different tags in this repo, just create a directory under build_scripts with the same basename (eg geospatial_plus) as an existing container with a suffix seperated by a double underscore. Note that an image with a "dev" tag has special properties (in that it's deployed on a PR). All other images only get deployed if pushed to main.
+- Note that different image tags don't depend on each other at all--they're entirely separate codebases. To start a new tag, I'd recommend copying an existing directory and renaming it. The only thing that relates images with the same basename but different tags is that they end up under the same package page (see  https://github.com/kaufman-lab/build_containers/pkgs/container/geospatial_plus_ml_horovod for an example)
+- the build process starts for every commit on a PR, but images only get built for definition files that have changed relative to the main branch. If you want to rebuild images on a PR without a change, an empty commit should start the build process (this would be useful if you're trying to debug issues around github actions such as a failure to deploy).
+- Only images which have a "dev" tag get deployed to the container registry for commits on a PR. All images are build, but only dev images are deployed. When a PR gets merged to master the images are rebuilt then actually deployed. this makes it so stable (version-tagged images) don't get messed with in PRs (with the exception of images with dev tags which should be assumed to be unstable).
+- If a push workflow fails on main, a dangerous situation is created: definition files are committed to main but no corresponding images to those definitions have been deployed. To resolve this situation you need first fix the issue that caused the workflow failure then manually rerun the builds so they successfuly deploy from main.
 
 Inspiration for this repo, along with more complicated examples for building multiple images can be found here: <https://github.com/singularityhub/github-ci>
