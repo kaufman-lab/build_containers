@@ -8,7 +8,7 @@ apt install -y gh
 
 ##### install packages #########
 Rscript -e 'install.packages(c("data.table","labelled","terra","batchtools", "here", "intervalaverage", 
-"renv", "tigris", "R.utils", "multcomp", "lme4", "broom.mixed", "ggthemes"))'
+  "renv", "tigris", "R.utils", "multcomp", "lme4", "broom.mixed", "ggthemes"))'
 Rscript -e "devtools::install_github('kaufman-lab/survivaltools',ref='a9c75521fa58961e59d3c884681862f44c7683d6')"
 
 #set user library to somewhere other than home, to avoid library conflicts with the local machine
