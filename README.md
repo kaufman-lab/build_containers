@@ -14,6 +14,8 @@ These are the current image types:
 
     -   also has configured the R user library location to avoid clashing with the user library on the host machine.
 
+-   `geospatial_plus_pdf`: geospatial_plus with the addition of a full tex installation. This should be able to knit PDFs without relying on tinytex needing to download tex installation files.
+
 -   `geospatial_plus_ml`
 
     -   additionally includes torch for R, and tensorflow for python, and the reticulate package. The version of tensorflow is specifically intel's version since this is primarily intended to be run on an intel high performance compute (HPC) cluster. This is for a test project Michael was trying out using deep learning for air pollution prediction. Not currently in production anywhere.
