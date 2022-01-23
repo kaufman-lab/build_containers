@@ -1,0 +1,87 @@
+Bootstrap: docker
+From: rocker/geospatial:4.1.0
+Stage: build
+
+
+#######################################
+%setup
+#######################################
+
+
+
+
+#######################################
+%files
+#######################################
+
+
+
+
+#######################################
+%post
+#######################################
+
+
+#### install github cli #######
+apt-get update
+apt-get install -y gnupg
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+apt-get update
+apt install -y gh
+
+##### install packages #########
+Rscript -e 'install.packages(c("data.table","labelled","terra","batchtools", "here", "intervalaverage", 
+  "renv", "tigris", "R.utils", "multcomp", "lme4", "broom.mixed", "ggthemes"))'
+Rscript -e "devtools::install_github('kaufman-lab/survivaltools',ref='a9c75521fa58961e59d3c884681862f44c7683d6')"
+
+#set user library to somewhere other than home, to avoid library conflicts with the local machine
+#note that /pseudohome doesn't exist. you need to mount it when starting the images if you want to install user packages.
+echo "R_LIBS_USER=/pseudohome/R/packages" >> usr/local/lib/R/etc/Renviron.site
+echo "RETICULATE_MINICONDA_ENABLED=FALSE"  >> usr/local/lib/R/etc/Renviron.site  #turn off reticulate's prompt to install miniconda
+
+#while these are also specified in environment below, 
+ #writing them to Renviron.site is necessary for reticulate python in R via rstudio server, since rstudio server doesn't inherit environment variables.
+ #so this should make it so python packages installed via pip install --user get put in /pseudohome rather than in the host's home directory which can cause conflicts/irreproducible states
+echo "PYTHONUSERBASE='/pseudohome/python'" >> usr/local/lib/R/etc/Renviron.site  
+echo "PYTHONPATH='/pseudohome/python/bin:$PYTHONPATH'"  >> usr/local/lib/R/etc/Renviron.site
+
+
+
+
+
+#####rstudio server defaults#########
+echo "session-save-action-default=no" >> /etc/rstudio/rsession.conf #don't save workspace by default.
+echo "session-quit-child-processes-on-exit=1" >> /etc/rstudio/rsession.conf #quit child processes on exit
+
+
+apt-get install -y --no-install-recommends \
+	ghostscript \
+	lmodern \
+	pandoc-citeproc \
+	qpdf \
+	texinfo \
+	texlive-fonts-extra \
+	texlive-fonts-recommended \
+	texlive-latex-extra \
+	texlive-latex-recommended \
+	texlive-luatex \
+	texlive-plain-generic \
+	texlive-science \
+	texlive-xetex \
+
+
+
+
+#######################################
+%environment
+#######################################
+
+
+  #set user python library to somewhere other than home, to avoid library conflicts with the local machine
+  #note that /pseudohome doesn't exist. you need to mount it when starting the images if you want to install user packages.
+  export PYTHONUSERBASE="/pseudohome/python" 
+  export PYTHONPATH="/pseudohome/python/bin:$PYTHONPATH"
+  export PATH="/pseudohome/python/bin:$PATH"
+
+
