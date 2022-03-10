@@ -34,6 +34,9 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githu
 apt-get update
 apt install -y gh
 
+#### install utilities ####
+apt install htop
+
 ##### install packages #########
 Rscript -e 'install.packages(c("data.table","labelled","terra","batchtools", "here", "intervalaverage", 
   "renv", "tigris", "R.utils", "multcomp", "lme4", "broom.mixed", "ggthemes"))'
