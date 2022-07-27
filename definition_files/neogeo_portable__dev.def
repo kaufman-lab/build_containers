@@ -38,8 +38,7 @@ gpg --keyring /usr/share/keyrings/conda-archive-keyring.gpg --no-default-keyring
 # Add our Debian repo
 echo "deb [arch=amd64 signed-by=/usr/share/keyrings/conda-archive-keyring.gpg] https://repo.anaconda.com/pkgs/misc/debrepo/conda stable main" > /etc/apt/sources.list.d/conda.list
 
-apt update
-apt install conda
+apt-get update && apt-get install -y conda && apt-get clean
 
 ### Set up Python environment
 /opt/conda/etc/profile.d/conda.sh env create -f environment.ymls
