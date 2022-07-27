@@ -1,3 +1,5 @@
+# With help from:  https://fabiorosado.dev/blog/install-conda-in-docker/
+
 # Install base utilities
 apt-get update && \
 apt-get install -y build-essential  && \
@@ -9,6 +11,3 @@ rm -rf /var/lib/apt/lists/*
 
 # Get Conda
 wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh -O ~/miniconda.sh && /bin/bash ~/miniconda.sh -b -p /opt/conda
-
-### Set up Python environment 
-#/opt/conda/bin/env create -f environment.yml
