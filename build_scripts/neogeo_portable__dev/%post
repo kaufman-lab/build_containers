@@ -1,5 +1,5 @@
-# Get curl
-apt-get update && apt-get install -y curl && apt-get clean
+# Get curl and stuff to apt-get https files
+apt-get update && apt-get install -y curl apt-transport-https ca-certificates && apt-get clean
 
 # Set up Python 
 
@@ -13,7 +13,6 @@ gpg --keyring /usr/share/keyrings/conda-archive-keyring.gpg --no-default-keyring
 
 # Add our Debian repo
 echo "deb [arch=amd64 signed-by=/usr/share/keyrings/conda-archive-keyring.gpg] https://repo.anaconda.com/pkgs/misc/debrepo/conda stable main" > /etc/apt/sources.list.d/conda.list
-
 apt-get update && apt-get install -y conda && apt-get clean
 
 ### Set up Python environment
