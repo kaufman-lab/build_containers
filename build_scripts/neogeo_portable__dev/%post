@@ -164,4 +164,4 @@ dependencies:
   - libgfortran-ng=7.3.0
   - libstdcxx-ng=9.1.0" > py3neogeo.yml 
 
-/opt/conda/bin/conda env create -f /neogeo_portable/python_env.yml -p /py3neogeo
+/opt/conda/bin/conda env create -f python_env.yml -p /py3neogeo
