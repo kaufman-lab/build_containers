@@ -1,3 +1,6 @@
+# Get curl
+apt-get update && apt-get install -y curl && apt-get clean
+
 # Set up Python 
 
 ### Instructions from https://docs.conda.io/projects/conda/en/latest/user-guide/install/rpm-debian.html
