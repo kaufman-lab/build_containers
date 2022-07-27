@@ -186,7 +186,7 @@ dependencies:
   - _libgcc_mutex=0.1
   - libgcc-ng=9.1.0
   - libgfortran-ng=7.3.0
-  - libstdcxx-ng=9.1.0" > py3neogeo.yml 
+  - libstdcxx-ng=9.1.0" > python_env.yml 
 
 /opt/conda/bin/conda env create -f python_env.yml -p /py3neogeo
 
