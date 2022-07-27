@@ -10,5 +10,5 @@ rm -rf /var/lib/apt/lists/*
 # Get Conda
 wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh -O ~/miniconda.sh && /bin/bash ~/miniconda.sh -b -p /opt/conda
 
-### Set up Python environment
-/opt/conda/bin/env create -f environment.yml
+### Set up Python environment 
+#/opt/conda/bin/env create -f environment.yml
