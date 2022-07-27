@@ -7,8 +7,8 @@ apt-get install -y ca-certificates && \
 apt-get clean && \
 rm -rf /var/lib/apt/lists/*
 
-# Get Conda 
-wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && /bin/bash ~/miniconda.sh -b -p /opt/conda
+# Get Conda
+wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-3.9.1-Linux-x86_64.sh -O ~/miniconda.sh && /bin/bash ~/miniconda.sh -b -p /opt/conda
 
 ### Set up Python environment
-/opt/conda/etc/profile.d/conda.sh env create -f environment.ymls
+/opt/conda/bin env create -f environment.yml
