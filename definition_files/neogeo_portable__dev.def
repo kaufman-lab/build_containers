@@ -22,22 +22,17 @@ Stage: build
 #######################################
 
 
-# Get curl and stuff to apt-get https files
-apt-get update && apt-get install -y curl apt-transport-https ca-certificates && apt-get clean
+# Install base utilities
+apt-get update && \
+apt-get install -y build-essential  && \
+apt-get install -y wget &&
+apt-get install -y curl && \
+apt-get install -y ca-certificates && \
+apt-get clean && \
+rm -rf /var/lib/apt/lists/*
 
-# Set up Python 
-
-### Instructions from https://docs.conda.io/projects/conda/en/latest/user-guide/install/rpm-debian.html
-# Install our public GPG key to trusted store
-curl https://repo.anaconda.com/pkgs/misc/gpgkeys/anaconda.asc | gpg --dearmor > conda.gpg
-install -o root -g root -m 644 conda.gpg /usr/share/keyrings/conda-archive-keyring.gpg
-
-# Check whether fingerprint is correct (will output an error message otherwise)
-gpg --keyring /usr/share/keyrings/conda-archive-keyring.gpg --no-default-keyring --fingerprint 34161F5BF5EB1D4BFBBB8F0A8AEB4F8B29D82806
-
-# Add our Debian repo
-echo "deb [arch=amd64 signed-by=/usr/share/keyrings/conda-archive-keyring.gpg] https://repo.anaconda.com/pkgs/misc/debrepo/conda stable main" > /etc/apt/sources.list.d/conda.list
-apt-get update && apt-get install -y conda && apt-get clean
+# Get Conda 
+wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && /bin/bash ~/miniconda.sh -b -p /opt/conda
 
 ### Set up Python environment
 /opt/conda/etc/profile.d/conda.sh env create -f environment.ymls
