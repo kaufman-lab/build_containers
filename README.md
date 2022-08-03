@@ -27,6 +27,9 @@ These are the current image types:
 - `nationalspatiotemporal`
    - This is for the national spatiotemporal model. It doesn't contain rstudio server, and it's not designed to be used interactively. It reproduces the R enviroment used for making predicitons/model fitting (R version, MKL, R packages) and shouldn't be used for anything other than that codebase (or projects that need to reproduce the environment of that codebase)
 
+- `neogeo_portable`
+   - This container is for calculating geocovariates using PostGIS. It does not contain R or Rstudio and is meant to be used in conjunction with the [neogeo_portable](https://github.com/kaufman-lab/neogeo_portable) repo. It has Postgres with PostGIS, Gnu Parallel, and Python installed. 
+
 - `mkl_centos7`
    - This is used for nothing. It's just a demonstration of how to build R from source using MKL on CentOS 7. (this work formed the basis of getting nationalspatiotemporal working with MKL, although nationalspatiotemporal does not depend on mkl_centos7 in the way that geospatial_plus_ml depends on geospatial_plus. nationalspatiotemporal is an entirely different container image from mkl_centos7 and changes to mkl_centos7 won't affect nationalspatiotemporal).
 
