@@ -42,6 +42,7 @@ ln -s /opt/conda/bin/python /bin/python
 
 # Install Gnu Parallel
 /opt/conda/bin/conda install -y -c conda-forge parallel 
+ln -s /opt/conda/bin/parallel /bin/parallel
 
 
 
