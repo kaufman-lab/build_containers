@@ -66,8 +66,5 @@ python3 -m pip freeze
 ### tensorflow for R (via reticulate) ###
 Rscript -e 'install.packages(c("reticulate", "tensorflow","keras"))' 
 
-### torch for R (native) ###
-Rscript -e 'install.packages(c("torch","luz","torchvision","torchdatasets"))'
-Rscript -e 'torch::install_torch()' 
 
 cd /
