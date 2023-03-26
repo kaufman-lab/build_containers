@@ -1,0 +1,3 @@
+Bootstrap: docker
+From: rocker/geospatial:4.2.2
+Stage: build
