@@ -1,27 +1,3 @@
-Bootstrap: docker
-From: rocker/geospatial:4.2.2
-Stage: build
-
-
-#######################################
-%setup
-#######################################
-
-
-
-
-#######################################
-%files
-#######################################
-
-
-
-
-#######################################
-%post
-#######################################
-
-
 #### install github cli #######
 apt-get update
 apt-get install -y gnupg
@@ -60,35 +36,3 @@ echo "session-quit-child-processes-on-exit=1" >> /etc/rstudio/rsession.conf #qui
 ### torch for R (native) ###
 Rscript -e 'install.packages(c("torch","luz","torchvision","torchdatasets"))'
 Rscript -e 'torch::install_torch()' 
-
-
-apt-get install -y --no-install-recommends \
-	ghostscript \
-	lmodern \
-	pandoc-citeproc \
-	qpdf \
-	texinfo \
-	texlive-fonts-extra \
-	texlive-fonts-recommended \
-	texlive-latex-extra \
-	texlive-latex-recommended \
-	texlive-luatex \
-	texlive-plain-generic \
-	texlive-science \
-	texlive-xetex \
-
-
-
-
-#######################################
-%environment
-#######################################
-
-
-  #set user python library to somewhere other than home, to avoid library conflicts with the local machine
-  #note that /pseudohome doesn't exist. you need to mount it when starting the images if you want to install user packages.
-  export PYTHONUSERBASE="/pseudohome/python" 
-  export PYTHONPATH="/pseudohome/python/bin:$PYTHONPATH"
-  export PATH="/pseudohome/python/bin:$PATH"
-
-

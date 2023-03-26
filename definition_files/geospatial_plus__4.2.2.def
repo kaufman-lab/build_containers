@@ -62,22 +62,6 @@ Rscript -e 'install.packages(c("torch","luz","torchvision","torchdatasets"))'
 Rscript -e 'torch::install_torch()' 
 
 
-apt-get install -y --no-install-recommends \
-	ghostscript \
-	lmodern \
-	pandoc-citeproc \
-	qpdf \
-	texinfo \
-	texlive-fonts-extra \
-	texlive-fonts-recommended \
-	texlive-latex-extra \
-	texlive-latex-recommended \
-	texlive-luatex \
-	texlive-plain-generic \
-	texlive-science \
-	texlive-xetex \
-
-
 
 
 #######################################
