@@ -39,7 +39,7 @@ apt install htop
 
 ##### install packages #########
 Rscript -e 'install.packages(c("data.table","labelled","terra","batchtools", "here", "intervalaverage", 
-  "renv", "tigris", "R.utils", "multcomp", "lme4", "broom.mixed", "ggthemes", "car"))'
+  "renv", "tigris", "R.utils", "multcomp", "lme4", "broom.mixed", "ggthemes", "car", "randomForest"))'
 Rscript -e "devtools::install_github('kaufman-lab/survivaltools',ref='a9c75521fa58961e59d3c884681862f44c7683d6')"
 
 #set user library to somewhere other than home, to avoid library conflicts with the local machine
@@ -60,6 +60,10 @@ echo "PYTHONPATH='/pseudohome/python/bin:$PYTHONPATH'"  >> usr/local/lib/R/etc/R
 #####rstudio server defaults#########
 echo "session-save-action-default=no" >> /etc/rstudio/rsession.conf #don't save workspace by default.
 echo "session-quit-child-processes-on-exit=1" >> /etc/rstudio/rsession.conf #quit child processes on exit
+
+### torch for R (native) ###
+Rscript -e 'install.packages(c("torch","luz","torchvision","torchdatasets"))'
+Rscript -e 'torch::install_torch()' 
 
 
 #install tensorflow
@@ -129,10 +133,6 @@ python3 -m pip freeze
 
 ### tensorflow for R (via reticulate) ###
 Rscript -e 'install.packages(c("reticulate", "tensorflow","keras"))' 
-
-### torch for R (native) ###
-Rscript -e 'install.packages(c("torch","luz","torchvision","torchdatasets"))'
-Rscript -e 'torch::install_torch()' 
 
 cd /
 
