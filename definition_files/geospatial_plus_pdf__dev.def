@@ -31,7 +31,7 @@ apt-get update
 apt install -y gh
 
 #### install utilities ####
-apt install htop
+apt install -y htop
 
 ##### install packages #########
 Rscript -e 'install.packages(c("data.table","labelled","terra","batchtools", "here", "intervalaverage", 
