@@ -1,0 +1,37 @@
+Bootstrap: docker
+From: rocker/r-ver:4.1
+
+
+
+#######################################
+%setup
+#######################################
+
+
+
+
+#######################################
+%files
+#######################################
+
+
+
+
+#######################################
+%post
+#######################################
+
+
+%post
+    Rscript -e "install.packages('remotes')"
+    Rscript -e "remotes::install_github('SpatioTemporal', ref = '0df042c')"
+    Rscript -e "remotes::install_github('kaufman-lab/eacSTpredict')"
+
+
+
+
+#######################################
+%environment
+#######################################
+
+
