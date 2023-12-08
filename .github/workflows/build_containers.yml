@@ -45,6 +45,7 @@ jobs:
     runs-on: ubuntu-22.04
     env: 
       organization: kaufman-lab
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     strategy:
       fail-fast: false
       matrix:
