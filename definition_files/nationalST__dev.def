@@ -18,7 +18,7 @@ From: rocker/r-ver:4.1
 
 
 build_scripts/nationalST__dev/runscript.R /runscript.R
-build_scripts/.Renviron ~/.Renviron
+build_scripts/nationalST__dev/.Renviron ~/.Renviron
 
 
 
