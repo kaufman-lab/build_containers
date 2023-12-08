@@ -31,7 +31,7 @@ build_scripts/nationalST__dev/.Renviron ~/.Renviron
 %post
     Rscript -e "install.packages('remotes')"
     Rscript -e "remotes::install_github('kaufman-lab/SpatioTemporal', ref = '0df042c')"
-    Rscript -e "remotes::install_github('kaufman-lab/eacSTpredict', auth_token = '$GH_TOKEN')"
+    Rscript -e "remotes::install_github('kaufman-lab/eacSTpredict')"
 
 
 
