@@ -1,3 +1,5 @@
 Bootstrap: docker
 From: rocker/r-ver:4.1
 
+%runscript 
+  Rscript /runscript.R 
