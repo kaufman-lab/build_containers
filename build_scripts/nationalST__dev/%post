@@ -1,5 +1,5 @@
 %post
     Rscript -e "install.packages('remotes')"
     Rscript -e "remotes::install_github('kaufman-lab/SpatioTemporal', ref = '0df042c')"
-    Rscript -e "remotes::install_github('kaufman-lab/eacSTpredict')"
+    Rscript -e "remotes::install_github('kaufman-lab/eacSTpredict', auth_token = '$GH_TOKEN')"
 
