@@ -41,3 +41,6 @@ build_scripts/nationalST__dev/runscript.R /runscript.R
 #######################################
 
 
+export GH_TOKEN=$GH_TOKEN
+
+
