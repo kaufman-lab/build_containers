@@ -8,7 +8,7 @@ on:
   pull_request:
 jobs:
   check-def-files:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     outputs: 
       definitions: ${{ env.definitions }}
     steps:
@@ -42,7 +42,7 @@ jobs:
   build:
     name: Build
     needs: check-def-files
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     env: 
       organization: kaufman-lab
     strategy:
