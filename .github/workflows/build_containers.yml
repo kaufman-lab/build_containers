@@ -140,10 +140,9 @@ jobs:
         ./mconfig -p /usr/local && \
         make -C builddir && \
         sudo make -C builddir install          
-    - name: Access secret
+    - name: Build container
       env:
         GH_TOKEN: ${{ secrets.MY_GITHUB_PAT }}  
-    - name: Build container
       if: contains(env.all_modified_files, matrix.definitionfile) || github.event_name == 'workflow_dispatch'
       run: |       
        if [ -f "definition_files/${{ matrix.definitionfile }}" ]; then
