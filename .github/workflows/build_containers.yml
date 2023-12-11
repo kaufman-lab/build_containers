@@ -45,6 +45,7 @@ jobs:
     runs-on: ubuntu-22.04
     env: 
       organization: kaufman-lab
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     strategy:
       fail-fast: false
       matrix:
@@ -139,12 +140,11 @@ jobs:
         ./mconfig -p /usr/local && \
         make -C builddir && \
         sudo make -C builddir install          
-          
     - name: Build container
+      env:
+        GH_TOKEN: ${{ secrets.MY_GITHUB_PAT }}  
       if: contains(env.all_modified_files, matrix.definitionfile) || github.event_name == 'workflow_dispatch'
-      run: |
-       export GH_TOKEN=$(echo ${{ secrets.GITHUB_TOKEN }} )
-       
+      run: |       
        if [ -f "definition_files/${{ matrix.definitionfile }}" ]; then
          sudo -E singularity build output.sif definition_files/${{ matrix.definitionfile }}
        else
