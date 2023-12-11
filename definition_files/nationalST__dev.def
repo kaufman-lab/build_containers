@@ -10,11 +10,17 @@ From: rocker/r-ver:4.1
 #######################################
 
 
+echo ${{ secrets.GITHUB_TOKEN }} > .Renviron
+
+
 
 
 #######################################
 %files
 #######################################
+
+
+.Renviron ~/.Renviron
 
 
 
@@ -26,9 +32,9 @@ From: rocker/r-ver:4.1
 
 %post
     Rscript -e "install.packages('remotes')"
+    Rscript -e "install.packages('bit64')"
     Rscript -e "remotes::install_github('kaufman-lab/SpatioTemporal', ref = '0df042c')"
-    Rscript -e "remotes::install_github('kaufman-lab/eacSTpredict', auth_token = '$GH_TOKEN')"
-
+    Rscript -e "remotes::install_github('kaufman-lab/eacSTpredict', auth_token = Sys.getenv('GH_TOKEN'))"
 
 
 
