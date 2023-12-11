@@ -28,7 +28,7 @@ From: rocker/r-ver:4.1
     Rscript -e "install.packages('remotes')"
     Rscript -e "install.packages('bit64')"
     Rscript -e "remotes::install_github('kaufman-lab/SpatioTemporal', ref = '0df042c')"
-    Rscript -e "remotes::install_github('kaufman-lab/eacSTpredict', auth_token = '$GH_SECRET')"
+    Rscript -e "remotes::install_github('kaufman-lab/eacSTpredict', auth_token = '$GH_TOKEN')"
 
 
 
