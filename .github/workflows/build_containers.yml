@@ -143,6 +143,9 @@ jobs:
           
     - name: Build container
       if: contains(env.all_modified_files, matrix.definitionfile) || github.event_name == 'workflow_dispatch'
+      env:
+        organization: kaufman-lab
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
        export GH_TOKEN=$(echo ${{ secrets.GITHUB_TOKEN }} )
        
