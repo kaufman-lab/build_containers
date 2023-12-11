@@ -146,9 +146,7 @@ jobs:
       env:
         organization: kaufman-lab
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-       export GH_TOKEN=$(echo ${{ secrets.GITHUB_TOKEN }} )
-       
+      run: |       
        if [ -f "definition_files/${{ matrix.definitionfile }}" ]; then
          sudo -E singularity build output.sif definition_files/${{ matrix.definitionfile }}
        else
