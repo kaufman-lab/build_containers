@@ -143,16 +143,15 @@ jobs:
           
     - name: Build container
       if: contains(env.all_modified_files, matrix.definitionfile) || github.event_name == 'workflow_dispatch'
-      run: |       
+      run: |
+       export GH_TOKEN=$(echo ${{ secrets.GITHUB_TOKEN }} )
+       
        if [ -f "definition_files/${{ matrix.definitionfile }}" ]; then
          sudo -E singularity build output.sif definition_files/${{ matrix.definitionfile }}
        else
          echo "${SINGULARITY_RECIPE} is not found."
          echo "Present working directory: $PWD"
        fi
-     env: |
-       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 
     - name: log in to github container registry and deploy
       if: |
