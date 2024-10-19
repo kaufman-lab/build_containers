@@ -32,8 +32,8 @@ apt install -y gh
 
 #### install utilities ####
 apt install -y htop
-apt install emacs-nox
-apt install ess
+apt install -y emacs-nox
+apt install -y ess
 
 ##### install packages #########
 Rscript -e 'install.packages(c("data.table","labelled","terra","batchtools", "here", "intervalaverage", 
