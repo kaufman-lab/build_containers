@@ -59,7 +59,6 @@ BUILDDEPS="curl \
     liblzma-dev \
     libx11-dev \
     libxt-dev \
-#    perl \
     rsync \
     subversion \
     tcl-dev \
@@ -75,6 +74,8 @@ BUILDDEPS="curl \
     xfonts-base \
     xvfb \
     wget"
+
+## add perl back later in if needed
 
 echo -e "\nbeginning dependency install"
 apt-get install -y --no-install-recommends ${BUILDDEPS}
