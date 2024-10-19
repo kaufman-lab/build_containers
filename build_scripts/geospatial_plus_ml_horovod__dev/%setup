@@ -1,2 +1,0 @@
-  echo $GH_TOKEN > /tmp/hostvar.txt
-
