@@ -22,7 +22,7 @@ Stage: build
 #######################################
 
 
-#### install github cli #######
+## install github cli #######
 apt-get update
 apt-get install -y gnupg
 curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
@@ -32,6 +32,8 @@ apt install -y gh
 
 #### install utilities ####
 apt install htop
+apt install -y emacs-nox
+apt install -y ess
 
 ##### install packages #########
 Rscript -e 'install.packages(c("data.table","labelled","terra","batchtools", "here", "intervalaverage", 
