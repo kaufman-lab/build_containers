@@ -3,9 +3,6 @@
 R_VERSION="4.1.0"
 R_HOME="/usr/local/lib/R"
 
-##create UBUNTU_CODENAME:
-source /etc/os-release
-
 apt-get update
 apt-get -y install locales
 
