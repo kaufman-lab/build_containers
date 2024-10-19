@@ -79,7 +79,6 @@ BUILDDEPS="curl \
     xvfb \
     wget"
 
-
 apt-get install -y --no-install-recommends ${BUILDDEPS}
 
 function download_r_src() {
