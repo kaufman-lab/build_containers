@@ -3,7 +3,7 @@
 R_VERSION="4.1.0"
 R_HOME="/usr/local/lib/R"
 
-##create UBUNTU_CODENAME :
+##create  UBUNTU_CODENAME :
 source /etc/os-release
 
 apt-get update
@@ -185,3 +185,4 @@ echo "RETICULATE_MINICONDA_ENABLED=FALSE"  >> usr/local/lib/R/etc/Renviron.site 
 ### torch for R (native) ###
 Rscript -e 'install.packages(c("torch","luz","torchvision","torchdatasets"))'
 Rscript -e 'torch::install_torch()' 
+
