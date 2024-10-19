@@ -1,0 +1,228 @@
+Bootstrap: docker
+From: ubuntu:jammy
+Stage: build
+
+
+#######################################
+%setup
+#######################################
+
+
+
+
+#######################################
+%files
+#######################################
+
+
+
+
+#######################################
+%post
+#######################################
+
+
+#### install github cli #######
+
+R_VERSION="4.1.0"
+R_HOME="/usr/local/lib/R"
+
+## create UBUNTU_CODENAME :
+source /etc/os-release
+
+apt-get update
+apt-get -y install locales
+
+LANG="en_US.UTF-8"
+/usr/sbin/locale-gen --lang "${LANG}"
+/usr/sbin/update-locale --reset LANG="${LANG}"
+
+export DEBIAN_FRONTEND=noninteractive
+
+READLINE_VERSION=8
+
+apt-get install -y --no-install-recommends \
+    bash-completion \
+    ca-certificates \
+    file \
+    fonts-texgyre \
+    g++ \
+    gfortran \
+    gsfonts \
+    libblas-dev \
+    libbz2-* \
+    libcurl4 \
+    "libicu[0-9][0-9]" \
+    liblapack-dev \
+    libpcre2* \
+    libjpeg-turbo* \
+    libpangocairo-* \
+    libpng16* \
+    "libreadline${READLINE_VERSION}" \
+    libtiff* \
+    liblzma* \
+    libxt6 \
+    make \
+    tzdata \
+    unzip \
+    zip \
+    zlib1g \
+    zlib1g-dev \
+    xorg-dev
+
+BUILDDEPS="curl \
+    default-jdk \
+    devscripts \
+    libbz2-dev \
+    libcairo2-dev \
+    libcurl4-openssl-dev \
+    libpango1.0-dev \
+    libjpeg-dev \
+    libicu-dev \
+    libpcre2-dev \
+    libpng-dev \
+    libreadline-dev \
+    libtiff5-dev \
+    liblzma-dev \
+    libx11-dev \
+    libxt-dev \
+    perl \
+    rsync \
+    subversion \
+    tcl-dev \
+    tk-dev \
+    texinfo \
+    texlive-extra-utils \
+    texlive-fonts-recommended \
+    texlive-fonts-extra \
+    texlive-latex-recommended \
+    texlive-latex-extra \
+    x11proto-core-dev \
+    xauth \
+    xfonts-base \
+    xvfb \
+    wget"
+
+apt-get install -y --no-install-recommends ${BUILDDEPS}
+
+function download_r_src() {
+    wget "https://cloud.r-project.org/src/$1" -O "R.tar.gz" ||
+        wget "https://cran.r-project.org/src/$1" -O "R.tar.gz"
+}
+download_r_src "base/R-${R_VERSION%%.*}/R-${R_VERSION}.tar.gz"
+
+tar xzf "R.tar.gz"
+cd R-*/
+
+R_PAPERSIZE=letter \
+    R_BATCHSAVE="--no-save --no-restore" \
+    R_BROWSER=xdg-open \
+    PAGER=/usr/bin/pager \
+    PERL=/usr/bin/perl \
+    R_UNZIPCMD=/usr/bin/unzip \
+    R_ZIPCMD=/usr/bin/zip \
+    R_PRINTCMD=/usr/bin/lpr \
+    LIBnn=lib \
+    AWK=/usr/bin/awk \
+    CFLAGS="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g" \
+    CXXFLAGS="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g" \
+    ./configure --enable-R-shlib \
+    --enable-memory-profiling \
+    --with-readline \
+    --with-blas \
+    --with-lapack \
+    --with-tcltk \
+    --with-recommended-packages \
+    --with-x
+
+
+make
+make install
+make clean
+
+## Add a library directory (for user-installed packages)
+mkdir -p "${R_HOME}/site-library"
+chown root:staff "${R_HOME}/site-library"
+chmod g+ws "${R_HOME}/site-library"
+
+echo "R_LIBS=\${R_LIBS-'${R_HOME}/site-library:${R_HOME}/library'}" >>"${R_HOME}/etc/Renviron.site"
+
+## Clean up from R source install
+cd ..
+rm -rf /tmp/*
+rm -rf R-*/
+rm -rf "R.tar.gz"
+
+cp /usr/bin/checkbashisms /usr/local/bin/checkbashisms
+apt-get remove --purge -y ${BUILDDEPS}
+
+apt-get autoremove -y
+apt-get autoclean -y
+rm -rf /var/lib/apt/lists/*
+
+# Check the R info
+echo -e "Check the R info...\n"
+
+R -q -e "sessionInfo()"
+
+echo -e "\nInstall R from source, done!"
+
+### setup R
+CRAN="https://p3m.dev/cran/__linux__/jammy/2021-08-09"
+
+echo "options(repos = c(CRAN = '${CRAN}'), download.file.method = 'libcurl')" >>"${R_HOME}/etc/Rprofile.site"
+
+## Set HTTPUserAgent for RSPM (https://github.com/rocker-org/rocker/issues/400)
+cat <<EOF >>"${R_HOME}/etc/Rprofile.site"
+# https://docs.rstudio.com/rspm/admin/serving-binaries/#binaries-r-configuration-linux
+options(HTTPUserAgent = sprintf("R/%s R (%s)", getRversion(), paste(getRversion(), R.version["platform"], R.version["arch"], R.version["os"])))
+EOF
+
+#install openblas
+if ! dpkg -l | grep -q libopenblas-dev; then
+    apt_install libopenblas-dev
+    update-alternatives --set "libblas.so.3-${ARCH}-linux-gnu" "/usr/lib/${ARCH}-linux-gnu/openblas-pthread/libblas.so.3"
+fi
+
+##### 
+
+apt-get install -y gnupg
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+apt install -y gh
+
+#### install utilities ####
+apt install -y htop
+apt install -y emacs-nox
+apt install -y ess
+
+##### install packages #########
+Rscript -e 'install.packages(c("data.table","labelled","terra","batchtools", "here", "intervalaverage", 
+  "renv", "tigris", "R.utils", "multcomp", "lme4", "broom.mixed", "ggthemes", "car", "randomForest", "emulator", "KMsurv", "survival", "haven", "devtools", "rmarkdown", "arrow"))'
+Rscript -e "devtools::install_github('kaufman-lab/survivaltools',ref='a9c75521fa58961e59d3c884681862f44c7683d6')"
+
+#set user library to somewhere other than home, to avoid library conflicts with the local machine
+#note that /pseudohome doesn't exist. you need to mount it when starting the images if you want to install user packages.
+echo "R_LIBS_USER=/pseudohome/R/packages" >> usr/local/lib/R/etc/Renviron.site
+echo "RETICULATE_MINICONDA_ENABLED=FALSE"  >> usr/local/lib/R/etc/Renviron.site  #turn off reticulate's prompt to install miniconda
+
+### torch for R (native) ###
+Rscript -e 'install.packages(c("torch","luz","torchvision","torchdatasets"))'
+Rscript -e 'torch::install_torch()' 
+
+
+
+
+
+#######################################
+%environment
+#######################################
+
+
+  #set user python library to somewhere other than home, to avoid library conflicts with the local machine
+  #note that /pseudohome doesn't exist. you need to mount it when starting the images if you want to install user packages.
+  export PYTHONUSERBASE="/pseudohome/python" 
+  export PYTHONPATH="/pseudohome/python/bin:$PYTHONPATH"
+  export PATH="/pseudohome/python/bin:$PATH"
+
+
