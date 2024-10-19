@@ -83,7 +83,7 @@ BUILDDEPS="curl \
     liblzma-dev \
     libx11-dev \
     libxt-dev \
-    perl \
+#    perl \
     rsync \
     subversion \
     tcl-dev \
