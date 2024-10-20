@@ -25,7 +25,9 @@ Stage: build
 #### install github cli #######
 
 R_VERSION="4.1.0"
+CRAN="https://p3m.dev/cran/__linux__/jammy/2021-08-09"
 R_HOME="/usr/local/lib/R"
+ARCH="x86_64"
 
 apt-get update
 apt-get -y install locales
@@ -143,6 +145,54 @@ chown root:staff "${R_HOME}/site-library"
 chmod g+ws "${R_HOME}/site-library"
 
 echo "R_LIBS=\${R_LIBS-'${R_HOME}/site-library:${R_HOME}/library'}" >>"${R_HOME}/etc/Renviron.site"
+
+
+#### cleanup:
+rm -rf R-*/
+rm -rf "R.tar.gz"
+
+R -q -e "sessionInfo()"
+
+echo -e "\nInstall R from source, done!"
+
+echo "options(repos = c(CRAN = '${CRAN}'), download.file.method = 'libcurl')" >>"${R_HOME}/etc/Rprofile.site"
+
+## Set HTTPUserAgent for RSPM (https://github.com/rocker-org/rocker/issues/400)
+cat <<EOF >>"${R_HOME}/etc/Rprofile.site"
+# https://docs.rstudio.com/rspm/admin/serving-binaries/#binaries-r-configuration-linux
+options(HTTPUserAgent = sprintf("R/%s R (%s)", getRversion(), paste(getRversion(), R.version["platform"], R.version["arch"], R.version["os"])))
+EOF
+
+#install openblas
+apt install -y libopenblas-dev
+update-alternatives --set "libblas.so.3-${ARCH}-linux-gnu" "/usr/lib/${ARCH}-linux-gnu/openblas-pthread/libblas.so.3"
+
+
+##### 
+
+apt-get install -y gnupg
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+apt install -y gh
+
+#### install utilities ####
+apt install -y htop
+apt install -y emacs-nox
+apt install -y ess
+
+##### install packages #########
+Rscript -e 'install.packages(c("data.table","labelled","batchtools", "here", "intervalaverage", 
+  "renv", "R.utils", "multcomp", "lme4", "broom.mixed", "ggthemes", "car", "randomForest", "emulator", "KMsurv", "survival", "haven", "devtools", "rmarkdown", "arrow"))'
+Rscript -e "devtools::install_github('kaufman-lab/survivaltools',ref='a9c75521fa58961e59d3c884681862f44c7683d6')"
+
+#set user library to somewhere other than home, to avoid library conflicts with the local machine
+#note that /pseudohome doesn't exist. you need to mount it when starting the images if you want to install user packages.
+echo "R_LIBS_USER=/pseudohome/R/packages" >> usr/local/lib/R/etc/Renviron.site
+echo "RETICULATE_MINICONDA_ENABLED=FALSE"  >> usr/local/lib/R/etc/Renviron.site  #turn off reticulate's prompt to install miniconda
+
+### torch for R (native) ###
+Rscript -e 'install.packages(c("torch","luz","torchvision","torchdatasets"))'
+Rscript -e 'torch::install_torch()' 
 
 
 
