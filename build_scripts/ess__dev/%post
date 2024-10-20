@@ -161,11 +161,6 @@ Rscript -e 'install.packages(c("data.table","labelled","batchtools", "here", "in
   "renv", "R.utils", "multcomp", "lme4", "broom.mixed", "ggthemes", "car", "randomForest", "emulator", "KMsurv", "survival", "haven", "devtools", "rmarkdown", "arrow"))'
 Rscript -e "devtools::install_github('kaufman-lab/survivaltools',ref='a9c75521fa58961e59d3c884681862f44c7683d6')"
 
-#set user library to somewhere other than home, to avoid library conflicts with the local machine
-#note that /pseudohome doesn't exist. you need to mount it when starting the images if you want to install user packages.
-echo "R_LIBS_USER=/pseudohome/R/packages" >> usr/local/lib/R/etc/Renviron.site
-echo "RETICULATE_MINICONDA_ENABLED=FALSE"  >> usr/local/lib/R/etc/Renviron.site  #turn off reticulate's prompt to install miniconda
-
 ### torch for R (native) ###
 Rscript -e 'install.packages(c("torch","luz","torchvision","torchdatasets"))'
 Rscript -e 'torch::install_torch()' 
