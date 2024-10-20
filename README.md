@@ -33,6 +33,9 @@ These are the current image types:
 - `mkl_centos7`
    - This is used for nothing. It's just a demonstration of how to build R from source using MKL on CentOS 7. (this work formed the basis of getting nationalspatiotemporal working with MKL, although nationalspatiotemporal does not depend on mkl_centos7 in the way that geospatial_plus_ml depends on geospatial_plus. nationalspatiotemporal is an entirely different container image from mkl_centos7 and changes to mkl_centos7 won't affect nationalspatiotemporal).
 
+- `ess`
+   - Lightweight container with R, emacs, and ess. R is built with X11 for plotting at the terminal. Does not currently include tex or geospatial packages, but could be extended to do so
+   
 ## Using Images
 
 If you'd like to test out an image interactively, try
@@ -55,7 +58,7 @@ Within a version-tag (e.g. geospatial_plus:4.1.0), R packages built into the ima
 
 ## Using images interactively
 
-While these images can be used non-interactively to run R and Python scripts (e.g. via `singularity exec oras://ghcr.io/kaufman-lab/geospatial_plus:4.1.0 Rscript scriptname.R`) without any additional options, if you want to use the image interactively for development (e.g. via `singularity shell` or `singularity instance`)  you should `--bind` a directory on the host machine to `/pseudohome`. This will allow installation of R and Python packages to an instance/shell-specific directory thus fully isolating the instance even during development. Without first binding `pseudohome`, user installation of packages will fail because pseudohome does not exist inside the image. This is arguably a good thing because it prevents accidental installation of packages or accidental loading of packages installed in the user library when images are being used for production.
+For images designed to host an IDE: While these images can be used non-interactively to run R and Python scripts (e.g. via `singularity exec oras://ghcr.io/kaufman-lab/geospatial_plus:4.1.0 Rscript scriptname.R`) without any additional options, if you want to use the image interactively for development (e.g. via `singularity shell` or `singularity instance`)  you should `--bind` a directory on the host machine to `/pseudohome`. This will allow installation of R and Python packages to an instance/shell-specific directory thus fully isolating the instance even during development. Without first binding `pseudohome`, user installation of packages will fail because pseudohome does not exist inside the image. This is arguably a good thing because it prevents accidental installation of packages or accidental loading of packages installed in the user library when images are being used for production.
 
 ## Definition files
 
