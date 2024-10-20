@@ -149,6 +149,7 @@ echo "R_LIBS=\${R_LIBS-'${R_HOME}/site-library:${R_HOME}/library'}" >>"${R_HOME}
 
 
 #### cleanup:
+cd /
 rm -rf R-*/
 rm -rf "R.tar.gz"
 
