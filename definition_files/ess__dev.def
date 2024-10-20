@@ -67,7 +67,8 @@ apt-get install -y --no-install-recommends \
     zip \
     zlib1g \
     zlib1g-dev \
-    xorg-dev
+    xorg-dev \
+    openssh-client
 
 BUILDDEPS="curl \
     default-jdk \
