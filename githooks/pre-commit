@@ -1,4 +1,5 @@
 #!/bin/bash
 
+echo "pre-commit hook is running"
 Rscript ./githooks/create_def_files.R
 git add *.def
