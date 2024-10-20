@@ -59,6 +59,7 @@ BUILDDEPS="curl \
     liblzma-dev \
     libx11-dev \
     libxt-dev \
+    perl \
     rsync \
     subversion \
     tcl-dev \
@@ -75,7 +76,6 @@ BUILDDEPS="curl \
     xvfb \
     wget"
 
-## add perl back later in if needed
 
 echo -e "\nbeginning dependency install"
 apt-get install -y --no-install-recommends ${BUILDDEPS}
@@ -86,6 +86,7 @@ function download_r_src() {
         wget "https://cran.r-project.org/src/$1" -O "R.tar.gz"
 }
 download_r_src "base/R-${R_VERSION%%.*}/R-${R_VERSION}.tar.gz"
+echo -e "\nfinished downloading R source"
 
 tar xzf "R.tar.gz"
 cd R-*/
