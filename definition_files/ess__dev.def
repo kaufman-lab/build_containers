@@ -105,11 +105,8 @@ echo -e "\nbeginning dependency install"
 apt-get install -y --no-install-recommends ${BUILDDEPS}
 echo -e "\nfinished dependency install"
 
-function download_r_src() {
-    wget "https://cloud.r-project.org/src/$1" -O "R.tar.gz" ||
-        wget "https://cran.r-project.org/src/$1" -O "R.tar.gz"
-}
-download_r_src "base/R-${R_VERSION%%.*}/R-${R_VERSION}.tar.gz"
+wget "https://cloud.r-project.org/src/base/R-${R_VERSION%%.*}/R-${R_VERSION}.tar.gz"
+
 echo -e "\nfinished downloading R source"
 
 tar xzf "R.tar.gz"
