@@ -100,7 +100,6 @@ BUILDDEPS="curl \
     xvfb \
     wget"
 
-
 echo -e "\nbeginning dependency install"
 apt-get install -y --no-install-recommends ${BUILDDEPS}
 echo -e "\nfinished dependency install"
