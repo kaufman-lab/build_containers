@@ -230,7 +230,7 @@ emacs --batch --load="/usr/share/emacs/site-lisp/site-start.el"
 
 #emacs --batch --eval "(progn (require 'package) (package-install 'poly-markdown))"
 Rscript -e 'install.packages(c("rmarkdown", "tinytex"))'
-Rscript -e 'tinytex::install_tinytex(version = "2024.09")'
+Rscript -e 'tinytex::install_tinytex(version = "2024.09", force = TRUE)'
 
 
 
