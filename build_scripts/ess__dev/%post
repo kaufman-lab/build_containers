@@ -1,4 +1,4 @@
-o#### install github cli #######
+#### install github cli #######
 
 R_VERSION="4.1.0"
 CRAN="https://p3m.dev/cran/__linux__/jammy/2021-08-09"
