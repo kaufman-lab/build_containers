@@ -22,7 +22,7 @@ Stage: build
 #######################################
 
 
-#### install github cli #######
+o#### install github cli #######
 
 R_VERSION="4.1.0"
 CRAN="https://p3m.dev/cran/__linux__/jammy/2021-08-09"
@@ -69,6 +69,7 @@ apt-get install -y --no-install-recommends \
     zlib1g-dev \
     xorg-dev \
     openssh-client
+
 
 BUILDDEPS="curl \
     default-jdk \
@@ -184,12 +185,52 @@ apt install -y ess
 
 ##### install packages #########
 Rscript -e 'install.packages(c("data.table","labelled","batchtools", "here", "intervalaverage", 
-  "renv", "R.utils", "multcomp", "lme4", "broom.mixed", "ggthemes", "car", "randomForest", "emulator", "KMsurv", "survival", "haven", "devtools", "rmarkdown", "arrow"))'
+  "renv", "R.utils", "multcomp", "lme4", "broom.mixed", "ggthemes", "car", "randomForest", "emulator", "KMsurv", "survival", "haven", "devtools", "arrow"))'
 Rscript -e "devtools::install_github('kaufman-lab/survivaltools',ref='a9c75521fa58961e59d3c884681862f44c7683d6')"
 
 ### torch for R (native) ###
 Rscript -e 'install.packages(c("torch","luz","torchvision","torchdatasets"))'
 Rscript -e 'torch::install_torch()' 
+
+
+
+#### markdown support
+## install markdown-mode, for rmarkdown
+apt-get install -y --no-install-recommends \
+    pandoc \
+    elpa-markdown-mode
+
+#emacs --batch --eval "(progn (package-initialize) (add-to-list 'package-archives '(\"melpa\" . \"https://melpa.org/packages/\") t))"
+#echo "bleh"
+#emacs --batch --eval "(progn (package-initialize) (package-install 'use-package))"
+#echo "bleh2"
+
+### define site-wide emacs file 
+cat > /usr/share/emacs/site-lisp/site-start.el << EOF
+(require 'ess-site)
+(require 'package)
+
+;; add melpa
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(package-refresh-contents)
+(package-initialize)
+
+(unless (package-installed-p 'poly-markdown)
+  (package-install 'poly-markdown))
+(unless (package-installed-p 'poly-R)
+  (package-install 'poly-R))
+
+(require 'poly-markdown)
+(require 'poly-R)
+
+EOF
+
+## run site-start.el to install poly-markdown, poly-R
+emacs --batch --load="/usr/share/emacs/site-lisp/site-start.el"
+
+#emacs --batch --eval "(progn (require 'package) (package-install 'poly-markdown))"
+Rscript -e 'install.packages(c("rmarkdown", "tinytex"))'
+Rscript -e 'tinytex::install_tinytex(version = "2024.09")'
 
 
 
