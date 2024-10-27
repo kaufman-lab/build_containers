@@ -34,7 +34,7 @@ These are the current image types:
    - This is used for nothing. It's just a demonstration of how to build R from source using MKL on CentOS 7. (this work formed the basis of getting nationalspatiotemporal working with MKL, although nationalspatiotemporal does not depend on mkl_centos7 in the way that geospatial_plus_ml depends on geospatial_plus. nationalspatiotemporal is an entirely different container image from mkl_centos7 and changes to mkl_centos7 won't affect nationalspatiotemporal).
 
 - `ess`
-   - Lightweight container with R, emacs, and ess. R is built with X11 for plotting at the terminal. Does not currently include tex or geospatial packages, but could be extended to do so
+   - Lightweight container with R, emacs, and ess. R is built with X11 for plotting at the terminal. Does not currently include geospatial packages, but could be extended to do so
    
 ## Using Images
 
