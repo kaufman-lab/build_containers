@@ -240,10 +240,5 @@ Rscript -e 'tinytex::install_tinytex(version = "2024.09")'
 #######################################
 
 
-  #set user python library to somewhere other than home, to avoid library conflicts with the local machine
-  #note that /pseudohome doesn't exist. you need to mount it when starting the images if you want to install user packages.
-  export PYTHONUSERBASE="/pseudohome/python" 
-  export PYTHONPATH="/pseudohome/python/bin:$PYTHONPATH"
-  export PATH="/pseudohome/python/bin:$PATH"
 
 
