@@ -1,7 +1,7 @@
 #### install github cli #######
 
-R_VERSION="4.1.0"
-CRAN="https://p3m.dev/cran/__linux__/jammy/2021-08-09"
+R_VERSION="4.4.0"
+CRAN="https://p3m.dev/cran/__linux__/noble/2024-06-13"
 R_HOME="/usr/local/lib/R"
 ARCH="x86_64"
 
@@ -27,6 +27,7 @@ apt-get install -y --no-install-recommends \
     libblas-dev \
     libbz2-* \
     libcurl4 \
+    libcurl4-openssl-dev \
     "libicu[0-9][0-9]" \
     liblapack-dev \
     libpcre2* \
@@ -69,6 +70,7 @@ BUILDDEPS="curl \
     tcl-dev \
     tk-dev \
     texinfo \
+    texlive \
     texlive-extra-utils \
     texlive-fonts-recommended \
     texlive-fonts-extra \
@@ -152,12 +154,11 @@ update-alternatives --set "libblas.so.3-${ARCH}-linux-gnu" "/usr/lib/${ARCH}-lin
 apt-get install -y gnupg
 curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-apt install -y gh
+
 
 #### install utilities ####
 apt install -y htop
-apt install -y emacs-nox
-apt install -y ess
+apt install -y gh
 
 ##### install packages #########
 Rscript -e 'install.packages(c("data.table","labelled","batchtools", "here", "intervalaverage", 
@@ -169,41 +170,48 @@ Rscript -e 'install.packages(c("torch","luz","torchvision","torchdatasets"))'
 Rscript -e 'torch::install_torch()' 
 
 
-
 #### markdown support
 ## install markdown-mode, for rmarkdown
 apt-get install -y --no-install-recommends \
-    pandoc \
-    elpa-markdown-mode
+    pandoc
 
-#emacs --batch --eval "(progn (package-initialize) (add-to-list 'package-archives '(\"melpa\" . \"https://melpa.org/packages/\") t))"
-#echo "bleh"
-#emacs --batch --eval "(progn (package-initialize) (package-install 'use-package))"
-#echo "bleh2"
+Rscript -e 'install.packages(c("rmarkdown"))'
+
+### emacs
+#don't install mailutils since it causes issues:
+apt-get install -y  --no-install-recommends  emacs-bin-common
+apt install -y emacs-nox
+
+echo "emacs version:"
+emacs --version
 
 ### define site-wide emacs file 
 cat > /usr/share/emacs/site-lisp/site-start.el << EOF
-(require 'ess-site)
 (require 'package)
 
 ;; add melpa
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(package-refresh-contents)
+
 (package-initialize)
+(unless package-archive-contents
+  (package-refresh-contents))
 
-(unless (package-installed-p 'poly-markdown)
-  (package-install 'poly-markdown))
-(unless (package-installed-p 'poly-R)
-  (package-install 'poly-R))
+(setq install-list '(use-package))
+(dolist (package install-list)
+  (unless (package-installed-p package)
+    (package-install package)))
 
-(require 'poly-markdown)
-(require 'poly-R)
-
+(use-package ess
+  :ensure t)
+(use-package markdown-mode
+  :ensure t)
+(use-package poly-markdown
+  :ensure t)
+(use-package poly-R
+  :ensure t)
+(use-package company
+  :ensure t)
 EOF
 
-## run site-start.el to install poly-markdown, poly-R
 emacs --batch --load="/usr/share/emacs/site-lisp/site-start.el"
 
-#emacs --batch --eval "(progn (require 'package) (package-install 'poly-markdown))"
-Rscript -e 'install.packages(c("rmarkdown", "tinytex"))'
-Rscript -e 'tinytex::install_tinytex(version = "2024.09")'
