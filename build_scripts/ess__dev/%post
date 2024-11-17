@@ -165,7 +165,7 @@ apt install -y gh
 ##### install packages #########
 Rscript -e 'install.packages(c("data.table","labelled","batchtools", "here", "intervalaverage", 
   "renv", "R.utils", "multcomp", "lme4", "broom.mixed", "ggthemes", "car", "randomForest", "emulator", "KMsurv", "survival", "haven", "devtools", "arrow"))'
-Rscript -e "devtools::install_github('kaufman-lab/survivaltools',ref='a9c75521fa58961e59d3c884681862f44c7683d6')"
+
 
 ### torch for R (native) ###
 Rscript -e 'install.packages(c("torch","luz","torchvision","torchdatasets"))'
