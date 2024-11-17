@@ -1,3 +1,5 @@
+
+
 #### install github cli #######
 
 R_VERSION="4.4.0"
@@ -177,7 +179,8 @@ apt-get install -y --no-install-recommends \
 
 Rscript -e 'install.packages(c("rmarkdown"))'
 
-### emacs
+#### emacs
+
 #don't install mailutils since it causes issues:
 apt-get install -y  --no-install-recommends  emacs-bin-common
 apt install -y emacs-nox
@@ -192,26 +195,23 @@ cat > /usr/share/emacs/site-lisp/site-start.el << EOF
 ;; add melpa
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
+;; add the site package directory to package-directory-list
+(push "/usr/local/share/emacs/site-lisp/elpa" package-directory-list)
+
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
 
-(setq install-list '(use-package))
+;; install packages, if they don't exist, to the site directory
+(setq install-list '(use-package ess markdown-mode poly-markdown poly-R company))
 (dolist (package install-list)
   (unless (package-installed-p package)
-    (package-install package)))
+    (let ((package-user-dir "/usr/local/share/emacs/site-lisp/elpa"))
+      (package-install package))
+  )
+)
 
-(use-package ess
-  :ensure t)
-(use-package markdown-mode
-  :ensure t)
-(use-package poly-markdown
-  :ensure t)
-(use-package poly-R
-  :ensure t)
-(use-package company
-  :ensure t)
 EOF
 
+mkdir "/usr/local/share/emacs/site-lisp/elpa"
 emacs --batch --load="/usr/share/emacs/site-lisp/site-start.el"
-
