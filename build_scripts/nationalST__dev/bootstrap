@@ -1,3 +1,9 @@
 Bootstrap: docker
 From: rocker/r-ver:4.1
 
+%environment
+GH_TOKEN = $GH_TOKEN
+export GH_TOKEN
+
+%runscript 
+  Rscript /runscript.R 
