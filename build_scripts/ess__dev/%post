@@ -1,13 +1,31 @@
-
-
 #### install github cli #######
 
-R_VERSION="4.4.0"
-CRAN="https://p3m.dev/cran/__linux__/noble/2024-06-13"
+R_VERSION="4.4.2"
+CRAN="https://p3m.dev/cran/__linux__/noble/2024-11-15"
 R_HOME="/usr/local/lib/R"
 ARCH="x86_64"
 
+## probably not necessary but make sure everything is up to do date
 apt-get update
+apt-get install libstdc++6
+apt-get install -y software-properties-common
+add-apt-repository ppa:ubuntu-toolchain-r/test 
+apt-get update -y
+apt-get upgrade -y
+apt-get dist-upgrade -y
+
+## download R
+apt-get install -y --no-install-recommends \
+    wget \
+    ca-certificates
+
+wget "https://cloud.r-project.org/src/base/R-${R_VERSION%%.*}/R-${R_VERSION}.tar.gz" -O "R.tar.gz"
+echo -e "\nfinished downloading R source"
+tar xzf "R.tar.gz"
+cd R-*/
+
+
+### locales
 apt-get -y install locales
 
 LANG="en_US.UTF-8"
@@ -18,59 +36,19 @@ export DEBIAN_FRONTEND=noninteractive
 
 READLINE_VERSION=8
 
+### dependencies in the order presented in A.1 of R-admin doc
 apt-get install -y --no-install-recommends \
-    bash-completion \
-    ca-certificates \
-    file \
-    fonts-texgyre \
-    g++ \
+    build-essential \
     gfortran \
-    gsfonts \
-    libblas-dev \
-    libbz2-* \
+    xorg-dev \
+    libreadline-dev \
+    libc6-dev \
+    zlib1g-dev \
+    libbz2-dev \
+    liblzma-dev \
+    libpcre2-dev \
     libcurl4 \
     libcurl4-openssl-dev \
-    "libicu[0-9][0-9]" \
-    liblapack-dev \
-    libpcre2* \
-    libjpeg-turbo* \
-    libpangocairo-* \
-    libpng16* \
-    "libreadline${READLINE_VERSION}" \
-    libtiff* \
-    liblzma* \
-    libxt6 \
-    make \
-    tzdata \
-    unzip \
-    zip \
-    zlib1g \
-    zlib1g-dev \
-    xorg-dev \
-    openssh-client
-
-
-BUILDDEPS="curl \
-    default-jdk \
-    devscripts \
-    libbz2-dev \
-    libcairo2-dev \
-    libcurl4-openssl-dev \
-    libpango1.0-dev \
-    libjpeg-dev \
-    libicu-dev \
-    libpcre2-dev \
-    libpng-dev \
-    libreadline-dev \
-    libtiff5-dev \
-    liblzma-dev \
-    libx11-dev \
-    libxt-dev \
-    perl \
-    rsync \
-    subversion \
-    tcl-dev \
-    tk-dev \
     texinfo \
     texlive \
     texlive-extra-utils \
@@ -78,45 +56,44 @@ BUILDDEPS="curl \
     texlive-fonts-extra \
     texlive-latex-recommended \
     texlive-latex-extra \
-    x11proto-core-dev \
-    xauth \
-    xfonts-base \
-    xvfb \
-    wget"
+    qpdf \
+    ghostscript \
+    tzdata \
+    libcairo2-dev \
+    libpango1.0-dev \
+    libpangocairo-1.0-0 \
+    libjpeg-turbo* \
+    libpng-dev \
+    libtiff-dev \
+    libtiff5-dev \
+    tcl-dev \
+    tk-dev
 
-echo -e "\nbeginning dependency install"
-apt-get install -y --no-install-recommends ${BUILDDEPS}
-echo -e "\nfinished dependency install"
+### openblas
+apt install -y libopenblas-dev
 
-wget "https://cloud.r-project.org/src/base/R-${R_VERSION%%.*}/R-${R_VERSION}.tar.gz" -O "R.tar.gz"
+apt-get install -y --no-install-recommends \
+    unzip \
+    zip \
+    htop \
+    gh
 
-echo -e "\nfinished downloading R source"
-
-tar xzf "R.tar.gz"
-cd R-*/
 
 R_PAPERSIZE=letter \
     R_BATCHSAVE="--no-save --no-restore" \
-    R_BROWSER=xdg-open \
-    PAGER=/usr/bin/pager \
-    PERL=/usr/bin/perl \
-    R_UNZIPCMD=/usr/bin/unzip \
-    R_ZIPCMD=/usr/bin/zip \
-    R_PRINTCMD=/usr/bin/lpr \
     LIBnn=lib \
-    AWK=/usr/bin/awk \
     CFLAGS="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g" \
     CXXFLAGS="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g" \
     ./configure --enable-R-shlib \
     --enable-memory-profiling \
     --with-readline \
-    --with-blas \
+    --with-blas="openblas" \
     --with-lapack \
     --with-tcltk \
     --with-recommended-packages \
     --with-x
-
-
+    
+    
 make
 make install
 make clean
@@ -146,22 +123,6 @@ cat <<EOF >>"${R_HOME}/etc/Rprofile.site"
 options(HTTPUserAgent = sprintf("R/%s R (%s)", getRversion(), paste(getRversion(), R.version["platform"], R.version["arch"], R.version["os"])))
 EOF
 
-#install openblas
-apt install -y libopenblas-dev
-update-alternatives --set "libblas.so.3-${ARCH}-linux-gnu" "/usr/lib/${ARCH}-linux-gnu/openblas-pthread/libblas.so.3"
-
-
-##### 
-
-apt-get install -y gnupg
-curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-
-
-#### install utilities ####
-apt install -y htop
-apt install -y gh
-
 ##### install packages #########
 Rscript -e 'install.packages(c("data.table","labelled","batchtools", "here", "intervalaverage", 
   "renv", "R.utils", "multcomp", "lme4", "broom.mixed", "ggthemes", "car", "randomForest", "emulator", "KMsurv", "survival", "haven", "devtools", "arrow"))'
@@ -181,7 +142,7 @@ Rscript -e 'install.packages(c("rmarkdown"))'
 
 #### emacs
 
-#don't install mailutils since it causes issues:
+## --no-install-recommends for emacs-bin-common to avoid installing mailutils since it causes issues during noninteractive install
 apt-get install -y  --no-install-recommends  emacs-bin-common
 apt install -y emacs-nox
 
@@ -198,12 +159,12 @@ cat > /usr/share/emacs/site-lisp/site-start.el << EOF
 ;; add the site package directory to package-directory-list
 (push "/usr/local/share/emacs/site-lisp/elpa" package-directory-list)
 
-(package-initialize)
 (unless package-archive-contents
+  (package-initialize)
   (package-refresh-contents))
 
 ;; install packages, if they don't exist, to the site directory
-(setq install-list '(use-package ess markdown-mode poly-markdown poly-R company))
+(setq install-list '(use-package ess markdown-mode poly-markdown poly-R company flycheck))
 (dolist (package install-list)
   (unless (package-installed-p package)
     (let ((package-user-dir "/usr/local/share/emacs/site-lisp/elpa"))
@@ -215,3 +176,8 @@ EOF
 
 mkdir "/usr/local/share/emacs/site-lisp/elpa"
 emacs --batch --load="/usr/share/emacs/site-lisp/site-start.el"
+
+
+### other stuff you probably need
+apt-get install -y --no-install-recommends \
+    openssl
