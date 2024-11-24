@@ -100,7 +100,8 @@ apt-get install -y --no-install-recommends \
     unzip \
     zip \
     htop \
-    gh
+    gh \
+    git
 
 
 R_PAPERSIZE=letter \
