@@ -101,7 +101,8 @@ apt-get install -y --no-install-recommends \
     zip \
     htop \
     gh \
-    git
+    git \
+    openssh-client
 
 
 R_PAPERSIZE=letter \
