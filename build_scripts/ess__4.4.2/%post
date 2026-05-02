@@ -1,5 +1,5 @@
 #### install github cli #######
-
+export DEBIAN_FRONTEND=noninteractive
 R_VERSION="4.4.2"
 CRAN="https://p3m.dev/cran/__linux__/noble/2024-11-15"
 R_HOME="/usr/local/lib/R"
@@ -8,8 +8,6 @@ ARCH="x86_64"
 ## probably not necessary but make sure everything is up to do date
 apt-get update
 apt-get install libstdc++6
-apt-get install -y software-properties-common
-add-apt-repository ppa:ubuntu-toolchain-r/test 
 apt-get update -y
 apt-get upgrade -y
 apt-get dist-upgrade -y
@@ -31,8 +29,6 @@ apt-get -y install locales
 LANG="en_US.UTF-8"
 /usr/sbin/locale-gen --lang "${LANG}"
 /usr/sbin/update-locale --reset LANG="${LANG}"
-
-export DEBIAN_FRONTEND=noninteractive
 
 READLINE_VERSION=8
 
