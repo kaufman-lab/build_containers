@@ -141,6 +141,22 @@ apt-get install -y --no-install-recommends \
 
 Rscript -e 'install.packages(c("rmarkdown"))'
 
+#### install quarto #######
+# Specify the Quarto version you want to pin (check quarto.org for the latest release)
+QUARTO_VERSION="1.9.37"
+
+echo -e "\nDownloading and installing Quarto v${QUARTO_VERSION}..."
+wget "https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-amd64.deb" -O quarto.deb
+
+# apt-get handles local .deb files and installs required dependencies automatically
+apt-get install -y --no-install-recommends ./quarto.deb
+
+# Clean up the downloaded deb file to keep the image size down
+rm quarto.deb
+
+# Install the R interface for Quarto
+Rscript -e 'install.packages("quarto")'
+
 #### emacs
 
 ## --no-install-recommends for emacs-bin-common to avoid installing mailutils since it causes issues during noninteractive install
