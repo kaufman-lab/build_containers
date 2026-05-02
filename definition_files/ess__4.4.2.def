@@ -151,7 +151,7 @@ EOF
 
 ##### install packages #########
 Rscript -e 'install.packages(c("data.table","labelled","batchtools", "here", "intervalaverage", 
-  "renv", "R.utils", "multcomp", "lme4", "broom.mixed", "ggthemes", "car", "randomForest", "emulator", "KMsurv", "survival", "haven", "devtools", "arrow"))'
+  "renv", "R.utils", "multcomp", "lme4", "broom.mixed", "ggthemes", "car", "randomForest", "emulator", "KMsurv", "survival", "haven", "devtools", "arrow", "languageserver", "jsonlite", "rlang", "httpgd"))'
 
 
 ### torch for R (native) ###
